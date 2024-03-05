@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XisfFileManager", "XisfFileManager\XisfFileManager.csproj", "{932CF3F1-C121-4C72-AEB6-0704CAC33062}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Debug|x64.Build.0 = Debug|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Release|x64.ActiveCfg = Release|Any CPU
+		{932CF3F1-C121-4C72-AEB6-0704CAC33062}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DDA72274-7BE7-43CA-B342-1B9A54945E3B}
+	EndGlobalSection
+EndGlobal
