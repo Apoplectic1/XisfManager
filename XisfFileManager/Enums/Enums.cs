@@ -4,7 +4,7 @@
     public enum eFrame { ALL, LIGHT, DARK, FLAT, BIAS, EMPTY }
 
     // Each image has to be associated with a single Filter
-    public enum eFilter { ALL, LUMA, RED, GREEN, BLUE, HA, O3, S2, SHUTTER, EMPTY }
+    public enum eFilter { ALL, L, R, G, B, H, O, S, SHUTTER, EMPTY }
 
     // These specify how frame numbering will occur during renumbering of the files on disk
     public enum eOrder { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }

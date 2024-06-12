@@ -292,39 +292,36 @@ namespace XisfFileManager
             get { return GetKeywordValue("FILTER"); }
             set
             {
-                string filterName = string.Empty;
-                if (value.ToUpper().Equals("LUMA")) filterName = "Luma";
-                if (value.ToUpper().Equals("HA")) filterName = "Ha";
-                if (value.ToUpper().Equals("O3")) filterName = "O3";
-                if (value.ToUpper().Equals("S2")) filterName = "S2";
-                if (value.ToUpper().Equals("RED")) filterName = "Red";
-                if (value.ToUpper().Equals("GREEN")) filterName = "Green";
-                if (value.ToUpper().Equals("BLUE")) filterName = "Blue";
-                if (value.ToUpper().Equals("SHUTTER")) filterName = "Shutter";
+                string filterName = value.ToUpper() switch
+                {
+                    _ when value.StartsWith('L') => "L",
+                    _ when value.StartsWith('H') => "H",
+                    _ when value.StartsWith('O') => "O",
+                    _ when value.StartsWith('S') && value != "Shutter" => "S",
+                    _ when value.StartsWith('R') => "R",
+                    _ when value.StartsWith('G') => "G",
+                    _ when value.StartsWith('B') => "B",
+                    _ when value.Equals("Shutter") => "Shutter",
+                    _ => string.Empty
+                };
 
-                if (filterName == "Luma")
-                    AddKeyword("FILTER", "Luma", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
+                if (!string.IsNullOrEmpty(filterName))
+                {
+                    string description = filterName switch
+                    {
+                        "L" => "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "R" => "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "G" => "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "B" => "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "H" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "O" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "S" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
+                  "Shutter" => "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        _ => string.Empty
+                    };
 
-                if (filterName == "Red")
-                    AddKeyword("FILTER", "Red", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "Green")
-                    AddKeyword("FILTER", "Green", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "Blue")
-                    AddKeyword("FILTER", "Blue", "Astrodon 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "Ha")
-                    AddKeyword("FILTER", "Ha", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "O3")
-                    AddKeyword("FILTER", "O3", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "S2")
-                    AddKeyword("FILTER", "S2", "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
-
-                if (filterName == "Shutter")
-                    AddKeyword("FILTER", "Shutter", "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    AddKeyword("FILTER", filterName, description);
+                }
             }
         }
 

@@ -89,49 +89,49 @@ namespace XisfFileManager
 
                 file.FilterName = filter;
 
-                if (filter == "Luma")
+                if (filter.StartsWith('L'))
                 {
                     foundLuma = true;
                     lumaCount++;
                     filterCount++;
                 }
 
-                if (filter == "Red")
+                if (filter.StartsWith('R'))
                 {
                     foundRed = true;
                     redCount++;
                     filterCount++;
                 }
 
-                if (filter == "Green")
+                if (filter.StartsWith('G'))
                 {
                     foundGreen = true;
                     greenCount++;
                     filterCount++;
                 }
 
-                if (filter == "Blue")
+                if (filter.StartsWith('B'))
                 {
                     foundBlue = true;
                     blueCount++;
                     filterCount++;
                 }
 
-                if (filter == "Ha")
+                if (filter.StartsWith('H'))
                 {
                     foundHa = true;
                     haCount++;
                     filterCount++;
                 }
 
-                if (filter == "O3")
+                if (filter.StartsWith('O'))
                 {
                     foundO3 = true;
                     o3Count++;
                     filterCount++;
                 }
 
-                if (filter == "S2")
+                if (filter.StartsWith('S') && !filter.StartsWith("Sh"))
                 {
                     foundS2 = true;
                     s2Count++;
@@ -638,25 +638,25 @@ namespace XisfFileManager
                 }
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked)
-                    file.AddKeyword("FILTER", "Luma", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "L", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked)
-                    file.AddKeyword("FILTER", "Red", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "R", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked)
-                    file.AddKeyword("FILTER", "Green", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "G", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked)
-                    file.AddKeyword("FILTER", "Blue", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "B", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked)
-                    file.AddKeyword("FILTER", "Ha", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "H", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked)
-                    file.AddKeyword("FILTER", "O3", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "O", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked)
-                    file.AddKeyword("FILTER", "S2", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
+                    file.AddKeyword("FILTER", "S", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
                 if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
                     file.AddKeyword("FILTER", "Shutter", "Opaque 1.25 or placeholder via Starlight Xpress USB 7 Position Wheel");

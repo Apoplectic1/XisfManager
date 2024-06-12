@@ -78,7 +78,7 @@ namespace XisfFileManager.Files
                                     .ToList();
 
             // List to keep track of files that have been moved.
-            List<XisfFile> movedFiles = new List<XisfFile>();
+            List<XisfFile> movedFiles = [];
 
             foreach (var group in groupedDuplicates)
             {
@@ -381,8 +381,7 @@ namespace XisfFileManager.Files
             }
             finally
             {
-                if (stream != null)
-                    stream.Close();
+                stream?.Close();
             }
 
             //file is not locked

@@ -75,25 +75,25 @@ namespace XisfFileManager
 
                     if (xFile.FilePath.Contains(originalDirectory))
                     {
-                        if (xFile.FilterName.Equals("Luma"))
+                        if (xFile.FilterName.Equals("L"))
                             xFile.FileNameNumberIndex = ++lumaIndex;
 
-                        if (xFile.FilterName.Equals("Red"))
+                        if (xFile.FilterName.Equals("R"))
                             xFile.FileNameNumberIndex = ++redIndex;
 
-                        if (xFile.FilterName.Equals("Green"))
+                        if (xFile.FilterName.Equals("G"))
                             xFile.FileNameNumberIndex = ++greenIndex;
 
-                        if (xFile.FilterName.Equals("Blue"))
+                        if (xFile.FilterName.Equals("B"))
                             xFile.FileNameNumberIndex = ++blueIndex;
 
-                        if (xFile.FilterName.Equals("Ha"))
+                        if (xFile.FilterName.Equals("H"))
                             xFile.FileNameNumberIndex = ++haIndex;
 
-                        if (xFile.FilterName.Equals("O3"))
+                        if (xFile.FilterName.Equals("O"))
                             xFile.FileNameNumberIndex = ++o3Index;
 
-                        if (xFile.FilterName.Equals("S2"))
+                        if (xFile.FilterName.Equals("S"))
                             xFile.FileNameNumberIndex = ++s2Index;
 
                         if (xFile.FilterName.Equals("Shutter"))

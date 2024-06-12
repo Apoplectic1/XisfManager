@@ -16,9 +16,9 @@ namespace XisfFileManager.Calculations
 
         public ImageCalculations()
         {
-            mFocuserPositionList = new List<double>();
-            mFocuserTemperatureList = new List<double>();
-            mAmbientTemperatureList = new List<double>();
+            mFocuserPositionList = [];
+            mFocuserTemperatureList = [];
+            mAmbientTemperatureList = [];
         }
 
         public void Clear()
@@ -63,11 +63,11 @@ namespace XisfFileManager.Calculations
             List<double> exposureList;
             List<double> intervalList;
 
-            subFrameIntervalList = new List<double>();
-            subFrameExposureList = new List<double>();
+            subFrameIntervalList = [];
+            subFrameExposureList = [];
 
-            exposureList = new List<double>();
-            intervalList = new List<double>();
+            exposureList = [];
+            intervalList = [];
 
             if (fileList.Count <= 1)
             {
@@ -76,9 +76,8 @@ namespace XisfFileManager.Calculations
 
             XisfFile fistFile = fileList[0];
 
-            DateTime firstInterval = new DateTime(2000, 1, 1, 0, 0, 0);
-            DateTime secondInterval = new DateTime(2000, 1, 1, 0, 0, 0);
-
+            DateTime firstInterval = new(2000, 1, 1, 0, 0, 0);
+            DateTime secondInterval = new(2000, 1, 1, 0, 0, 0);
 
             foreach (XisfFile file in fileList)
             {
@@ -126,7 +125,7 @@ namespace XisfFileManager.Calculations
 
         public static Dictionary<int, double> BuildUnsortedPositionDictionary(List<XisfFile> xFileList)
         {
-            Dictionary<int, double> focuserDictionary = new Dictionary<int, double>();
+            Dictionary<int, double> focuserDictionary = [];
 
             foreach (XisfFile xFile in xFileList)
             {
@@ -148,7 +147,7 @@ namespace XisfFileManager.Calculations
 
         public static SortedDictionary<double, int> BuildSortedTemperatureDictionary(Dictionary<int, double> unsortedPositionTemperaturePairs)
         {
-            SortedDictionary<double, int> focuserDictionary = new SortedDictionary<double, int>();
+            SortedDictionary<double, int> focuserDictionary = [];
 
             foreach (KeyValuePair<int, double> positionTemperature in unsortedPositionTemperaturePairs)
             {
@@ -172,8 +171,8 @@ namespace XisfFileManager.Calculations
             // The temperature coefficient needs to be computed per imaging session - not an averal average.
             // Group source images into capture days. Capture Day: 4 pm today to 9 am tomorrow
 
-            TimeSpan fourPM = new TimeSpan(16, 0, 0); // 4 pm
-            TimeSpan nineAM = new TimeSpan(9, 0, 0);  // 9 am the next day
+            TimeSpan fourPM = new(16, 0, 0); // 4 pm
+            TimeSpan nineAM = new(9, 0, 0);  // 9 am the next day
 
             // Filter and group xFiles based on capture day
             IEnumerable<IGrouping<DateTime, XisfFile>> groupedByDateFiles = xFileList.GroupBy(xFile => xFile.CaptureTime);

@@ -24,7 +24,7 @@ namespace XisfFileManager.Files
         {
             await Task.Run(async () =>
             {
-                using (FileStream xFileStream = new FileStream(xFile.FilePath, FileMode.Open, FileAccess.Read))
+                using (FileStream xFileStream = new(xFile.FilePath, FileMode.Open, FileAccess.Read))
                 {
                     // Try to read the minium amount of data from each Xisf File.
                     // mBuffer size has been set read most Xisf files xml section in a single read pass.
@@ -119,7 +119,7 @@ namespace XisfFileManager.Files
             // Create a collection of XML "Image" elements from the xFile.mXDoc document that either have no "id" attribute or
             // have an "id" attribute with a value of "integration", "rejection_high", or "rejection_low"
 
-            HashSet<string> validIds = new HashSet<string> { "integration", "rejection_high", "rejection_low" };
+            HashSet<string> validIds = ["integration", "rejection_high", "rejection_low"];
 
             IEnumerable<XElement> imageElements = xFile.mXDoc.Descendants(ns + "Image")
                                  .Where(element =>
