@@ -39,11 +39,11 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new System.Windows.Forms.RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
-            CheckBox_FileSlection_NoTotals = new System.Windows.Forms.CheckBox();
+            CheckBox_FileSlection_NoStatistics = new System.Windows.Forms.CheckBox();
             TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
             CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
-            Button_FileSlection_Rename = new System.Windows.Forms.Button();
+            Button_FileSelection_Rename = new System.Windows.Forms.Button();
             Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
             CheckBox_FileSelection_DirectorySelection_Recurse = new System.Windows.Forms.CheckBox();
             GroupBox_FileSelection_Statistics = new System.Windows.Forms.GroupBox();
@@ -54,6 +54,7 @@
             GroupBox_FileSelection = new System.Windows.Forms.GroupBox();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             TabPage_TargetScheduler = new System.Windows.Forms.TabPage();
+            Panel_TargetScheduler = new System.Windows.Forms.Panel();
             GroupBox_Project_Priority = new System.Windows.Forms.GroupBox();
             RadioButton_ProjectPriority_High = new System.Windows.Forms.RadioButton();
             RadioButton_ProjectPriority_Normal = new System.Windows.Forms.RadioButton();
@@ -199,7 +200,6 @@
             TabPage_GPU = new System.Windows.Forms.TabPage();
             XisfToGpuTab_Button_ConvertToXisf = new System.Windows.Forms.Button();
             XisfToGpuTab_Button_ConvertToGpu = new System.Windows.Forms.Button();
-            Panel_TargetScheduler = new System.Windows.Forms.Panel();
             GroupBox_FileSelection_SequenceOrder.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -338,11 +338,11 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSlection_NoTotals);
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSlection_NoStatistics);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Master);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSlection_Rename);
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_Rename);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Browse);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Recurse);
             GroupBox_FileSelection_DirectorySelection.Location = new System.Drawing.Point(20, 23);
@@ -354,15 +354,15 @@
             GroupBox_FileSelection_DirectorySelection.TabStop = false;
             GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
             // 
-            // CheckBox_FileSlection_NoTotals
+            // CheckBox_FileSlection_NoStatistics
             // 
-            CheckBox_FileSlection_NoTotals.AutoSize = true;
-            CheckBox_FileSlection_NoTotals.Location = new System.Drawing.Point(180, 97);
-            CheckBox_FileSlection_NoTotals.Name = "CheckBox_FileSlection_NoTotals";
-            CheckBox_FileSlection_NoTotals.Size = new System.Drawing.Size(75, 19);
-            CheckBox_FileSlection_NoTotals.TabIndex = 22;
-            CheckBox_FileSlection_NoTotals.Text = "No Totals";
-            CheckBox_FileSlection_NoTotals.UseVisualStyleBackColor = true;
+            CheckBox_FileSlection_NoStatistics.AutoSize = true;
+            CheckBox_FileSlection_NoStatistics.Location = new System.Drawing.Point(173, 97);
+            CheckBox_FileSlection_NoStatistics.Name = "CheckBox_FileSlection_NoStatistics";
+            CheckBox_FileSlection_NoStatistics.Size = new System.Drawing.Size(91, 19);
+            CheckBox_FileSlection_NoStatistics.TabIndex = 22;
+            CheckBox_FileSlection_NoStatistics.Text = "No Statistics";
+            CheckBox_FileSlection_NoStatistics.UseVisualStyleBackColor = true;
             // 
             // TextBox_FileSelection_DirectorySelection_TotalFrames
             // 
@@ -397,16 +397,16 @@
             CheckBox_FileSelection_DirectorySelection_Master.UseVisualStyleBackColor = true;
             CheckBox_FileSelection_DirectorySelection_Master.CheckedChanged += CheckBox_Master_CheckedChanged;
             // 
-            // Button_FileSlection_Rename
+            // Button_FileSelection_Rename
             // 
-            Button_FileSlection_Rename.Location = new System.Drawing.Point(24, 92);
-            Button_FileSlection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Button_FileSlection_Rename.Name = "Button_FileSlection_Rename";
-            Button_FileSlection_Rename.Size = new System.Drawing.Size(145, 27);
-            Button_FileSlection_Rename.TabIndex = 4;
-            Button_FileSlection_Rename.Text = "Rename XISF Files";
-            Button_FileSlection_Rename.UseVisualStyleBackColor = true;
-            Button_FileSlection_Rename.Click += Button_Rename_Click;
+            Button_FileSelection_Rename.Location = new System.Drawing.Point(17, 92);
+            Button_FileSelection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Button_FileSelection_Rename.Name = "Button_FileSelection_Rename";
+            Button_FileSelection_Rename.Size = new System.Drawing.Size(145, 27);
+            Button_FileSelection_Rename.TabIndex = 4;
+            Button_FileSelection_Rename.Text = "Rename XISF Files";
+            Button_FileSelection_Rename.UseVisualStyleBackColor = true;
+            Button_FileSelection_Rename.Click += this.Button_FileSelection_Rename_Click;
             // 
             // Button_FileSelection_DirectorySelection_Browse
             // 
@@ -521,6 +521,13 @@
             TabPage_TargetScheduler.Size = new System.Drawing.Size(1139, 507);
             TabPage_TargetScheduler.TabIndex = 3;
             TabPage_TargetScheduler.Text = "Target Scheduler";
+            // 
+            // Panel_TargetScheduler
+            // 
+            Panel_TargetScheduler.Location = new System.Drawing.Point(530, 37);
+            Panel_TargetScheduler.Name = "Panel_TargetScheduler";
+            Panel_TargetScheduler.Size = new System.Drawing.Size(584, 445);
+            Panel_TargetScheduler.TabIndex = 9;
             // 
             // GroupBox_Project_Priority
             // 
@@ -2175,13 +2182,6 @@
             XisfToGpuTab_Button_ConvertToGpu.UseVisualStyleBackColor = true;
             XisfToGpuTab_Button_ConvertToGpu.Click += XisfToGpuTab_Button_ConvertToGpu_Click;
             // 
-            // Panel_TargetScheduler
-            // 
-            Panel_TargetScheduler.Location = new System.Drawing.Point(530, 37);
-            Panel_TargetScheduler.Name = "Panel_TargetScheduler";
-            Panel_TargetScheduler.Size = new System.Drawing.Size(584, 445);
-            Panel_TargetScheduler.TabIndex = 9;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2251,7 +2251,7 @@
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Master;
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Browse;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;
-        private System.Windows.Forms.Button Button_FileSlection_Rename;
+        private System.Windows.Forms.Button Button_FileSelection_Rename;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_Statistics;
         private System.Windows.Forms.Label Label_FileSelection_Statistics_Task;
         private System.Windows.Forms.Label Label_FileSelection_Statistics_SubFrameOverhead;
@@ -2261,7 +2261,7 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByFilter;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_Index_ByTime;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection;
-        private System.Windows.Forms.CheckBox CheckBox_FileSlection_NoTotals;
+        private System.Windows.Forms.CheckBox CheckBox_FileSlection_NoStatistics;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TabPage TabPage_TargetScheduler;
         private System.Windows.Forms.GroupBox GroupBox_Project_Priority;

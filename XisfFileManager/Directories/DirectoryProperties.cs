@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,33 +9,27 @@ namespace XisfFileManager.DirectoryOperations;
 
 sealed class DirectoryProperties
 {
-    public Dictionary<string, string> DirectoryStatistics = [];
+    public Dictionary<string, string> DirectoryStatistics { get; } = new Dictionary<string, string>();
 
-    public void SetDirectoryStatistics(List<XisfFile> xFileList, bool bNoTotals)
+    public void GetDirectoryStatistics(List<XisfFile> xFileList)
     {
-        IEnumerable<IGrouping<string, XisfFile>> directoryGroups = xFileList.GroupBy(path => Path.GetDirectoryName(path.FilePath));
+        var directoryGroups = xFileList.GroupBy(file => Path.GetDirectoryName(file.FilePath));
 
-        foreach (IGrouping<string, XisfFile> group in directoryGroups)
+        foreach (var group in directoryGroups)
         {
-            string groupName = group.Key;
+            var groupName = group.Key;
 
-            if (!bNoTotals)
+            // Match the first occurrence of any of these words after the last backslash
+            var match = Regex.Match(groupName, @"^(.*\\(?:Stars R|Stars G|Stars B|L|R|G|B|H|O|S|Shutter))");
+
+            if (match.Success)
             {
-                // All occurrences of any of these words
-                MatchCollection matches = Regex.Matches(groupName, @"(?:L|R|G|B|H|O|S|Shutter)");
-                if (matches.Count > 0)
-                {
-                    // Get the last occurrence by accessing the last match in the collection
-                    Match lastMatch = matches[^1];
-
-                    // Trim the input string to remove anything after the last specified word
-                    groupName = groupName[..(lastMatch.Index + lastMatch.Length)];
-
-                    double totalExposureTime = group.Sum(fileItem => fileItem.ExposureSeconds) / 3600.0;
-                    string statistics = $" - {group.Count()}, {totalExposureTime:F1}";
-                    groupName += statistics;
-                }
+                groupName = match.Groups[1].Value;
             }
+
+            double totalExposureTime = group.Sum(file => file.ExposureSeconds) / 3600.0;
+            string statistics = $" - {group.Count()}, {totalExposureTime:F1}";
+            groupName += statistics;
 
             DirectoryStatistics[group.Key] = groupName;
         }

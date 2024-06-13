@@ -49,7 +49,7 @@ namespace XisfFileManager
             TreeView_SchedulerTab_TargetTree.NodeMouseClick += TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick;
             //TreeView_SchedulerTab_PlansTree.NodeMouseClick += TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick;
 
-            
+
             Panel existing = TabPage_TargetScheduler.Controls.OfType<Panel>().FirstOrDefault();
 
             mExposureTreeView.Dock = DockStyle.Fill; // TreeView fills the panel
@@ -57,7 +57,7 @@ namespace XisfFileManager
             existing.Controls.Add(mExposureTreeView); // Add the TreeView to the panel
             TabPage_TargetScheduler.Controls.Add(existing); // Add the panel to the tab page
 
-            
+
 
             mDirectoryProperties = new DirectoryProperties();
             mCalibration = new Calibration();
