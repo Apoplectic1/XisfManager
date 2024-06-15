@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using XisfFileManager.Enums;
 using XisfFileManager.Files;
 
@@ -10,26 +11,7 @@ namespace XisfFileManager
 {
     public partial class MainForm
     {
-        public void SetDirectoryStatistics()
-        {
-            // Potentally rename containing Directory
-            mDirectoryProperties.SetDirectoryStatistics(mFileList, CheckBox_FileSlection_NoTotals.Checked);
-
-            // Iterate through each Target, Camera and associated Panel Directory
-            foreach (KeyValuePair<string, string> group in mDirectoryProperties.DirectoryStatistics)
-            {
-                string currentDirectory = group.Key;
-                string newDirectory = group.Value;
-
-                if (currentDirectory.Equals(newDirectory))
-                    continue;
-
-                if (!Directory.Exists(newDirectory))
-                    Directory.Move(currentDirectory, newDirectory);
-            }
-        }
-
-        public void SetFileIndex(bool bFilter, bool bTime)
+        public void SetFileIndex(bool bTime)
         {
             if (bTime)
             {
@@ -53,16 +35,6 @@ namespace XisfFileManager
                 int s2Index = 0;
                 int shutterIndex = 0;
 
-                // The newDirectory may or may not be the same as the original directory.
-                // The group.Key will index into the DirectoryStatistics Dictionary to get the directory we are working in.
-                // This allows us to rename the directory BEFORE renaming the files in the renamed directory without changing mFileList and
-                // it's an attempt to avoid ndows file rename/busy problems doing this the other way around.
-
-                string originalDirectory = group.Key;
-                string newDirectory = mDirectoryProperties.DirectoryStatistics[group.Key];
-
-
-
                 foreach (XisfFile xFile in mFileList)
                 {
                     // Assuptions
@@ -73,7 +45,7 @@ namespace XisfFileManager
 
                     // This code will sequentially number Filter image files in each group
 
-                    if (xFile.FilePath.Contains(originalDirectory))
+                    if (xFile.FilePath.Contains(group.Key))
                     {
                         if (xFile.FilterName.Equals("L"))
                             xFile.FileNameNumberIndex = ++lumaIndex;
@@ -102,8 +74,8 @@ namespace XisfFileManager
                 }
             }
         }
-
-        private void Button_Rename_Click(object sender, EventArgs e)
+        
+        private void Button_FileSelection_Rename_Click(object sender, EventArgs e)
         {
             bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
             bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
@@ -120,9 +92,10 @@ namespace XisfFileManager
             // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
             // Any found Duplicates are handled inside the RenameFile method
 
-            SetDirectoryStatistics();
+            // Add or remove the statistics files from the current directory
+            mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_NoStatistics.Checked);
 
-            SetFileIndex(bFilter, bTime);
+            SetFileIndex(bTime);
 
             foreach (XisfFile xFile in mFileList)
             {
@@ -130,8 +103,7 @@ namespace XisfFileManager
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
-                string key = Path.GetDirectoryName(xFile.FilePath);
-                xFile.FilePath = mDirectoryProperties.DirectoryStatistics[key] + "\\" + Path.GetFileName(xFile.FilePath);
+                xFile.FilePath = Path.GetDirectoryName(xFile.FilePath) + "\\" + Path.GetFileName(xFile.FilePath);
 
                 Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
