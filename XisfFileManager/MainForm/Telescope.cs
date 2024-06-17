@@ -1,279 +1,168 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using XisfFileManager.Files;
 
 namespace XisfFileManager
 {
     public partial class MainForm
     {
+        /// <summary>
+        /// Clears the selection and resets the telescope group UI elements to their default state.
+        /// </summary>
         public void ClearTelescopeGroup()
         {
-            RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = false;
-            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = false;
-            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
-            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
+            // Reset radio buttons and checkboxes
+            new[] { RadioButton_KeywordUpdateTab_Telescope_APM107, RadioButton_KeywordUpdateTab_Telescope_EvoStar150, RadioButton_KeywordUpdateTab_Telescope_Newtonian254 }.ToList().ForEach(rb =>
+            {
+                rb.Checked = false;
+                rb.ForeColor = Color.Black;
+            });
 
-            RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
             CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
 
+            // Reset focal length text box and labels
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
             Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
 
-            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Black;
+            // Reset buttons
+            new[] { Button_KeywordUpdateTab_Telescope_SetAll, Button_KeywordUpdateTab_Telescope_SetByFile }.ToList().ForEach(btn => btn.ForeColor = Color.Black);
         }
 
+        /// <summary>
+        /// Finds and updates the telescope information based on the files in the file list.
+        /// </summary>
         private void FindTelescope()
         {
-            string telescope;
-            double focalLength;
-            int telescopeCount = 0;
-            int riccardiCount = 0;
-            int focalCount = 0;
-            bool foundAPM = false;
-            bool foundEVO = false;
-            bool foundNWT = false;
-            bool foundRiccardi = false;
-            bool multipleFocalLengths = false;
-            bool foundFocalLength = false;
+            if (mFileList.Count == 0) return;
 
-            RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = false;
-            RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Black;
+            double focalLength = mFileList.First().FocalLength;
+            var telescopes = mFileList.Where(f => !string.IsNullOrEmpty(f.Telescope)).ToList();
 
-            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = false;
-            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Black;
+            var telescopeCounts = new
+            {
+                Total = telescopes.Count,
+                APM = telescopes.Count(f => f.Telescope.Contains("APM")),
+                EVO = telescopes.Count(f => f.Telescope.Contains("EVO")),
+                NWT = telescopes.Count(f => f.Telescope.Contains("NWT")),
+                Riccardi = telescopes.Count(f => f.Telescope.EndsWith('R')),
+                FocalLength = telescopes.Count(f => f.FocalLength != -1)
+            };
 
-            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = false;
-            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Black;
+            bool multipleFocalLengths = telescopes.Select(f => f.FocalLength).Distinct().Count() > 1;
+            bool foundFocalLength = telescopeCounts.FocalLength > 0;
 
-            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
-            CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
+            // Update Riccardi checkbox
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = telescopeCounts.Riccardi == telescopeCounts.Total;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = telescopeCounts.Riccardi == 0 || telescopeCounts.Riccardi == telescopeCounts.Total ? Color.Black : Color.Red;
 
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
-            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
+            // Update focal length label
+            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = telescopeCounts.FocalLength == telescopeCounts.Total && foundFocalLength && !multipleFocalLengths ? Color.Black : Color.Red;
 
-            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Black;
+            // Update telescope radio buttons and focal length text box
+            UpdateTelescopeUI(RadioButton_KeywordUpdateTab_Telescope_APM107, "APM107", 700, 531, telescopeCounts.APM, telescopeCounts);
+            UpdateTelescopeUI(RadioButton_KeywordUpdateTab_Telescope_EvoStar150, "EVO150", 1000, 750, telescopeCounts.EVO, telescopeCounts);
+            UpdateTelescopeUI(RadioButton_KeywordUpdateTab_Telescope_Newtonian254, "NWT254", 1100, 825, telescopeCounts.NWT, telescopeCounts);
 
-            if (mFileList.Count == 0)
+            // Set colors for multiple telescopes or missing data
+            if (telescopeCounts.APM == 0 && telescopeCounts.EVO == 0 && telescopeCounts.NWT == 0)
+            {
+                SetControlsColor(Color.DarkViolet, true);
                 return;
-
-            focalLength = mFileList[0].FocalLength;
-
-            foreach (XisfFile file in mFileList)
-            {
-                telescope = file.Telescope;
-                if (telescope == string.Empty)
-                    continue;
-
-                if (telescope.EndsWith('R'))
-                {
-                    riccardiCount++;
-                    foundRiccardi = true;
-                }
-
-                if (telescope.Contains("APM"))
-                {
-                    telescopeCount++;
-                    foundAPM = true;
-                }
-
-                if (telescope.Contains("EVO"))
-                {
-                    telescopeCount++;
-                    foundEVO = true;
-                }
-
-                if (telescope.Contains("NWT"))
-                {
-                    telescopeCount++;
-                    foundNWT = true;
-                }
-
-                if (focalLength != file.FocalLength)
-                {
-                    multipleFocalLengths = true;
-                }
-
-                focalLength = file.FocalLength;
-                if (focalLength != -1)
-                {
-                    focalCount++;
-                    foundFocalLength = true;
-                }
             }
 
-            if ((riccardiCount != mFileList.Count) && (riccardiCount != 0))
-            {
-                CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Red;
-            }
-            else
-            {
-                CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = true;
-            }
+            // Update SetAll and SetByFile button colors
+            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = telescopeCounts.Total == telescopeCounts.APM + telescopeCounts.EVO + telescopeCounts.NWT && telescopeCounts.FocalLength == mFileList.Count ? Color.Black : Color.Red;
+            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = telescopeCounts.Total == mFileList.Count ? Color.Black : Color.Red;
+        }
 
-            if ((focalCount != mFileList.Count) || !foundFocalLength || multipleFocalLengths)
+        /// <summary>
+        /// Updates the telescope UI elements based on the current selection.
+        /// </summary>
+        /// <param name="radioButton">The radio button representing the telescope.</param>
+        /// <param name="telescopeName">The name of the telescope.</param>
+        /// <param name="defaultFocalLength">The default focal length without Riccardi reducer.</param>
+        /// <param name="reducedFocalLength">The focal length with Riccardi reducer.</param>
+        /// <param name="telescopeCount">The count of the specified telescope in the file list.</param>
+        /// <param name="telescopeCounts">The total counts of different telescopes.</param>
+        private void UpdateTelescopeUI(System.Windows.Forms.RadioButton radioButton, string telescopeName, int defaultFocalLength, int reducedFocalLength, int telescopeCount, dynamic telescopeCounts)
+        {
+            if (telescopeCount > 0)
             {
-                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Red;
-            }
-
-
-            if (foundAPM)
-            {
-                if (foundEVO || foundNWT)
+                if (telescopeCount == telescopeCounts.Total)
                 {
-                    RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.Red;
+                    radioButton.Checked = true;
+                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? reducedFocalLength.ToString() : defaultFocalLength.ToString();
                 }
                 else
                 {
-                    RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = true;
-
-                    if (foundRiccardi)
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
-                    else
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
+                    radioButton.ForeColor = Color.Red;
                 }
             }
+        }
 
-            if (foundEVO)
+        /// <summary>
+        /// Sets the color of specified controls.
+        /// </summary>
+        /// <param name="color">The color to set.</param>
+        /// <param name="resetCheckbox">Whether to reset the Riccardi checkbox.</param>
+        private void SetControlsColor(Color color, bool resetCheckbox)
+        {
+            RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = color;
+            RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = color;
+            RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = color;
+            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = color;
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = color;
+            Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = color;
+            Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = color;
+
+            if (resetCheckbox)
             {
-                if (foundAPM || foundNWT)
-                {
-                    RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.Red;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = true;
-
-                    if (foundRiccardi)
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
-                    else
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
-                }
-            }
-
-            if (foundNWT)
-            {
-                if (foundAPM || foundEVO)
-                {
-                    RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.Red;
-                }
-                else
-                {
-                    RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = true;
-
-                    if (foundRiccardi)
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
-                    else
-                        TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
-                }
-            }
-
-            if (!foundAPM && !foundEVO & !foundNWT)
-            {
-                RadioButton_KeywordUpdateTab_Telescope_APM107.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_Telescope_EvoStar150.ForeColor = Color.DarkViolet;
-                RadioButton_KeywordUpdateTab_Telescope_Newtonian254.ForeColor = Color.DarkViolet;
-                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.DarkViolet;
                 CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
-                CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.DarkViolet;
-                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Red;
-                return;
-            }
-
-            // Set SetAll button to black if only a single telescope has been found or a signle focal lenght has been found
-            if ((foundAPM ^ foundEVO ^ foundNWT) && (focalCount == mFileList.Count))
-            {
-                // Set "SetAll" to black if only a single filter and a single frame type was found
-                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
-            }
-            else
-            {
-                // More that one software program - set "SetByFile" to red
-                Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Red;
-            }
-
-            if ((telescopeCount < mFileList.Count) || (riccardiCount < mFileList.Count) || (focalCount < mFileList.Count))
-            {
-                Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Red;
             }
         }
 
         private void RadioButton_KeywordTelescope_APM107_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "531" : "700";
+
+            if (mFileList.Any(file => TextBox_KeywordUpdateTab_Telescope_FocalLength.Text != file.FocalLength.ToString()))
             {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
+                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Red;
             }
             else
             {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
+                Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
             }
-
-            foreach (XisfFile file in mFileList)
-            {
-                if (TextBox_KeywordUpdateTab_Telescope_FocalLength.Text != file.FocalLength.ToString())
-                {
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "";
-                    Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Red;
-                    break;
-                }
-            }
-
-            Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
         }
 
         private void RadioButton_KeywordTelescope_EVO150_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-            {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
-            }
-            else
-            {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
-            }
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "750" : "1000";
         }
 
         private void RadioButton_KeywordTelescope_NWT254_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-            {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
-            }
-            else
-            {
-                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
-            }
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "825" : "1100";
         }
 
         private void CheckBox_KeywordTelescope_Riccardi_CheckedChanged(object sender, EventArgs e)
         {
             if (RadioButton_KeywordUpdateTab_Telescope_APM107.Checked)
             {
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "531";
-                else
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "700";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "531" : "700";
             }
 
             if (RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked)
             {
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "750";
-                else
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1000";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "750" : "1000";
             }
 
             if (RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked)
             {
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "825";
-                else
-                    TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = "1100";
+                TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "825" : "1100";
             }
         }
 
@@ -283,66 +172,38 @@ namespace XisfFileManager
             {
                 file.AddKeyword("APTDIA", "107.0", "Aperture Diameter in mm");
                 file.AddKeyword("APTAREA", "8992.02", "Aperture area in square mm minus obstructions");
-
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                {
-                    file.AddKeyword("TELESCOP", "APM107R", "APM107 Super ED with Riccardi 0.75 Reducer");
-                    file.AddKeyword("FOCALLEN", "531", "APM107 Super ED with Riccardi 0.75 Reducer");
-                }
-                else
-                {
-                    file.AddKeyword("TELESCOP", "APM107", "APM107 Super ED without Reducer");
-                    file.AddKeyword("FOCALLEN", "700", "APM107 Super ED without Reducer");
-                }
+                file.AddKeyword("TELESCOP", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "APM107R" : "APM107", "APM107 Super ED" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
+                file.AddKeyword("FOCALLEN", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "531" : "700", "APM107 Super ED" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
             }
 
             if (RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked)
             {
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                {
-                    file.AddKeyword("TELESCOP", "EVO150R", "EvoStar 150 with Riccardi 0.75 Reducer");
-                    file.AddKeyword("FOCALLEN", "750", "EvoStar 150 with Riccardi 0.75 Reducer");
-                }
-                else
-                {
-                    file.AddKeyword("TELESCOP", "EVO150", "EvoStar 150 without Reducer");
-                    file.AddKeyword("FOCALLEN", "1000", "EvoStar 150 without Reducer");
-                }
+                file.AddKeyword("TELESCOP", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "EVO150R" : "EVO150", "EvoStar 150" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
+                file.AddKeyword("FOCALLEN", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "750" : "1000", "EvoStar 150" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
             }
 
             if (RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked)
             {
-                if (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked)
-                {
-                    file.AddKeyword("TELESCOP", "NWT254R", "10 Inch Newtownian with Riccardi 0.75 Reducer");
-                    file.AddKeyword("FOCALLEN", "825", "10 inch Newtonian with Riccardi 0.75 Reducer");
-                }
-                else
-                {
-                    file.AddKeyword("TELESCOP", "NWT254", "10 Inch Newtonian without Reducer");
-                    file.AddKeyword("FOCALLEN", "1100", "10 Inch Newtonian without Reducer");
-                }
+                file.AddKeyword("TELESCOP", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "NWT254R" : "NWT254", "10 Inch Newtonian" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
+                file.AddKeyword("FOCALLEN", CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? "825" : "1100", "10 Inch Newtonian" + (CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked ? " with Riccardi 0.75 Reducer" : " without Reducer"));
             }
         }
 
         private void Button_Telescope_SetAll_Click(object sender, EventArgs e)
         {
-            foreach (XisfFile file in mFileList)
-            {
-                SetTelescopeUI(file);
-            }
-
+            mFileList.ForEach(SetTelescopeUI);
             FindTelescope();
         }
 
         private void Button_Telescope_SetByFile_Click(object sender, EventArgs e)
         {
             bool globalTelescope = false;
+
             foreach (XisfFile file in mFileList)
             {
                 if (globalTelescope)
                 {
-                    if (file.Telescope == string.Empty)
+                    if (string.IsNullOrEmpty(file.Telescope))
                     {
                         SetTelescopeUI(file);
                     }
@@ -355,15 +216,10 @@ namespace XisfFileManager
                         globalTelescope = true;
                         telescope = telescope.Replace("Global_", "");
 
-                        if (telescope.EndsWith('R'))
-                            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = true;
-                        else
-                            CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
-
-                        // Checking the radio button for the found telescope with also set focal length and Riccardi checkbox
-                        RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = telescope.Contains("APM") ? true : false;
-                        RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = telescope.Contains("EVO") ? true : false;
-                        RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = telescope.Contains("NWT") ? true : false;
+                        CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = telescope.EndsWith('R');
+                        RadioButton_KeywordUpdateTab_Telescope_APM107.Checked = telescope.Contains("APM");
+                        RadioButton_KeywordUpdateTab_Telescope_EvoStar150.Checked = telescope.Contains("EVO");
+                        RadioButton_KeywordUpdateTab_Telescope_Newtonian254.Checked = telescope.Contains("NWT");
 
                         SetTelescopeUI(file);
                     }
@@ -372,6 +228,5 @@ namespace XisfFileManager
 
             FindTelescope();
         }
-
     }
 }

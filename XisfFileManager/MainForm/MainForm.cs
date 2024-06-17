@@ -22,20 +22,19 @@ namespace XisfFileManager
     //[DesignerCategory("Form")]
     public partial class MainForm : Form
     {
-        private List<XisfFile> mFileList;
+        private readonly List<XisfFile> mFileList;
         private XisfFile mFile;
-        private Calibration mCalibration;
+        private readonly Calibration mCalibration;
         private readonly ImageCalculations ImageParameterLists;
         private readonly XisfFileReader mFileReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
-        private XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
+        private readonly XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
         private bool mBCancel;
-        private XisfFileUpdate mXisfFileUpdate;
+        private readonly XisfFileUpdate mXisfFileUpdate;
         private eKeywordUpdateMode mKeywordUpdateProtection;
-        private DirectoryProperties mDirectoryProperties;
-
-        private CustomTreeView mExposureTreeView = new CustomTreeView();
+        private readonly DirectoryProperties mDirectoryProperties;
+        private readonly CustomTreeView mExposureTreeView = new();
 
         // ##########################################################################################################################
         // Constructor
@@ -46,7 +45,6 @@ namespace XisfFileManager
             CalibrationTabPageEvent.CalibrationTabPage_InvokeEvent += EventHandler_UpdateCalibrationPageForm;
             TreeView_SchedulerTab_ProfileTree.NodeMouseClick += TreeView_SchedulerTab_ProfileTree_NodeMouseClick;
             TreeView_SchedulerTab_ProjectTree.NodeMouseClick += TreeView_SchedulerTab_ProjectTree_NodeMouseClick;
-            TreeView_SchedulerTab_TargetTree.NodeMouseClick += TreeView_SchedulerTab_TargetTree_NodeMouseClick_NodeMouseClick;
             //TreeView_SchedulerTab_PlansTree.NodeMouseClick += TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick;
 
 
@@ -65,7 +63,7 @@ namespace XisfFileManager
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
             mXisfFileUpdate = new XisfFileUpdate();
             mKeywordUpdateProtection = eKeywordUpdateMode.UPDATE_NEW;
-            Label_FileSelection_Statistics_Task.Text = "";
+            Label_FileSelection_Statistics_OperationStatus.Text = "";
             mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
             {
@@ -75,8 +73,8 @@ namespace XisfFileManager
             // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
             ImageParameterLists = new ImageCalculations();
 
-            Label_FileSelection_Statistics_Task.Text = "No Images Selected";
-            Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
+            Label_FileSelection_Statistics_OperationStatus.Text = "No Images Selected";
+            Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             this.Text = $"XISF File Manager - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
@@ -84,6 +82,7 @@ namespace XisfFileManager
 
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByTime, "Orders Files by Capture Time", "\"By Target\" orders all files consecutively.\r\n\"By Night\" orders all files consecutively by night.");
+            UpdateUI(eUiState.DISABLED);
         }
 
         // ****************************************************************************************************************
@@ -197,12 +196,13 @@ namespace XisfFileManager
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
+                UpdateUI(eUiState.DISABLED);
                 MessageBox.Show("No Xisf Files Found", "Select a different folder");
                 return;
             }
 
-            Label_FileSelection_Statistics_Task.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
-            Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: Not Computed";
+            Label_FileSelection_Statistics_OperationStatus.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
+            Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
             Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
@@ -371,13 +371,13 @@ namespace XisfFileManager
             }
 
             if (Files.DirectoryOperations.FileInfoList.Count == mFileList.Count)
-                Label_FileSelection_Statistics_Task.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
+                Label_FileSelection_Statistics_OperationStatus.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
             else
-                Label_FileSelection_Statistics_Task.Text = "Read " + mFileList.Count.ToString() + " out of " + Files.DirectoryOperations.FileInfoList.Count + " Image Files";
+                Label_FileSelection_Statistics_OperationStatus.Text = "Read " + mFileList.Count.ToString() + " out of " + Files.DirectoryOperations.FileInfoList.Count + " Image Files";
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageCalculations.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageCalculations.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
-            Label_FileSelection_Statistics_TempratureCompensation.Text = "Temperature Coefficient: " + stepsPerDegree;
+            Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: " + stepsPerDegree;
 
             // **********************************************************************
 
@@ -431,12 +431,62 @@ namespace XisfFileManager
             }
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
-            TabControl_Updater.Enabled = true;
+            TabControl.Enabled = true;
+
+
+            // UI Updates
+            UpdateUI(eUiState.ENABLED);
+
         }
 
         private void Button_KeywordUpdateTab_Cancel_Click(object sender, EventArgs e)
         {
             mBCancel = true;
+        }
+        // ************************************************************
+        // Update UI
+        private void UpdateUI(eUiState eState)
+        {
+            switch (eState)
+            {
+                case eUiState.DISABLED:
+                    TabControl.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Master.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
+                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+                    CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
+                    GroupBox_FileSelection_SequenceNumbering.Enabled = false;
+                    GroupBox_FileSelection_Statistics.Enabled = false;
+                    Label_FileSelection_Statistics_OperationStatus.Text = "Operation Status: Idle";
+                    Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
+                    Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
+                    Label_FileSelection_BrowseFileName.Text = "No Files Selected";
+                    break;
+
+                case eUiState.ENABLED:
+                    TabControl.Enabled = true;
+                    CheckBox_FileSelection_DirectorySelection_Master.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = true;
+                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = true;
+                    Button_FileSelection_DirectorySelection_Rename.Enabled = true;
+                    CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = true;
+                    GroupBox_FileSelection_SequenceNumbering.Enabled = true;
+                    GroupBox_FileSelection_Statistics.Enabled = true;
+                    break;
+
+                    case eUiState.RENAME:
+                    TabControl.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Master.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
+                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+                    CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
+                    GroupBox_FileSelection_SequenceNumbering.Enabled = false;
+                    GroupBox_FileSelection_Statistics.Enabled = true;
+                    Label_FileSelection_BrowseFileName.Text = "No Files Selected";
+                    break;
+            }
         }
 
         // ##########################################################################################################################

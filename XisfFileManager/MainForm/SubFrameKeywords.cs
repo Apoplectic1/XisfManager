@@ -10,39 +10,39 @@ namespace XisfFileManager
 {
     public partial class MainForm
     {
+        /// <summary>
+        /// Refreshes the combo boxes for keyword selection by clearing existing items and populating them with unique, sorted keyword names.
+        /// </summary>
         private void RefreshComboBoxes()
         {
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Text = "File";
+            // Clear and reset combo box items and texts
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile, "File");
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName, "Name");
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue, "Value");
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment, "Comment");
 
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Name";
+            // Get a distinct, sorted list of keyword names from all files in the file list
+            var keywordNames = mFileList
+                .SelectMany(file => file.KeywordList.mKeywordList.Select(keyword => keyword.Name))
+                .Distinct()
+                .OrderBy(name => name)
+                .ToList();
 
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
-
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "Comment";
-
-
-            List<string> keywordNamelist = new List<string>();
-
-            foreach (XisfFile xFile in mFileList)
-            {
-                foreach (Keyword keywordName in xFile.KeywordList.mKeywordList)
-                {
-                    keywordNamelist.Add(keywordName.Name);
-                }
-            }
-
-            keywordNamelist.Sort();
-            keywordNamelist = keywordNamelist.Distinct().ToList();
-
-            foreach (string name in keywordNamelist)
-            {
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name);
-            }
+            // Add keyword names to the keyword name combo box
+            keywordNames.ForEach(name => ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Add(name));
         }
+
+        /// <summary>
+        /// Clears the items and sets the text of a combo box.
+        /// </summary>
+        /// <param name="comboBox">The combo box to clear and reset.</param>
+        /// <param name="defaultText">The default text to set for the combo box.</param>
+        private static void ClearComboBox(ComboBox comboBox, string defaultText)
+        {
+            comboBox.Items.Clear();
+            comboBox.Text = defaultText;
+        }
+
 
         private void RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged(object sender, EventArgs e)
         {
@@ -59,42 +59,37 @@ namespace XisfFileManager
             mKeywordUpdateProtection = (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Checked) ? eKeywordUpdateMode.FORCE : mKeywordUpdateProtection;
         }
 
+        /// <summary>
+        /// Handles the event when the keyword name combo box selection is changed.
+        /// Populates the value and comment combo boxes with unique values and comments associated with the selected keyword name.
+        /// </summary>
         private void ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) || ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword"))
+            if (string.IsNullOrEmpty(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text) ||
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == "Keyword")
                 return;
 
-            List<Keyword> keywordList = new List<Keyword>();
-
-            foreach (XisfFile file in mFileList)
-            {
-                foreach (Keyword keyword in file.KeywordList.mKeywordList)
-                {
-                    keywordList.Add(keyword);
-                }
-            }
-
-            // Uniquify the keywordList based on Keyword.Name and Keyword.Value while keeping associated Comment and FilePath
-            keywordList = keywordList
+            // Get a distinct, sorted list of keywords from all files in the file list
+            var keywordList = mFileList
+                .SelectMany(file => file.KeywordList.mKeywordList)
                 .GroupBy(k => new { k.Name, k.Value })
                 .Select(g => g.First())
                 .OrderBy(k => k.Name)
                 .ToList();
 
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "";
+            // Clear and reset value and comment combo boxes
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue, "");
+            ClearComboBox(ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment, "");
 
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Items.Clear();
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "";
+            // Populate the value and comment combo boxes with values and comments for the selected keyword name
+            var selectedKeywordName = ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text;
+            var matchingKeywords = keywordList.Where(k => k.Name == selectedKeywordName);
 
-            foreach (Keyword value in keywordList)
+            foreach (var keyword in matchingKeywords)
             {
-                if (ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text == value.Name)
-                {
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(value.Value);
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = value.Value.ToString();
-                    ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = value.Comment;
-                }
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Add(keyword.Value);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = keyword.Value;
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = keyword.Comment;
             }
         }
 
@@ -201,7 +196,7 @@ namespace XisfFileManager
 
                 if (bStatus == false)
                 {
-                    Label_FileSelection_Statistics_Task.Text = "File Write Error";
+                    Label_FileSelection_Statistics_OperationStatus.Text = "File Write Error";
 
                     DialogResult result = MessageBox.Show(
                         "File Update Failed - Protected or I/O Error.\n\n" + Label_KeywordUpdateTab_FileName.Text,
@@ -221,7 +216,7 @@ namespace XisfFileManager
                 count++;
             }
 
-            Label_FileSelection_Statistics_Task.Text = count.ToString() + " Images Updated";
+            Label_FileSelection_Statistics_OperationStatus.Text = count.ToString() + " Images Updated";
             GroupBox_FileSelection.Enabled = true;
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
             GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;

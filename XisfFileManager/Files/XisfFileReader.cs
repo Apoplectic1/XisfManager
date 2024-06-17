@@ -20,16 +20,19 @@ namespace XisfFileManager.Files
         private Match xmlCommentBlockMatch;
         private Match xmlKeywordBlockMatch;
 
+        /// <summary>
+        /// Reads the header keywords from an XISF file asynchronously.
+        /// The method processes the file to extract XML sections and header keywords, and parses them into an XDocument.
+        /// </summary>
+        /// <param name="xFile">The XisfFile object representing the file to read.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
             await Task.Run(async () =>
             {
                 using (FileStream xFileStream = new(xFile.FilePath, FileMode.Open, FileAccess.Read))
                 {
-                    // Try to read the minium amount of data from each Xisf File.
-                    // mBuffer size has been set read most Xisf files xml section in a single read pass.
-                    // We MUST read enough to include the first "<xisf" delimiter (<xisf is after comment section)
-
+                    // Initialize regex matches and buffer
                     xmlVersionBlockMatch = Match.Empty;
                     xmlCommentBlockMatch = Match.Empty;
                     xmlKeywordBlockMatch = Match.Empty;
@@ -43,39 +46,37 @@ namespace XisfFileManager.Files
                     if (bytesRead != 16)
                         return;
 
-                    // Find the length of the <xisf>...</xisf> section
-                    int xisfSectionSize = (mBuffer[11] << 24);
-                    xisfSectionSize = (mBuffer[10] << 16);
-                    xisfSectionSize |= (mBuffer[9] << 8);
-                    xisfSectionSize |= mBuffer[8];
+                    // Calculate the length of the <xisf>...</xisf> section
+                    int xisfSectionSize = (mBuffer[11] << 24) | (mBuffer[10] << 16) | (mBuffer[9] << 8) | mBuffer[8];
 
+                    // Resize buffer if necessary
                     if (xisfSectionSize > 65535)
                     {
                         mBuffer = new byte[xisfSectionSize + nXisfSignatureBlockSize];
                     }
 
+                    // Read the rest of the <xisf>...</xisf> section
                     bytesRead = xFileStream.Read(mBuffer, nXisfSignatureBlockSize, xisfSectionSize);
-
                     xmlString = Encoding.UTF8.GetString(mBuffer.Skip(nXisfSignatureBlockSize).ToArray());
 
+                    // Match XML version, comment, and keyword blocks
                     xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
                     xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
                     xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
 
-                    // return <xisf>...</xisf> section
+                    // Extract the <xisf>...</xisf> section
                     xmlString = xmlKeywordBlockMatch.ToString();
 
-                    // Remove any blatent garbage from xmlString
+                    // Clean and validate XML string
                     xmlString = Xml.FixXisfXml(xmlString);
-
-                    // Remove any malformed xml from xmlString
                     xmlString = Xml.ValidateXisfXml(xmlString);
 
-                    // Make an isolated copies
+                    // Store isolated copies of XML sections
                     xFile.XmlVersionText = xmlVersionBlockMatch.ToString().Clone() as string;
                     xFile.XmlCommentText = xmlCommentBlockMatch.ToString().Clone() as string;
                     xFile.XmlString = xmlString.Clone() as string;
 
+                    // Parse XML string into XDocument
                     xFile.mXDoc = new XDocument();
 
                     try
@@ -84,53 +85,50 @@ namespace XisfFileManager.Files
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not Parse xml in file:\n\n" + xFile.FilePath + "\n\nin:\n\nReadXisfFileHeaderKeywords(XisfFile xFile)\n" + ex.Message,
+                        MessageBox.Show("Could not parse XML in file:\n\n" + xFile.FilePath + "\n\nin:\n\nReadXisfFileHeaderKeywords(XisfFile xFile)\n" + ex.Message,
                             "Parse XISF File Error",
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);
-
                         return;
                     }
 
-                    // ***********************************************************************************
-
+                    // Extract and process various elements from the XISF file
                     XElement root = xFile.mXDoc.Root;
                     XNamespace ns = root.GetDefaultNamespace();
 
                     FindXisfAttachments(xFile, ns);
-
                     FindXisfIccProfiles(xFile, ns);
-
                     FindXisfThumbnails(xFile, ns);
-
                     FindXisfFitsKeywords(xFile, ns);
-
                     FindXisfProperties(xFile, ns);
-
-                    // ***********************************************************************************
                 }
             });
         }
 
+
         // ***********************************************************************************
 
+        /// <summary>
+        /// Finds and processes image attachments in an XISF file document.
+        /// The method identifies "Image" elements in the document that either have no "id" attribute or
+        /// have an "id" attribute with values "integration", "rejection_high", or "rejection_low",
+        /// and processes them accordingly.
+        /// </summary>
+        /// <param name="xFile">The XisfFile object containing the XML document to be processed.</param>
+        /// <param name="ns">The XML namespace used in the XISF file.</param>
         public static void FindXisfAttachments(XisfFile xFile, XNamespace ns)
         {
-            // Create a collection of XML "Image" elements from the xFile.mXDoc document that either have no "id" attribute or
-            // have an "id" attribute with a value of "integration", "rejection_high", or "rejection_low"
+            // Define a set of valid IDs for image elements
+            HashSet<string> validIds = new HashSet<string> { "integration", "rejection_high", "rejection_low" };
 
-            HashSet<string> validIds = ["integration", "rejection_high", "rejection_low"];
+            // Find all "Image" elements that either have no "id" attribute or have a valid "id" attribute
+            var imageElements = xFile.mXDoc.Descendants(ns + "Image")
+                                           .Where(element => element.Attribute("id") == null || validIds.Contains((string)element.Attribute("id")));
 
-            IEnumerable<XElement> imageElements = xFile.mXDoc.Descendants(ns + "Image")
-                                 .Where(element =>
-                                 {
-                                     string id = (string)element.Attribute("id");
-                                     return id == null || validIds.Contains(id);
-                                 });
-
-            foreach (XElement element in imageElements)
+            // Process each found image element based on its "id" attribute
+            imageElements.ToList().ForEach(element =>
             {
-                string idValue = element.Attribute("id")?.Value;
+                string idValue = (string)element.Attribute("id");
 
                 switch (idValue)
                 {
@@ -145,8 +143,9 @@ namespace XisfFileManager.Files
                         xFile.ImageRejectionLowAttachment(element);
                         break;
                 }
-            }
+            });
         }
+
 
         // ***********************************************************************************
 

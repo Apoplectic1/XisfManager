@@ -27,13 +27,32 @@ namespace XisfFileManager
 
         private void XisfToGpuTab_Button_ConvertToXisf_Click(object sender, EventArgs e)
         {
-            GpuDataToXisf(@"E:\Temp\output_data.dat", @"E:\Temp\output_data.xisf");
+            // Create and configure OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = mFileList[0].FilePath;
+            openFileDialog.Filter = "Data files (*.dat)|*.dat";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            // Show the OpenFileDialog and check if the user clicked OK
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Get the selected input file path
+                string inputFilePath = openFileDialog.FileName;
+
+                // Construct the output file path with the same directory but change the extension to .xisf
+                string outputFilePath = Path.Combine(Path.GetDirectoryName(inputFilePath),
+                                                     Path.GetFileNameWithoutExtension(inputFilePath) + ".xisf");
+
+                // Call GpuDataToXisf with the constructed paths
+                GpuDataToXisf(inputFilePath, outputFilePath);
+            }
         }
 
         public bool XisfToGpuData(XisfFile xFile, string destinationFilePath)
         {
             byte[] binaryFileData = new byte[(int)1e9];
-            mBufferList.Clear();
+            mBufferList = new List<Buffer>();
 
             try
             {
@@ -91,7 +110,7 @@ namespace XisfFileManager
         public bool GpuDataToXisf(string sourceFilePath, string destinationFilePath)
         {
             byte[] binaryFileData = new byte[(int)1e9];
-            mBufferList.Clear();
+            mBufferList = new List<Buffer>();
 
             try
             {

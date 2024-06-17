@@ -22,4 +22,6 @@
 
     // Main Form Keyword Upadate Mode
     public enum eKeywordUpdateMode { PROTECT, UPDATE_NEW, FORCE }
+
+    public enum eUiState { DISABLED, ENABLED, RENAME }
 }

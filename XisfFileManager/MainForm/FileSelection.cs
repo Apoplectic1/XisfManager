@@ -11,122 +11,120 @@ namespace XisfFileManager
 {
     public partial class MainForm
     {
+        /// <summary>
+        /// Sets the file index for each XisfFile in the list based on either time or filter type.
+        /// If bTime is true, the files are sequentially numbered based on time.
+        /// If bTime is false, the files are sequentially numbered within each directory group based on their filter type.
+        /// </summary>
+        /// <param name="bTime">A boolean flag indicating whether to index files based on time (true) or filter type (false).</param>
         public void SetFileIndex(bool bTime)
         {
             if (bTime)
             {
-                int index = 0;
-
-                foreach (XisfFile xFile in mFileList)
-                {
-                    xFile.FileNameNumberIndex = ++index;
-                }
+                // Sequentially number files based on time
+                mFileList
+                    .Select((xFile, index) => new { xFile, index })
+                    .ToList()
+                    .ForEach(item => item.xFile.FileNameNumberIndex = item.index + 1);
                 return;
             }
 
-            foreach (KeyValuePair<string, string> group in mDirectoryProperties.DirectoryStatistics)
+            // Sequentially number filter image files within each directory group
+            foreach (var group in mDirectoryProperties.DirectoryStatistics)
             {
-                int lumaIndex = 0;
-                int redIndex = 0;
-                int greenIndex = 0;
-                int blueIndex = 0;
-                int haIndex = 0;
-                int o3Index = 0;
-                int s2Index = 0;
-                int shutterIndex = 0;
-
-                foreach (XisfFile xFile in mFileList)
-                {
-                    // Assuptions
-                    // For a given Target, we are assuming that there are one set of captures (Filters) under a particular Camera.
-                    // or a Panel in a Mosaic (the Mosaic Panel is effectively treaded as unique target.
-                    // 
-                    // We are also assuming that mFileList is in time sequential order independent of Filter (this is done before SetFileIndex() is called).
-
-                    // This code will sequentially number Filter image files in each group
-
-                    if (xFile.FilePath.Contains(group.Key))
+                // Initialize filter indices for each filter type
+                var filterIndices = new Dictionary<string, int>
                     {
-                        if (xFile.FilterName.Equals("L"))
-                            xFile.FileNameNumberIndex = ++lumaIndex;
+                        { "L", 0 }, { "R", 0 }, { "G", 0 }, { "B", 0 },
+                        { "H", 0 }, { "O", 0 }, { "S", 0 }, { "Shutter", 0 }
+                    };
 
-                        if (xFile.FilterName.Equals("R"))
-                            xFile.FileNameNumberIndex = ++redIndex;
-
-                        if (xFile.FilterName.Equals("G"))
-                            xFile.FileNameNumberIndex = ++greenIndex;
-
-                        if (xFile.FilterName.Equals("B"))
-                            xFile.FileNameNumberIndex = ++blueIndex;
-
-                        if (xFile.FilterName.Equals("H"))
-                            xFile.FileNameNumberIndex = ++haIndex;
-
-                        if (xFile.FilterName.Equals("O"))
-                            xFile.FileNameNumberIndex = ++o3Index;
-
-                        if (xFile.FilterName.Equals("S"))
-                            xFile.FileNameNumberIndex = ++s2Index;
-
-                        if (xFile.FilterName.Equals("Shutter"))
-                            xFile.FileNameNumberIndex = ++shutterIndex;
-                    }
-                }
+                // Filter files by directory group and update the index based on filter type
+                mFileList
+                    .Where(xFile => xFile.FilePath.Contains(group.Key))
+                    .ToList()
+                    .ForEach(xFile =>
+                    {
+                        // Update the index for the corresponding filter type
+                        if (filterIndices.ContainsKey(xFile.FilterName))
+                        {
+                            xFile.FileNameNumberIndex = ++filterIndices[xFile.FilterName];
+                        }
+                    });
             }
         }
-        
-        private void Button_FileSelection_Rename_Click(object sender, EventArgs e)
+
+
+        /// <summary>
+        /// Handles the click event for the file selection rename button.
+        /// Renames the images in the file list based on selected indexing criteria (by filter or by time),
+        /// updates progress bars, and displays status messages. Manages duplicate files and updates UI accordingly.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        private void Button_FileSelection_diectorySelection_Rename_Click(object sender, EventArgs e)
         {
             bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
             bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
 
-            Label_FileSelection_Statistics_Task.Text = "Renaming " + mFileList.Count.ToString() + " Images";
+            Label_FileSelection_Statistics_OperationStatus.Text = "Renaming " + mFileList.Count.ToString() + " Images";
 
             ProgressBar_KeywordUpdateTab_WriteProgress.Maximum = mFileList.Count;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
 
             int duplicates = XisfFileRename.MoveDuplicates(mFileList);
 
-            // SetFileIndex will preset the index for each file in mFileList based on the bools for Target, Night (by existing subdirectory (typically yyyy-mm-dd)), Filter and Time (Date and Time)
-            // Filters with different exposure times are not considered to be unique meaning a 600 second Blue filter uses the same index list as 60 second Blue filter
-            // An exception to this is if the containing directory includes the word "Stars". Files in "Stars" directories have unique Filter indexes that are independent of exposure time. 
-            // Any found Duplicates are handled inside the RenameFile method
+            // Set directory file statistics
+            mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked);
 
-            // Add or remove the statistics files from the current directory
-            mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_NoStatistics.Checked);
-
+            // Set file index based on selected criteria
             SetFileIndex(bTime);
 
-            foreach (XisfFile xFile in mFileList)
-            {
-                if (mBCancel) { mBCancel = false; return; }
+            // Rename files and update UI
+            mFileList.Select((xFile, index) => new { xFile, index })
+                .ToList()
+                .ForEach(item =>
+                {
+                    if (mBCancel) { mBCancel = false; return; }
 
-                ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
+                    ProgressBar_KeywordUpdateTab_WriteProgress.Value = item.index + 1;
 
-                xFile.FilePath = Path.GetDirectoryName(xFile.FilePath) + "\\" + Path.GetFileName(xFile.FilePath);
+                    item.xFile.FilePath = Path.GetDirectoryName(item.xFile.FilePath) + "\\" + Path.GetFileName(item.xFile.FilePath);
 
-                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
+                    Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(item.xFile.FilePath) + "\n" + Path.GetFileName(item.xFile.FilePath);
 
-                Tuple<int, string> renameTuple = mRenameFile.RenameFile(xFile);
+                    Tuple<int, string> renameTuple = mRenameFile.RenameFile(item.xFile);
 
-                Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
+                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
 
-                System.Windows.Forms.Application.DoEvents(); // Update UI
-            }
+                    System.Windows.Forms.Application.DoEvents(); // Update UI
+                });
 
+            // Update progress bar to maximum value
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;
 
+            // Display completion message with number of renamed files and duplicates
             if (duplicates == 1)
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
+                Label_FileSelection_Statistics_OperationStatus.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicate";
             else
-                Label_FileSelection_Statistics_Task.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
+                Label_FileSelection_Statistics_OperationStatus.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
+            // Clear directory statistics and file list
             mDirectoryProperties.DirectoryStatistics.Clear();
             mFileList.Clear();
 
+            // Reset read progress bar
             ProgressBar_FileSelection_ReadProgress.Value = 0;
+            UpdateUI(eUiState.RENAME);
         }
 
+
+        /// <summary>
+        /// Handles the CheckedChanged event for the WeightIndex radio button.
+        /// Sets the rename order to WEIGHTINDEX if the radio button is checked.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void RadioButton_WeightIndex_CheckedChanged(object sender, EventArgs e)
         {
             if (RadioButton_FileSelection_SequenceNumbering_WeightIndex.Checked)
@@ -135,6 +133,13 @@ namespace XisfFileManager
             }
         }
 
+
+        /// <summary>
+        /// Handles the CheckedChanged event for the Index radio button.
+        /// Sets the rename order to INDEX if the radio button is checked.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void RadioButton_Index_CheckedChanged(object sender, EventArgs e)
         {
             if (RadioButton_FileSelection_SequenceNumbering_IndexOnly.Checked)
@@ -143,6 +148,13 @@ namespace XisfFileManager
             }
         }
 
+
+        /// <summary>
+        /// Handles the CheckedChanged event for the Weight radio button.
+        /// Sets the rename order to WEIGHT if the radio button is checked.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void RadioButton_Weight_CheckedChanged(object sender, EventArgs e)
         {
             if (RadioButton_FileSelection_SequenceNumbering_WeightOnly.Checked)
@@ -151,6 +163,13 @@ namespace XisfFileManager
             }
         }
 
+
+        /// <summary>
+        /// Handles the CheckedChanged event for the IndexWeight radio button.
+        /// Sets the rename order to INDEXWEIGHT if the radio button is checked.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void RadioButton_IndexWeight_CheckedChanged(object sender, EventArgs e)
         {
             if (RadioButton_FileSelection_SequenceNumbering_IndexWeight.Checked)
@@ -159,6 +178,13 @@ namespace XisfFileManager
             }
         }
 
+
+        /// <summary>
+        /// Handles the CheckedChanged event for the Master checkbox.
+        /// Updates the state of related UI elements and sets master frame keywords for each XisfFile in the file list if the checkbox is checked.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
         {
             string rejection = string.Empty;
@@ -171,13 +197,19 @@ namespace XisfFileManager
 
             if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
             {
-                foreach (XisfFile file in mFileList)
-                {
-                    file.KeywordList.SetMasterFrameKeywords();
-                }
+                // Set master frame keywords for each file in the file list
+                mFileList.ForEach(file => file.KeywordList.SetMasterFrameKeywords());
             }
         }
 
+
+        /// <summary>
+        /// Handles the click event for removing subframe weight keywords.
+        /// Updates the list of weight keywords based on the selected criteria (all or selected),
+        /// removes the keywords from the XisfFile objects, and updates the UI accordingly.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">An EventArgs that contains the event data.</param>
         private void Button_KeywordSubFrameWeight_Remove_Click(object sender, EventArgs e)
         {
             List<string> WeightKeywords = new List<string>();
@@ -189,34 +221,24 @@ namespace XisfFileManager
             int mTotalFrames = 0;
             bStatus = int.TryParse(frames, out mTotalFrames);
 
-
-
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
 
-            // Repopulate the list of any present weight keywords (not values). Find unique Keyords, sort and populate Weight combobox
-            foreach (XisfFile xFile in mFileList)
-            {
-                WeightKeywords.Add(xFile.WeightKeyword.ToString());
-            }
+            // Repopulate the list of any present weight keywords (not values). Find unique Keywords, sort and populate Weight combobox
+            WeightKeywords = mFileList
+                .Select(xFile => xFile.WeightKeyword.ToString())
+                .Distinct()
+                .OrderBy(q => q)
+                .ToList();
 
             if (WeightKeywords.Count > 0)
             {
-                WeightKeywords = WeightKeywords.Distinct().ToList();
-                WeightKeywords = WeightKeywords.OrderBy(q => q).ToList();
-
-                foreach (string item in WeightKeywords)
+                WeightKeywords.ForEach(item =>
                 {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Add(item).ToString();
-                }
+                });
 
-                if (WeightKeywords.Count > 1)
-                {
-                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
-                }
-                else
-                {
-                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
-                }
+                Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor =
+                    (WeightKeywords.Count > 1) ? Color.Red : Color.Black;
             }
             else
             {
@@ -228,13 +250,13 @@ namespace XisfFileManager
             // Remove ALL WEIGHT items
             if (RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Checked)
             {
-                foreach (string item in ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items)
-                {
-                    foreach (XisfFile file in mFileList)
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items
+                    .Cast<string>()
+                    .ToList()
+                    .ForEach(item =>
                     {
-                        file.RemoveKeyword(item);
-                    }
-                }
+                        mFileList.ForEach(file => file.RemoveKeyword(item));
+                    });
 
                 Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Clear();
@@ -245,24 +267,24 @@ namespace XisfFileManager
             // Only Remove selected item
             if (RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Checked)
             {
-                foreach (XisfFile file in mFileList)
-                {
-                    file.RemoveKeyword(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
-                }
+                string selectedItem = ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text;
 
-                WeightKeywords.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
-                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text);
+                mFileList.ForEach(file => file.RemoveKeyword(selectedItem));
+
+                WeightKeywords.Remove(selectedItem);
+                ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Items.Remove(selectedItem);
                 ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Text = "";
 
-                if (WeightKeywords.Count > 1)
-                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Red;
-                else
-                    Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor = Color.Black;
+                Label_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.ForeColor =
+                    (WeightKeywords.Count > 1) ? Color.Red : Color.Black;
 
                 if (WeightKeywords.Count > 0)
+                {
                     ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.SelectedIndex = 0;
+                }
             }
         }
+
 
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {

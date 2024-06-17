@@ -22,7 +22,10 @@ namespace XisfFileManager.Files
         {
             int delay = 0;
             while (IsFileLocked(sourceFile) && delay < 100)
+            {
                 delay++;
+                Thread.Sleep(10); // Sleep to prevent busy-wait loop
+            }
 
             if (delay == 100)
             {
@@ -135,10 +138,20 @@ namespace XisfFileManager.Files
             return true;
         }
 
+        /// <summary>
+        /// Extracts a substring from the source string that is between the specified start and end tokens.
+        /// </summary>
+        /// <param name="source">The source string to extract the value from.</param>
+        /// <param name="startToken">The token that marks the beginning of the value to extract.</param>
+        /// <param name="endToken">The token that marks the end of the value to extract.</param>
+        /// <returns>The extracted value if found; otherwise, an empty string.</returns>
         private static string ExtractValue(string source, string startToken, string endToken)
         {
-            int start = source.IndexOf(startToken) + startToken.Length;
-            if (start < startToken.Length) return "";
+            int start = source.IndexOf(startToken);
+            if (start == -1) return "";
+
+            start += startToken.Length; // Move the start index to the end of the startToken
+            if (start >= source.Length) return "";
 
             int end = source.IndexOf(endToken, start);
             if (end == -1) return "";
@@ -146,22 +159,52 @@ namespace XisfFileManager.Files
             return source.Substring(start, end - start).Trim();
         }
 
+
+        /// <summary>
+        /// Extracts a substring from the source string that is between the specified start and end tokens,
+        /// and occurs after the preToken.
+        /// </summary>
+        /// <param name="source">The source string to extract the value from.</param>
+        /// <param name="preToken">The token that must precede the startToken in the source string.</param>
+        /// <param name="startToken">The token that marks the beginning of the value to extract.</param>
+        /// <param name="endToken">The token that marks the end of the value to extract.</param>
+        /// <returns>The extracted value if found; otherwise, an empty string.</returns>
         private static string ExtractValue(string source, string preToken, string startToken, string endToken)
         {
             int preStart = source.IndexOf(preToken);
             if (preStart == -1) return "";
 
-            return ExtractValue(source.Substring(preStart), startToken, endToken);
+            // Adjust the starting position to search for startToken and endToken after preToken
+            string adjustedSource = source.Substring(preStart + preToken.Length);
+
+            int start = adjustedSource.IndexOf(startToken);
+            if (start == -1) return "";
+
+            int end = adjustedSource.IndexOf(endToken, start + startToken.Length);
+            if (end == -1) return "";
+
+            return adjustedSource.Substring(start + startToken.Length, end - (start + startToken.Length));
         }
 
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
 
+        // ##############################################################################################################################################
+        // ##############################################################################################################################################
+        /// <summary>
+        /// Updates the specified XISF file and writes the changes to a destination path.
+        /// The method checks if the file is locked, validates the keyword update mode,
+        /// and processes the file's XML content, updating keywords and attachments as needed.
+        /// </summary>
+        /// <param name="xFile">The XISF file to update.</param>
+        /// <param name="destinationPath">The destination path to write the updated file.</param>
+        /// <returns>True if the file is updated successfully; otherwise, false.</returns>
         public bool UpdateFile(XisfFile xFile, string destinationPath)
         {
             int delay = 0;
             while (IsFileLocked(xFile.FilePath) && delay < 100)
+            {
                 delay++;
+                Thread.Sleep(10); // Sleep to prevent busy-wait loop
+            }
 
             if (delay == 100)
             {
@@ -169,17 +212,13 @@ namespace XisfFileManager.Files
                 return false;
             }
 
-            // Return if KeywordList and the original xml are identical 
+            // Return if KeywordList and the original XML are identical 
             if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
                 return false;
-            else
-                if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW)
-                if (KeywordsMatchXml(xFile))
-                    return true;
 
-            // Not identical or force, so update the xml
+            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW && KeywordsMatchXml(xFile))
+                return true;
 
-          
             int xisfStart;
             int xisfEnd;
 
@@ -354,68 +393,103 @@ namespace XisfFileManager.Files
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
+        /// <summary>
+        /// Calculates the padding needed to align the given length to the specified alignment.
+        /// </summary>
+        /// <param name="length">The initial length that needs to be aligned.</param>
+        /// <param name="alignment">The alignment boundary to align to.</param>
+        /// <returns>The number of padding bytes needed to align the length to the specified alignment.</returns>
         private static int GetNewPadding(int length, int alignment)
         {
-            // Find the difference between length and the nearest larger value that is evenly divisible by alignment
-
-            if ((length % alignment) == 0)
+            // Check if the length is already aligned
+            if (length % alignment == 0)
                 return 0;
-            else
-            {
-                int nextdivisible = length + (alignment - length % alignment);
-                return nextdivisible - length;
-            }
+
+            // Calculate the next value that is evenly divisible by alignment
+            int nextDivisible = length + (alignment - length % alignment);
+
+            // Return the difference between the next divisible value and the current length
+            return nextDivisible - length;
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Removes unwanted attachments from the XML document.
+        /// This method removes all <Image> elements with an id attribute not equal to 'integration' as well as
+        /// <Thumbnail>, <ICCProfile>, and <DisplayFunction> elements.
+        /// </summary>
+        /// <param name="document">The XML document to modify.</param>
         private static void RemoveUnwantedAttachments(XmlDocument document)
         {
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
 
-            // Select all <Image> elements that have an id attribute with a value that is not 'integration' and then remove these selected elements
-            // This keeps <Image id="integration"> and <Image> (no id) elements
-            XmlNodeList imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager);
-            foreach (XmlNode imageNodeToRemove in imageNodesToRemove)
-            {
-                imageNodeToRemove.ParentNode?.RemoveChild(imageNodeToRemove);
-            }
+            // Select and remove all <Image> elements that have an id attribute with a value that is not 'integration'
+            var imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager).Cast<XmlNode>().ToList();
+            imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
 
-            document.SelectSingleNode("//ns:Thumbnail", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:Thumbnail", nsManager));
-            document.SelectSingleNode("//ns:ICCProfile", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:ICCProfile", nsManager));
-            document.SelectSingleNode("//ns:DisplayFunction", nsManager)?.ParentNode?.RemoveChild(document.SelectSingleNode("//ns:DisplayFunction", nsManager));
+            // Remove <Thumbnail> element if it exists
+            var thumbnailNode = document.SelectSingleNode("//ns:Thumbnail", nsManager);
+            thumbnailNode?.ParentNode?.RemoveChild(thumbnailNode);
+
+            // Remove <ICCProfile> element if it exists
+            var iccProfileNode = document.SelectSingleNode("//ns:ICCProfile", nsManager);
+            iccProfileNode?.ParentNode?.RemoveChild(iccProfileNode);
+
+            // Remove <DisplayFunction> element if it exists
+            var displayFunctionNode = document.SelectSingleNode("//ns:DisplayFunction", nsManager);
+            displayFunctionNode?.ParentNode?.RemoveChild(displayFunctionNode);
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Finds the starting location of existing image data in the binary file data.
+        /// It identifies the end of the XML section, then skips any padding (runs of 0's) after the </xisf> tag,
+        /// returning the location of the first non-zero byte after the </xisf> tag.
+        /// </summary>
+        /// <param name="binaryFileData">The binary file data to search.</param>
+        /// <returns>The location of the first non-zero byte after the </xisf> tag.</returns>
         public static int FindExistingImageStartingLocation(byte[] binaryFileData)
         {
-            // Ignore Image attachment start location, set and return the found location
-
-            // Find the end of the xml section, then walk through any run of 0's after the </xisf> tag
-            // Return the location of the first non-zero byte after the </xisf> tag
-
+            // Find the end of the </xisf> tag in the binary file data
             int xmlEndLocation = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;
-            // Walk through any run of 0's after the </xisf> tag
+
+            // Walk through any padding (runs of 0's) after the </xisf> tag
             int padding = 0;
             for (int i = xmlEndLocation; i < binaryFileData.Length; i++)
             {
                 if (binaryFileData[i] == 0)
+                {
                     padding++;
+                }
                 else
+                {
                     break;
+                }
             }
 
+            // Return the location of the first non-zero byte after the </xisf> tag
             return xmlEndLocation + padding;
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Sets the image attachment location in the XML document for an XISF file.
+        /// This method updates the location attribute of the first Image node and calculates the necessary padding.
+        /// </summary>
+        /// <param name="document">The XML document to modify.</param>
+        /// <param name="xFile">The XISF file containing block alignment size.</param>
+        /// <returns>The calculated padding required for the new starting address.</returns>
         private static int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
         {
             int documentLengthBeforeNewStartingAddress;
@@ -433,26 +507,21 @@ namespace XisfFileManager.Files
             if (imageNode == null)
                 return -1;
 
-            // New Xml document length before padding
-            // Note the the new xml document may not contain the comment section or other changes (is the comment section needed?)
-            // We have also added or changed lots of keywords in this new xml document
-
-            // Iterate until the xml document length does not change
+            // Iterate until the XML document length does not change
             do
             {
                 documentLengthBeforeNewStartingAddress = document.OuterXml.Length;
 
-                // Include the 16 byte XISF Signature. No Comment section in the padding calculation
+                // Include the 16 byte XISF Signature. No comment section in the padding calculation
                 newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + 16, xFile.BlockAlignmentSize);
 
-                // The starting address is the address in the new file (including XISF Signature); (not just in the Xml document section)
+                // The starting address is the address in the new file (including XISF Signature); (not just in the XML document section)
                 newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + newPadding;
 
-                // Update imageNode with the new starting address and can change the size of the xml document 
+                // Update imageNode with the new starting address and can change the size of the XML document
                 // 1. This can push the image data to a new location - new start address
                 // 2. This can change the padding - new padding
                 // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
-
                 XmlAttribute locationAttribute = imageNode.Attributes["location"];
                 if (locationAttribute != null)
                 {
@@ -465,71 +534,94 @@ namespace XisfFileManager.Files
             }
             while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
 
-
             return newPadding;
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Replaces all FITS keywords in the given XML document with the keywords from the XISF file.
+        /// The method removes existing FITSKeyword elements and adds new ones from the XISF file's keyword list.
+        /// </summary>
+        /// <param name="document">The XML document to modify.</param>
+        /// <param name="xFile">The XISF file containing the new keywords.</param>
         private static void ReplaceAllFitsKeywords(XmlDocument document, XisfFile xFile)
         {
-            XmlNodeList nodeList = document.GetElementsByTagName("FITSKeyword");
-            for (int i = nodeList.Count - 1; i >= 0; i--)
+            // Remove all existing FITSKeyword elements
+            var nodeList = document.GetElementsByTagName("FITSKeyword").Cast<XmlNode>().ToList();
+            nodeList.ForEach(node => node.ParentNode.RemoveChild(node));
+
+            // Find all <Image> elements in the document
+            var imageNodes = document.GetElementsByTagName("Image").Cast<XmlNode>().ToList();
+
+            // Alphabetize the keyword list from the XISF file
+            var sortedKeywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
+
+            // Add each keyword as a new FITSKeyword element under each <Image> node
+            imageNodes.ForEach(imageNode =>
             {
-                nodeList[i].ParentNode.RemoveChild(nodeList[i]);
-            }
-
-            // At this point, our xmlDoc only contains header boilerplate
-
-            // Find the "<Image" tag. We are going to add the entire contents of the KeywordData keyword list as 
-            // individual child elements under it (and selectively includeing SubFrame Selector keywords)
-            nodeList = document.GetElementsByTagName("Image");
-
-            foreach (XmlNode item in nodeList)
-            {
-                // Alphabetize the KeywordData FITSKeywords
-                // mFile.KeywordData.KeywordList contains the FITSKeywords from the original xisf file (with explicit removals and changes)
-                List<Keyword> keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
-
-                // Now add all FITSKeywords found in KeywordData to the xmlDocument
-                foreach (Keyword keyword in keywords)
+                sortedKeywords.ForEach(keyword =>
                 {
-                    XmlElement newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                    var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
                     newElement.SetAttribute("name", keyword.Name);
                     newElement.SetAttribute("comment", keyword.Comment);
                     newElement.SetAttribute("value", keyword.Value.ToString());
-                    item.AppendChild(newElement);
-                }
-            }
+                    imageNode.AppendChild(newElement);
+                });
+            });
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Searches for the specified text within the given byte array and returns the index of its first occurrence.
+        /// </summary>
+        /// <param name="buffer">The byte array to search.</param>
+        /// <param name="findText">The text to find within the byte array.</param>
+        /// <returns>The index of the first occurrence of the specified text within the byte array, or -1 if not found.</returns>
         private static int BinaryFind(byte[] buffer, string findText)
         {
-            byte[] xisfFind = Encoding.UTF8.GetBytes(findText);
-            int i;
-            int j;
-            for (i = 0; i <= (buffer.Length - xisfFind.Length); i++)
+            // Convert the search text to a byte array
+            byte[] searchBytes = Encoding.UTF8.GetBytes(findText);
+            int bufferLength = buffer.Length;
+            int searchLength = searchBytes.Length;
+
+            // Loop through the buffer to search for the text
+            for (int i = 0; i <= bufferLength - searchLength; i++)
             {
-                if (buffer[i] == xisfFind[0])
+                // Check if the first byte matches
+                if (buffer[i] == searchBytes[0])
                 {
-                    for (j = 1; j < xisfFind.Length && buffer[i + j] == xisfFind[j]; j++) ;
-                    if (j == xisfFind.Length)
+                    int j;
+                    // Check subsequent bytes
+                    for (j = 1; j < searchLength && buffer[i + j] == searchBytes[j]; j++) ;
+                    // If all bytes match, return the starting index
+                    if (j == searchLength)
                         return i;
                 }
             }
 
+            // Return -1 if the text is not found
             return -1;
         }
 
+
         // ****************************************************************************************************
         // ****************************************************************************************************
 
+        /// <summary>
+        /// Checks if the FITS keywords in the XISF file match the keywords in the XML string.
+        /// The method compares the keywords in the XISF file with the FITSKeyword elements in the XML document.
+        /// </summary>
+        /// <param name="xFile">The XISF file containing the keywords and XML string.</param>
+        /// <returns>True if the keywords match the XML FITSKeyword elements; otherwise, false.</returns>
         private static bool KeywordsMatchXml(XisfFile xFile)
         {
+            // Load the XML string into an XmlDocument
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xFile.XmlString);
 
@@ -538,32 +630,36 @@ namespace XisfFileManager.Files
             namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
 
             // Select all FITSKeyword elements using the namespace
-            XmlNodeList fitsKeywordNodes = xmlDoc.SelectNodes("//ns:FITSKeyword", namespaceManager);
+            var fitsKeywordNodes = xmlDoc.SelectNodes("//ns:FITSKeyword", namespaceManager).Cast<XmlNode>().ToList();
 
-
-            // Alphabetize KeywordList
-            List<Keyword> keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
+            // Alphabetize the KeywordList from the XISF file
+            var keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
 
             // Check if fitsKeywordNodes and keywords have identical elements in the same order
-            bool bIdentical = keywords.Count == fitsKeywordNodes.Count && Enumerable.Range(0, keywords.Count)
-                                .All(index =>
-                                {
-                                    XmlNode fitsKeywordNode = fitsKeywordNodes[index];
-                                    string nameAttribute = fitsKeywordNode.Attributes["name"]?.Value;
-                                    string valueAttribute = fitsKeywordNode.Attributes["value"]?.Value;
-                                    string commentAttribute = fitsKeywordNode.Attributes["comment"]?.Value;
+            bool bIdentical = keywords.Count == fitsKeywordNodes.Count &&
+                              !keywords.Where((keyword, index) =>
+                              {
+                                  var fitsKeywordNode = fitsKeywordNodes[index];
+                                  var nameAttribute = fitsKeywordNode.Attributes["name"]?.Value;
+                                  var valueAttribute = fitsKeywordNode.Attributes["value"]?.Value;
+                                  var commentAttribute = fitsKeywordNode.Attributes["comment"]?.Value;
 
-                                    Keyword keyword = keywords[index];
+                                  return nameAttribute != keyword.Name || valueAttribute != keyword.Value || commentAttribute != keyword.Comment;
+                              }).Any();
 
-                                    return nameAttribute == keyword.Name && valueAttribute == keyword.Value && commentAttribute == keyword.Comment;
-                                });
             return bIdentical;
-
         }
 
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
+        /// <summary>
+        /// Writes the binary data from the buffer list to a specified file.
+        /// Handles different buffer types and ensures data is written correctly.
+        /// </summary>
+        /// <param name="fileName">The name of the file to write to.</param>
+        /// <returns>True if the file is written successfully; otherwise, false.</returns>
         private bool WriteBinaryFile(string fileName)
         {
             byte[] zero = { 0x00 };
@@ -571,67 +667,58 @@ namespace XisfFileManager.Files
             try
             {
                 using (MemoryStream rawStream = new MemoryStream())
+                using (BinaryWriter binaryWriter = new BinaryWriter(rawStream))
                 {
-                    using (BinaryWriter binaryWriter = new BinaryWriter(rawStream))
+                    // Write each buffer to the memory stream
+                    mBufferList.ForEach(buffer =>
                     {
-                        foreach (Buffer buffer in mBufferList)
+                        long position = rawStream.Position;
+
+                        switch (buffer.Type)
                         {
-                            long position = rawStream.Position;
+                            case eBufferData.ASCII:
+                                byte[] asciiData = Encoding.UTF8.GetBytes(buffer.AsciiData);
+                                binaryWriter.Write(asciiData, 0, asciiData.Length);
+                                break;
 
-                            switch (buffer.Type)
-                            {
-                                case eBufferData.ASCII:
-                                    binaryWriter.Write(Encoding.UTF8.GetBytes(buffer.AsciiData), 0, Encoding.UTF8.GetBytes(buffer.AsciiData).Length);
-                                    break;
+                            case eBufferData.BINARY:
+                                binaryWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
+                                break;
 
-                                case eBufferData.BINARY:
-                                    binaryWriter.Write(buffer.BinaryData, buffer.BinaryDataStart, buffer.BinaryByteLength);
-                                    break;
+                            case eBufferData.ZEROS:
+                                Enumerable.Range((int)position, buffer.BinaryByteLength)
+                                          .ToList()
+                                          .ForEach(_ => binaryWriter.Write(zero, 0, 1));
+                                break;
 
-                                case eBufferData.ZEROS:
-                                    for (int i = (int)position; i < buffer.BinaryByteLength + position; i++)
-                                    {
-                                        binaryWriter.Write(zero, 0, 1);
-                                    }
-                                    break;
+                            case eBufferData.POSITION:
+                                if ((int)position > buffer.ToPosition)
+                                {
+                                    string title = "WriteBinaryFile(string fileName) POSITION Error";
+                                    string message = "\n\nThe length of xml xisfString is after the start of image data:\n\n" +
+                                                     fileName + "\n\n" +
+                                                     "Current Write Position:          " + position.ToString() + "\n" +
+                                                     "Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
 
-                                case eBufferData.POSITION:
-                                    if ((int)position > buffer.ToPosition)
-                                    {
-                                        string title = "WriteBinaryFile(string fileName) POSITION Error";
-                                        string message = "\n\nThe length of xml xisfString is after the start of image data:\n\n" +
-                                            fileName + "\n\n" +
-                                            "Current Write Position:          " + position.ToString() + "\n" +
-                                            "Image Attachment Start Position: " + buffer.ToPosition.ToString() + "\n\nAborting.";
+                                    MessageBox.Show(message, title, MessageBoxButtons.OK);
+                                    throw new InvalidOperationException("POSITION Error");
+                                }
 
-                                        MessageBox.Show(message, title, MessageBoxButtons.OK);
-                                        return false;
-                                    }
-
-                                    for (long i = position; i < buffer.ToPosition; i++)
-                                    {
-                                        binaryWriter.Write(zero, 0, 1);
-                                    }
-                                    break;
-                            }
+                                Enumerable.Range((int)position, (int)(buffer.ToPosition - position))
+                                          .ToList()
+                                          .ForEach(_ => binaryWriter.Write(zero, 0, 1));
+                                break;
                         }
-                    }
+                    });
 
-                    int binaryDataLength = rawStream.ToArray().Length;
-                    byte[] binaryData = new byte[binaryDataLength];
-
-                    binaryData = rawStream.ToArray();
-
-                    using (System.IO.FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                    // Write the memory stream to the file
+                    byte[] binaryData = rawStream.ToArray();
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                    using (BinaryWriter fileWriter = new BinaryWriter(fileStream))
                     {
-                        using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
-                        {
-                            fileStream.Write(binaryData, 0, binaryDataLength);
-                            binaryWriter.Flush();
-                            binaryWriter.Close();
-                        }
+                        fileStream.Write(binaryData, 0, binaryData.Length);
+                        fileWriter.Flush();
                     }
-                    binaryData = null;
                 }
                 return true;
             }
@@ -644,14 +731,21 @@ namespace XisfFileManager.Files
             }
         }
 
+
         // ##############################################################################################################################################
         // ##############################################################################################################################################
 
+        /// <summary>
+        /// Checks if a file is locked by attempting to open it with exclusive access.
+        /// If the file cannot be opened, it is considered locked.
+        /// </summary>
+        /// <param name="file">The path of the file to check.</param>
+        /// <returns>True if the file is locked; otherwise, false.</returns>
         private static bool IsFileLocked(string file)
         {
             try
             {
-                // Read from the file, if we can't, it's locked
+                // Try to open the file with exclusive access
                 using (FileStream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
                     stream.Close();
@@ -659,19 +753,20 @@ namespace XisfFileManager.Files
             }
             catch (IOException)
             {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
+                // The file is unavailable because it is:
+                // - still being written to
+                // - being processed by another thread
+                // - does not exist (has already been processed)
 
-                // Add delay for file to be released
+                // Add delay for the file to be released
                 Thread.Sleep(100);
                 return true;
             }
 
-            //file is not locked
+            // The file is not locked
             return false;
         }
+
 
         // ##############################################################################################################################################
         // ##############################################################################################################################################

@@ -493,7 +493,7 @@ namespace XisfFileManager
                 else
                 {
                     CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
-                    CheckBox_FileSlection_NoStatistics.Checked = true;
+                    CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
                 }
             }
 
@@ -671,7 +671,7 @@ namespace XisfFileManager
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
-            CheckBox_FileSlection_NoStatistics.Checked = true;
+            CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
         }
 
     }

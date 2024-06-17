@@ -87,7 +87,6 @@ namespace XisfFileManager
 
             Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
             Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
-
         }
 
         public void FindCamera()
@@ -684,6 +683,7 @@ namespace XisfFileManager
             // ****************************************************************
             // ****************************************************************
         }
+        
 
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
         {
