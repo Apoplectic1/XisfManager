@@ -192,8 +192,10 @@ namespace XisfFileManager
                     "Project"
                 };
 
-            DialogResult result = Files.DirectoryOperations.FindTargetFiles(mFolderBrowseState, mExcludeList);
+            Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
+            DialogResult result = Files.DirectoryOperations.FindTargetFiles(mFolderBrowseState, mExcludeList);
+            
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
                 UpdateUI(eUiState.DISABLED);

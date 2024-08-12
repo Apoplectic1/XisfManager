@@ -31,6 +31,8 @@ namespace XisfFileManager.Files
             KeywordList.Clear();
             TargetAttachmentLength = 0;
             TargetAttachmentStart = 0;
+            TargetAttachmentHeight = 0;
+            TargetAttachmentWidth = 0;
             TargetAttachmentPadding = 0;
             ThumbnailAttachmentLength = 0;
             ThumbnailAttachmentStart = 0;
@@ -233,7 +235,8 @@ namespace XisfFileManager.Files
         public int IccAttachmentPadding { get; set; }
         public int TargetAttachmentLength { get; set; }
         public int TargetAttachmentStart { get; set; }
-        public int TargetAttachmentNewStart { get; set; }
+        public int TargetAttachmentWidth { get; set; }
+        public int TargetAttachmentHeight { get; set; }
         public int TargetAttachmentPadding { get; set; }
         public int TargetAttachmentRejectionHighLength { get; set; }
         public int TargetAttachmentRejectionHighStart { get; set; }
@@ -354,7 +357,19 @@ namespace XisfFileManager.Files
 
         public void ImageAttachment(XElement element)
         {
-            XAttribute attribute = element.Attribute("location");
+            XAttribute attribute = element.Attribute("geometry");
+
+            if (attribute != null)
+            {
+                string geometry = attribute.Value;
+
+                string[] values = geometry.Split(':');
+
+                TargetAttachmentWidth = Convert.ToInt32(values[0]);
+                TargetAttachmentHeight = Convert.ToInt32(values[1]);
+            }
+
+            attribute = element.Attribute("location");
 
             if (attribute != null)
             {
@@ -365,6 +380,7 @@ namespace XisfFileManager.Files
                 TargetAttachmentStart = Convert.ToInt32(values[1]);
                 TargetAttachmentLength = Convert.ToInt32(values[2]);
             }
+
         }
 
         public void ImageRejectionHighAttachment(XElement element)

@@ -767,8 +767,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
-                    file.AddKeyword("NAXIS1", "3008", "Horizontal Pixel Width");
-                    file.AddKeyword("NAXIS2", "3008", "Vertical Pixel Height");
+                    file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     file.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
                     file.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
                     file.AddKeyword("BAYERPAT", "RGGB");
@@ -808,8 +808,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
-                    file.AddKeyword("NAXIS1", "5496", "Horizontal Pixel Width");
-                    file.AddKeyword("NAXIS2", "3672", "Vertical Pixel Height");
+                    file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
                     file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
@@ -848,8 +848,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
-                    file.AddKeyword("NAXIS1", "3072", "Horizontal Pixel Width");
-                    file.AddKeyword("NAXIS2", "2048", "Vertical Pixel Height");
+                    file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
                     file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
@@ -894,8 +894,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
-                    file.AddKeyword("NAXIS1", "1392", "Horizontal Pixel Width");
-                    file.AddKeyword("NAXIS2", "1040", "Vertical Pixel Height");
+                    file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     file.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
                     file.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
                     file.AddKeyword("BAYERPAT", "RGGB");
@@ -1043,8 +1043,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     xFile.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
-                    xFile.AddKeyword("NAXIS1", "3008", "Horizontal Pixel Width");
-                    xFile.AddKeyword("NAXIS2", "3008", "Vertical Pixel Height");
+                    xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentWidth.ToString(), "Vertical Pixel Height");
                     xFile.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
                     xFile.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
                     xFile.AddKeyword("BAYERPAT", "RGGB");
@@ -1126,8 +1126,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Z183.Checked)
                 {
                     xFile.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
-                    xFile.AddKeyword("NAXIS1", "5496", "Horizontal Pixel Width");
-                    xFile.AddKeyword("NAXIS2", "3672", "Vertical Pixel Height");
+                    xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
                     xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     xFile.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
@@ -1212,8 +1212,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     xFile.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
-                    xFile.AddKeyword("NAXIS1", "3072", "Horizontal Pixel Width");
-                    xFile.AddKeyword("NAXIS2", "2048", "Vertical Pixel Height");
+                    xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
                     xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     xFile.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
@@ -1295,8 +1295,8 @@ namespace XisfFileManager
                 if (CheckBox_KeywordUpdateTab_Camera_A144.Checked)
                 {
                     xFile.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
-                    xFile.AddKeyword("NAXIS1", "1392", "Horizontal Pixel Width");
-                    xFile.AddKeyword("NAXIS2", "1040", "Vertical Pixel Height");
+                    xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
+                    xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
                     xFile.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
                     xFile.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
                     xFile.AddKeyword("BAYERPAT", "RGGB");

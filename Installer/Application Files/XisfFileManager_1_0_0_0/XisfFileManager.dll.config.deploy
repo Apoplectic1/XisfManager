@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="XisfFileManager.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false"/>
+    </sectionGroup>
+  </configSections>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8.1"/>
+  </startup>
+  <userSettings>
+    <XisfFileManager.Properties.Settings>
+      <setting name="Persist_FolderBrowseState" serializeAs="String">
+        <value>"E:\\Photography\\Astro Photography\\Processing"</value>
+      </setting>
+      <setting name="Persist_UpdateTargetNameState" serializeAs="String">
+        <value>True</value>
+      </setting>
+      <setting name="Persist_UpdatePanelNameState" serializeAs="String">
+        <value>False</value>
+      </setting>
+    </XisfFileManager.Properties.Settings>
+  </userSettings>
+  <connectionStrings>
+    <add name="DefaultConnection" connectionString="Data Source = |SQL/CE|"/>
+  </connectionStrings>
+</configuration>
