@@ -174,6 +174,11 @@ namespace XisfFileManager.Files
             get => KeywordList.CSTARS;
             set => KeywordList.CSTARS = value;
         }
+        public string CREJECT
+        {
+            get => KeywordList.CREJECT;
+            set => KeywordList.CREJECT = value;
+        }
         public double ExposureSeconds
         {
             get => KeywordList.ExposureSeconds;

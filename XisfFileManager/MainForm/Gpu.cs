@@ -15,9 +15,12 @@ namespace XisfFileManager
     {
         private Buffer mBuffer;
         private List<Buffer> mBufferList;
-        private XisfFile mXisfFile;
-        private XisfFile mXisfToGpu;
+        private readonly XisfFile mXisfToGpu;
 
+        public MainForm(XisfFile mXisfToGpu)
+        {
+            this.mXisfToGpu = mXisfToGpu;
+        }
 
         private void XisfToGpuTab_Button_ConvertToGpu_Click(object sender, EventArgs e)
         {
@@ -30,11 +33,13 @@ namespace XisfFileManager
         private void XisfToGpuTab_Button_ConvertToXisf_Click(object sender, EventArgs e)
         {
             // Create and configure OpenFileDialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = mFileList[0].FilePath;
-            openFileDialog.Filter = "Data files (*.dat)|*.dat";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
+            OpenFileDialog openFileDialog = new()
+            {
+                InitialDirectory = mFileList[0].FilePath,
+                Filter = "Data files (*.dat)|*.dat",
+                FilterIndex = 1,
+                RestoreDirectory = true
+            };
 
             // Show the OpenFileDialog and check if the user clicked OK
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -79,15 +84,10 @@ namespace XisfFileManager
 
         public bool XisfToGpuData(XisfFile xFile, string destinationFilePath)
         {
-            byte[] binaryFileData = new byte[(int)1e9];
-            mBufferList = new List<Buffer>();
+            mBufferList = [];
 
             try
             {
-                bool foundFloat32 = false;
-                bool foundUInt8 = false;
-                bool foundUInt16 = false;
-
                 using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
                     // *******************************************************************************************************************************
@@ -95,23 +95,20 @@ namespace XisfFileManager
 
                     // Read entire XISF file (up to 1 GB) into binaryFileData
                     BinaryReader br = new BinaryReader(stream);
+                    byte[] binaryFileData = new byte[(int)1e9];
                     binaryFileData = br.ReadBytes((int)1e9);
                     br.Close();
 
                     // Search for patterns in binary data
-                    foundFloat32 = BinaryFind(binaryFileData, "sampleFormat=\"Float32\"");
-                    foundUInt8 = BinaryFind(binaryFileData, "sampleFormat=\"UInt8\"");
-                    foundUInt16 = BinaryFind(binaryFileData, "sampleFormat=\"UInt16\"");
+                    bool foundFloat32 = BinaryFind(binaryFileData, "sampleFormat=\"Float32\"");
+                    bool foundUInt8 = BinaryFind(binaryFileData, "sampleFormat=\"UInt8\"");
+                    bool foundUInt16 = BinaryFind(binaryFileData, "sampleFormat=\"UInt16\"");
 
                     string format = foundFloat32 ? "F32"
                                   : foundUInt16 ? "U16"
                                   : foundUInt8 ? "U08"
                                   : "   ";
 
-                    int width = xFile.TargetAttachmentWidth;
-                    byte[] widthBytes = BitConverter.GetBytes(width);
-                    int height = xFile.TargetAttachmentHeight;
-                    byte[] heightBytes = BitConverter.GetBytes(height);
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
@@ -128,7 +125,7 @@ namespace XisfFileManager
                         Type = eBufferData.BINARY,
                         BinaryDataStart = 0,
                         BinaryByteLength = 4,
-                        BinaryData = widthBytes
+                        BinaryData = BitConverter.GetBytes(xFile.TargetAttachmentWidth)
                     };
                     mBufferList.Add(mBuffer);
 
@@ -138,7 +135,7 @@ namespace XisfFileManager
                         Type = eBufferData.BINARY,
                         BinaryDataStart = 0,
                         BinaryByteLength = 4,
-                        BinaryData = heightBytes
+                        BinaryData = BitConverter.GetBytes(xFile.TargetAttachmentHeight)
                     };
                     mBufferList.Add(mBuffer);
 
@@ -213,13 +210,6 @@ namespace XisfFileManager
                     // *******************************************************************************************************************************
 
                     // Create a new minimal xml string without any keywords that is compatible with PixInsight
-                    /*
-                    string xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                        "<!--\r\nExtensible Image Serialization Format - XISF version 1.0\r\nCreated with PixInsight software - http://pixinsight.com/\r\n-->" +
-                        "<xisf version=\"1.0\" xmlns=\"http://www.pixinsight.com/xisf\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.pixinsight.com/xisf http://pixinsight.com/xisf/xisf-1.0.xsd\">" +
-                        "<Image geometry=\"WIDTH:HEIGHT:1\" sampleFormat=\"UInt16\" colorSpace=\"Gray\" location=\"attachment:0:LENGTH\">" +
-                        "<Resolution horizontal=\"72\" vertical=\"72\" unit=\"inch\"/>";
-                    */
                     string xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                        "<!--\r\nExtensible Image Serialization Format - XISF version 1.0\r\nCreated with PixInsight software - http://pixinsight.com/\r\n-->" +
                        "<xisf version=\"1.0\" xmlns=\"http://www.pixinsight.com/xisf\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.pixinsight.com/xisf http://pixinsight.com/xisf/xisf-1.0.xsd\">" +
@@ -241,8 +231,8 @@ namespace XisfFileManager
 
                     // Now we need to update image: geometry, padding, location and length in the xmlString
                     // String replace "WIDTH", "HEIGHT" and "LENGTH" with the correct values
-                    // The starting address needs a REGEX to find and replace the correct starting location in the xmlString
-                    // Sample Format needs to be upated (UInt16, UInt32, Float32, Float64) // To Do: Generalize this to non-UInt16 images
+                    // The starting address uses a REGEX to find and replace the correct starting location in the xmlString
+                    // Sample Format needs to be upated (UInt8, UInt32, Float32) // To Do: Generalize this to non-UInt16 images
                     // Color space needs to be upated // To Do: Generalize this to include RGB images
 
                     int width = BitConverter.ToInt32(binaryFileData, 0);
@@ -426,8 +416,8 @@ namespace XisfFileManager
                         using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
                         {
                             fileStream.Write(binaryData, 0, binaryDataLength);
-                            binaryWriter.Flush();
-                            binaryWriter.Close();
+                            //binaryWriter.Flush();
+                            //binaryWriter.Close();
                         }
                     }
                     binaryData = null;

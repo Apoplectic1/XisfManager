@@ -251,6 +251,14 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
 
+        public string CREJECT
+        {
+            get { return GetKeywordValue("CREJECT"); }
+            set { AddKeyword("CREJECT", value.ToString(), "[name] PixInsight WBPP PostProcessing Group Keyword"); }
+        }
+
+        // *********************************************************************************************************
+
         public double ExposureSeconds
         {
             get

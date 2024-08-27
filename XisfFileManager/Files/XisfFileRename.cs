@@ -10,17 +10,15 @@ namespace XisfFileManager.Files
 {
     public class XisfFileRename
     {
-        private int mDupIndex;
-
-        public List<XisfFile> mFileList;
+        private List<XisfFile> mFileList;
 
         public eOrder RenameOrder;
 
         /// <summary>
-        /// Recursively modifies the file name by appending "-Dup" until a unique name is found.
+        /// Recursively modifies the xFile name by appending "-Dup" until a unique name is found.
         /// </summary>
-        /// <param name="dupFileName">The initial duplicate file name.</param>
-        /// <returns>A unique file name that does not already exist.</returns>
+        /// <param name="dupFileName">The initial duplicate xFile name.</param>
+        /// <returns>A unique xFile name that does not already exist.</returns>
         private static string RecurseDupFileName(string dupFileName)
         {
             while (File.Exists(dupFileName))
@@ -33,29 +31,33 @@ namespace XisfFileManager.Files
 
 
         /// <summary>
-        /// Renames the specified XISF file based on its properties and the given index.
+        /// Renames the specified XISF xFile based on its properties and the given index.
         /// </summary>
-        /// <param name="file">The XISF file to rename.</param>
-        /// <returns>A tuple containing the status code (1 for success, -1 for failure) and the new file name.</returns>
-        public Tuple<int, string> RenameFile(XisfFile file)
+        /// <param name="xFile">The XISF xFile to rename.</param>
+        /// <returns>A tuple containing the status code (1 for success, -1 for failure) and the new xFile name.</returns>
+        public Tuple<int, string> RenameFile(XisfFile xFile)
         {
             try
             {
-                string sourceFileDirectory = Path.GetDirectoryName(file.FilePath);
-                string newFileName = BuildFileName(file.FileNameNumberIndex, file) + ".xisf";
+                string sourceFileDirectory = Path.GetDirectoryName(xFile.FilePath);
+                string newFileName = BuildFileName(xFile.FileNameNumberIndex, xFile) + ".xisf";
+                if (sourceFileDirectory.Contains("reject", StringComparison.OrdinalIgnoreCase))
+                {
+                    newFileName = "REJECT  " + newFileName;
+                }
                 string newFilePath = Path.Combine(sourceFileDirectory, newFileName);
 
-                // Rename the file if its name actually changed and the new file name does not already exist
-                if (file.FilePath != newFilePath && !File.Exists(newFilePath))
+                // Rename the xFile if its name actually changed and the new xFile name does not already exist
+                if (xFile.FilePath != newFilePath && !File.Exists(newFilePath))
                 {
-                    File.Move(file.FilePath, newFilePath);
+                    File.Move(xFile.FilePath, newFilePath);
                 }
 
                 return new Tuple<int, string>(1, newFileName);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "RenameFile(XisfFile file)");
+                MessageBox.Show(ex.ToString(), "RenameFile(XisfFile xFile)");
                 return new Tuple<int, string>(-1, "");
             }
         }
@@ -63,7 +65,7 @@ namespace XisfFileManager.Files
 
         /// <summary>
         /// Moves duplicate files in the given list to a 'Duplicates' directory.
-        /// A duplicate is defined as a file with identical properties to another file in the list.
+        /// A duplicate is defined as a xFile with identical properties to another xFile in the list.
         /// </summary>
         /// <param name="fileList">The list of XisfFile objects to check for duplicates.</param>
         /// <returns>The count of files that were moved as duplicates.</returns>
@@ -85,7 +87,7 @@ namespace XisfFileManager.Files
             .ToList();
 
             // List to keep track of files that have been moved
-            List<XisfFile> movedFiles = new List<XisfFile>();
+            List<XisfFile> movedFiles = [];
 
             // Process each group of duplicates
             groupedDuplicates.ForEach(group =>
@@ -103,10 +105,10 @@ namespace XisfFileManager.Files
 
                     string destinationFilePath = Path.Combine(duplicatesPath, Path.GetFileName(item.FilePath));
 
-                    // Move the file to the 'Duplicates' directory
-                    File.Move(item.FilePath, destinationFilePath, true); // Overwrite if the file already exists
+                    // Move the xFile to the 'Duplicates' directory
+                    File.Move(item.FilePath, destinationFilePath, true); // Overwrite if the xFile already exists
 
-                    // Add the file to the movedFiles list
+                    // Add the xFile to the movedFiles list
                     movedFiles.Add(item);
                 }
             });
@@ -121,11 +123,11 @@ namespace XisfFileManager.Files
 
 
         /// <summary>
-        /// Builds a new file name for the given XISF file based on its properties and the specified index.
+        /// Builds a new xFile name for the given XISF xFile based on its properties and the specified index.
         /// </summary>
-        /// <param name="index">The index of the file.</param>
-        /// <param name="mFile">The XISF file for which to build the new name.</param>
-        /// <returns>The newly built file name.</returns>
+        /// <param name="index">The index of the xFile.</param>
+        /// <param name="mFile">The XISF xFile for which to build the new name.</param>
+        /// <returns>The newly built xFile name.</returns>
         private string BuildFileName(int index, XisfFile mFile)
         {
             if (mFile.TargetName.Contains("Master"))
@@ -258,9 +260,9 @@ namespace XisfFileManager.Files
         /// <summary>
         /// Moves duplicate files to a 'Duplicates' directory and renames them with a duplicate index.
         /// </summary>
-        /// <param name="currentFile">The current XISF file being processed.</param>
-        /// <param name="sourceFilePath">The source file path where the file is located.</param>
-        /// <param name="newFileName">The new file name to be used for duplicates.</param>
+        /// <param name="currentFile">The current XISF xFile being processed.</param>
+        /// <param name="sourceFilePath">The source xFile path where the xFile is located.</param>
+        /// <param name="newFileName">The new xFile name to be used for duplicates.</param>
         private void MoveDuplicates(XisfFile currentFile, string sourceFilePath, string newFileName)
         {
             int dupIndex = 1;
@@ -269,50 +271,50 @@ namespace XisfFileManager.Files
             string duplicatesPath = Path.Combine(sourceFilePath, "Duplicates");
             Directory.CreateDirectory(duplicatesPath);
 
-            // Loop through the file list to process duplicates
+            // Loop through the xFile list to process duplicates
             foreach (XisfFile entry in mFileList.ToList()) // Create a copy of the list to avoid modifying the collection while iterating
             {
-                if (entry == currentFile) continue; // Skip the current file
+                if (entry == currentFile) continue; // Skip the current xFile
 
                 // Increment the duplicate index
                 dupIndex++;
 
-                // Remove the index or SSWEIGHT from the file name (the first four characters) and postfix duplicate index
+                // Remove the index or SSWEIGHT from the xFile name (the first four characters) and postfix duplicate index
                 string duplicateFileName = newFileName.Remove(0, 4).Insert(0, dupIndex.ToString("D3") + " ");
 
-                // Construct the destination path for the duplicate file
+                // Construct the destination path for the duplicate xFile
                 string destinationFilePath = Path.Combine(duplicatesPath, duplicateFileName);
 
-                // Ensure a unique file name by appending "-Dup" if necessary
+                // Ensure a unique xFile name by appending "-Dup" if necessary
                 destinationFilePath = RecurseDupFileName(destinationFilePath);
 
-                // Move the duplicate file to the Duplicates directory
+                // Move the duplicate xFile to the Duplicates directory
                 File.Move(entry.FilePath, destinationFilePath);
 
-                // Remove the entry from the file list
+                // Remove the entry from the xFile list
                 mFileList.Remove(entry);
             }
         }
 
 
         /// <summary>
-        /// Checks if the specified file is locked.
+        /// Checks if the specified xFile is locked.
         /// </summary>
-        /// <param name="path">The path to the file to check.</param>
-        /// <returns>True if the file is locked; otherwise, false.</returns>
+        /// <param name="path">The path to the xFile to check.</param>
+        /// <returns>True if the xFile is locked; otherwise, false.</returns>
         private static bool IsFileLocked(string path)
         {
-            FileInfo file = new FileInfo(path);
+            FileInfo file = new(path);
             FileStream stream = null;
 
             try
             {
-                // Attempt to open the file with read/write access and exclusive lock
+                // Attempt to open the xFile with read/write access and exclusive lock
                 stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
             }
             catch (IOException)
             {
-                // The file is unavailable because it is:
+                // The xFile is unavailable because it is:
                 // still being written to,
                 // being processed by another thread,
                 // or does not exist (has already been processed)
@@ -324,7 +326,7 @@ namespace XisfFileManager.Files
                 stream?.Close();
             }
 
-            // The file is not locked
+            // The xFile is not locked
             return false;
         }
 

@@ -20,11 +20,21 @@ sealed class DirectoryProperties
     /// <param name="bNoStatistics">A boolean flag indicating whether to skip the creation of new statistics files.</param>
     public void SetDirectoryFileStatistics(List<XisfFile> xFileList, bool bNoStatistics)
     {
-        // Remove any existing statistics files of the form " - 1, 0.0" from the directory
-        Directory.GetFiles(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName)
+        // Start by getting the base directory from the first file in xFileList, and search all subdirectories
+        Directory.GetDirectories(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*", SearchOption.AllDirectories)
+            // Filter to include directories that contain "\Capture" (matches both "Capture" and "Captures")
+            .Where(dir => Regex.IsMatch(dir, @"\\Capture", RegexOptions.IgnoreCase))
+            // For each filtered directory, get all files recursively, including the base directory
+            .SelectMany(captureDir => Directory.GetFiles(captureDir, "*.*", SearchOption.AllDirectories))
+            // Add the base directory to the list of directories to search
+            .Concat(Directory.GetFiles(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*.*", SearchOption.TopDirectoryOnly))
+            // Filter files using a regular expression to match specific naming patterns
             .Where(file => Regex.IsMatch(file, @"^(.*\\(?:Stars [LRGBSHO]|[LRGBSHO]|Shutter)) - \d+, \d+\.\d+"))
+            // Convert the result to a list of file paths
             .ToList()
+            // Delete each file that matches the criteria
             .ForEach(file => File.Delete(file));
+
 
         // If no statistics are to be generated, return after removing old statistics files
         if (bNoStatistics)
@@ -59,6 +69,12 @@ sealed class DirectoryProperties
             .ForEach(group =>
             {
                 var groupName = group.Key;
+
+                // Check if the directory path contains the case-insensitive string "reject"
+                if (groupName.Contains("reject", StringComparison.OrdinalIgnoreCase))
+                {
+                    return; // Skip this group if "reject" is found
+                }
 
                 // Match the first occurrence of any of these words after the last backslash
                 var match = Regex.Match(groupName, @"^(.*\\(?:Stars [LRGBSHO]|[LRGBSHO]|Shutter))");

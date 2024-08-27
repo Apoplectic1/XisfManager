@@ -189,8 +189,13 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
+
+               // if (xFile.FilePath.Contains("reject", StringComparison.OrdinalIgnoreCase))
+               // {
+               //     xFile.AddKeyword("CREJECT", "Included", "NSG or Other Rejected Frame");
+               // }
+
                 bStatus = mXisfFileUpdate.UpdateFile(xFile, xFile.FilePath);
-                //bStatus = mXisfFileUpdate.UpdateFile2(xFile.FilePath, Path.GetDirectoryName(xFile.FilePath) + "\\" + Path.GetFileNameWithoutExtension(xFile.FilePath) + "_GPU.xisf");
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
                 System.Windows.Forms.Application.DoEvents();
 

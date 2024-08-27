@@ -62,7 +62,7 @@ namespace XisfFileManager
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void Button_FileSelection_diectorySelection_Rename_Click(object sender, EventArgs e)
+        private void Button_FileSelection_DirectorySelection_Rename_Click(object sender, EventArgs e)
         {
             bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
             bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
@@ -295,6 +295,7 @@ namespace XisfFileManager
                 file.CBIAS = string.Empty;
                 file.CPANEL = string.Empty;
                 file.CSTARS = string.Empty;
+                file.CREJECT = string.Empty;
                 file.RemoveKeyword("CLIGHT");
             }
         }

@@ -406,7 +406,7 @@
             Button_FileSelection_DirectorySelection_Rename.TabIndex = 4;
             Button_FileSelection_DirectorySelection_Rename.Text = "Rename XISF Files";
             Button_FileSelection_DirectorySelection_Rename.UseVisualStyleBackColor = true;
-            Button_FileSelection_DirectorySelection_Rename.Click += Button_FileSelection_diectorySelection_Rename_Click;
+            Button_FileSelection_DirectorySelection_Rename.Click += Button_FileSelection_DirectorySelection_Rename_Click;
             // 
             // Button_FileSelection_DirectorySelection_Browse
             // 
