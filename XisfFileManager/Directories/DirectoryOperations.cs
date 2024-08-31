@@ -97,8 +97,8 @@ namespace XisfFileManager.Files
         /// </summary>
         /// <param name="directoryPath">The path of the directory to search.</param>
         /// <param name="excludeList">A list of file paths or names to exclude from the search.</param>
-        /// <param name="stopRecursion">If true, stops the search from recursing into subdirectories.</param>
-        private static void SearchXisfFilesInDirectory(string directoryPath, List<string> excludeList, bool stopRecursion)
+        /// <param name="noRecursion">If true, stops the search from recursing into subdirectories.</param>
+        private static int SearchXisfFilesInDirectory(string directoryPath, List<string> excludeList, bool noRecursion)
         {
             try
             {
@@ -111,17 +111,20 @@ namespace XisfFileManager.Files
                 FileInfoList.AddRange(xisfFiles);
 
                 // If recursion is not stopped, search subdirectories
-                if (!stopRecursion)
+                if (!noRecursion)
                 {
                     Directory.EnumerateDirectories(directoryPath)
                              .ToList()
-                             .ForEach(subDirectory => SearchXisfFilesInDirectory(subDirectory, excludeList, stopRecursion));
+                             .ForEach(subDirectory => SearchXisfFilesInDirectory(subDirectory, excludeList, noRecursion));
                 }
+
+                return xisfFiles.Count();
             }
             catch (Exception ex)
             {
                 // Handle directory access errors, if any
                 Console.WriteLine($"Error searching directory '{directoryPath}': {ex.Message}");
+                return 0;
             }
         }
 

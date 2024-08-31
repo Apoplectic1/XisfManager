@@ -86,6 +86,7 @@ ScaffoldingReadMe.txt
 # Auto-save files
 \#*\#
 # Lock files
-.\#*
+.\#
+Installer/
 
 ## End of .gitignore
