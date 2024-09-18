@@ -58,11 +58,6 @@ $RECYCLE.BIN/
 .idea/
 
 # User-specific stuff:
-*.rsuser
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
 
 # .NET Core
 project.lock.json
@@ -90,3 +85,4 @@ ScaffoldingReadMe.txt
 Installer/
 
 ## End of .gitignore
+*.deploy

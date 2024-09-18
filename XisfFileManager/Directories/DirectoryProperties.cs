@@ -20,13 +20,13 @@ sealed class DirectoryProperties
     /// <param name="bNoStatistics">A boolean flag indicating whether to skip the creation of new statistics files.</param>
     public void SetDirectoryFileStatistics(List<XisfFile> xFileList, bool bNoStatistics)
     {
-        // Start by getting the base directory from the first file in xFileList, and search all subdirectories
+
         Directory.GetDirectories(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*", SearchOption.AllDirectories)
             // Filter to include directories that contain "\Capture" (matches both "Capture" and "Captures")
             .Where(dir => Regex.IsMatch(dir, @"\\Capture", RegexOptions.IgnoreCase))
-            // For each filtered directory, get all files recursively, including the base directory
+            // For each filtered directory, get all files recursively, including the base directory, but limit to .xisf files
             .SelectMany(captureDir => Directory.GetFiles(captureDir, "*.*", SearchOption.AllDirectories))
-            // Add the base directory to the list of directories to search
+            // Add the base directory to the list of directories to search, limit to .xisf files
             .Concat(Directory.GetFiles(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*.*", SearchOption.TopDirectoryOnly))
             // Filter files using a regular expression to match specific naming patterns
             .Where(file => Regex.IsMatch(file, @"^(.*\\(?:Stars [LRGBSHO]|[LRGBSHO]|Shutter)) - \d+, \d+\.\d+"))
@@ -34,6 +34,7 @@ sealed class DirectoryProperties
             .ToList()
             // Delete each file that matches the criteria
             .ForEach(file => File.Delete(file));
+
 
 
         // If no statistics are to be generated, return after removing old statistics files

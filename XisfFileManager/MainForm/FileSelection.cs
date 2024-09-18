@@ -74,8 +74,12 @@ namespace XisfFileManager
 
             int duplicates = XisfFileRename.MoveDuplicates(mFileList);
 
-            // Set directory file statistics
-            mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked);
+            // Do not consider directory statistics if we are dealing with Master frames
+            if (!CheckBox_FileSelection_DirectorySelection_Master.Checked)
+            {
+                // Set or remove directory file statistics
+                mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked);
+            }
 
             // Set file index based on selected criteria
             SetFileIndex(bTime);
