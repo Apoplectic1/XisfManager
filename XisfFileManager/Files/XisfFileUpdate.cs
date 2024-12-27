@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 using XisfFileManager.XML;
 
 namespace XisfFileManager.Files

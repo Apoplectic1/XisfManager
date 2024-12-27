@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
 {

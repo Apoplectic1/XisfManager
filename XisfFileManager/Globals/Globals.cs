@@ -1,4 +1,6 @@
-﻿namespace XisfFileManager.Enums
+﻿using System.Collections.Generic;
+
+namespace XisfFileManager.Globals
 {
     // These are the defineds for image frame types
     public enum eFrame { ALL, LIGHT, DARK, FLAT, BIAS, EMPTY }
@@ -8,8 +10,6 @@
 
     // These specify how frame numbering will occur during renumbering of the files on disk
     public enum eOrder { WEIGHTINDEX, INDEXWEIGHT, WEIGHT, INDEX }
-
-    public enum eCamera { ALL, Z183, Z533, Q178, A144 }
 
     // These control the display and clearing of the MessageBox for the results of finding and matching calibration files
     public enum eMessageMode { CLEAR, APPEND, NEW, KEEP }
@@ -24,4 +24,11 @@
     public enum eKeywordUpdateMode { PROTECT, UPDATE_NEW, FORCE }
 
     public enum eUiState { DISABLED, ENABLED, RENAME }
+
+    // This class contains static global values
+    public static class GlobalValues
+    {
+        // List of available cameras
+        public static readonly List<string> Cameras = new List<string> { "Z183", "Z533", "Q178", "A144" };
+    }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 
 
 namespace XisfFileManager

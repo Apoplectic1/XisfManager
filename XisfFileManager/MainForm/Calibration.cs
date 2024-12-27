@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 
 namespace XisfFileManager
 {

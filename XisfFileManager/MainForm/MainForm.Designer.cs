@@ -197,9 +197,6 @@
             RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl = new System.Windows.Forms.TabControl();
-            TabPage_GPU = new System.Windows.Forms.TabPage();
-            XisfToGpuTab_Button_ConvertToXisf = new System.Windows.Forms.Button();
-            XisfToGpuTab_Button_ConvertToGpu = new System.Windows.Forms.Button();
             GroupBox_FileSelection_SequenceNumbering.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -221,7 +218,6 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.SuspendLayout();
             GroupBox_KeywordUpdateTab_ImageType_Filter.SuspendLayout();
             TabControl.SuspendLayout();
-            TabPage_GPU.SuspendLayout();
             SuspendLayout();
             // 
             // ProgressBar_FileSelection_ReadProgress
@@ -2142,45 +2138,12 @@
             TabControl.Controls.Add(TabPage_Keywords);
             TabControl.Controls.Add(TabPage_Calibration);
             TabControl.Controls.Add(TabPage_TargetScheduler);
-            TabControl.Controls.Add(TabPage_GPU);
             TabControl.Location = new System.Drawing.Point(14, 238);
             TabControl.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
             TabControl.Size = new System.Drawing.Size(1147, 535);
             TabControl.TabIndex = 23;
-            // 
-            // TabPage_GPU
-            // 
-            TabPage_GPU.BackColor = System.Drawing.SystemColors.Control;
-            TabPage_GPU.Controls.Add(XisfToGpuTab_Button_ConvertToXisf);
-            TabPage_GPU.Controls.Add(XisfToGpuTab_Button_ConvertToGpu);
-            TabPage_GPU.Location = new System.Drawing.Point(4, 24);
-            TabPage_GPU.Name = "TabPage_GPU";
-            TabPage_GPU.Padding = new System.Windows.Forms.Padding(3);
-            TabPage_GPU.Size = new System.Drawing.Size(1139, 507);
-            TabPage_GPU.TabIndex = 4;
-            TabPage_GPU.Text = "GPU";
-            // 
-            // XisfToGpuTab_Button_ConvertToXisf
-            // 
-            XisfToGpuTab_Button_ConvertToXisf.Location = new System.Drawing.Point(31, 110);
-            XisfToGpuTab_Button_ConvertToXisf.Name = "XisfToGpuTab_Button_ConvertToXisf";
-            XisfToGpuTab_Button_ConvertToXisf.Size = new System.Drawing.Size(154, 23);
-            XisfToGpuTab_Button_ConvertToXisf.TabIndex = 1;
-            XisfToGpuTab_Button_ConvertToXisf.Text = "Convert .dat to .xisf";
-            XisfToGpuTab_Button_ConvertToXisf.UseVisualStyleBackColor = true;
-            XisfToGpuTab_Button_ConvertToXisf.Click += XisfToGpuTab_Button_ConvertToXisf_Click;
-            // 
-            // XisfToGpuTab_Button_ConvertToGpu
-            // 
-            XisfToGpuTab_Button_ConvertToGpu.Location = new System.Drawing.Point(27, 43);
-            XisfToGpuTab_Button_ConvertToGpu.Name = "XisfToGpuTab_Button_ConvertToGpu";
-            XisfToGpuTab_Button_ConvertToGpu.Size = new System.Drawing.Size(158, 23);
-            XisfToGpuTab_Button_ConvertToGpu.TabIndex = 0;
-            XisfToGpuTab_Button_ConvertToGpu.Text = "Convert .xisf to .dat";
-            XisfToGpuTab_Button_ConvertToGpu.UseVisualStyleBackColor = true;
-            XisfToGpuTab_Button_ConvertToGpu.Click += XisfToGpuTab_Button_ConvertToGpu_Click;
             // 
             // MainForm
             // 
@@ -2235,7 +2198,6 @@
             GroupBox_KeywordUpdateTab_ImageType_Filter.ResumeLayout(false);
             GroupBox_KeywordUpdateTab_ImageType_Filter.PerformLayout();
             TabControl.ResumeLayout(false);
-            TabPage_GPU.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -2407,9 +2369,6 @@
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
         private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_TotalFrames;
-        private System.Windows.Forms.TabPage TabPage_GPU;
-        private System.Windows.Forms.Button XisfToGpuTab_Button_ConvertToGpu;
-        private System.Windows.Forms.Button XisfToGpuTab_Button_ConvertToXisf;
         private System.Windows.Forms.Panel Panel_TargetScheduler;
     }
 }

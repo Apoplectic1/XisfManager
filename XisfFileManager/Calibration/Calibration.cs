@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 using XisfFileManager.Files;
 using static System.Net.WebRequestMethods;
 using XisfFileManager.TargetScheduler.Tables;

@@ -3,95 +3,123 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Windows.Media.Capture;
 using XisfFileManager.Files;
+using XisfFileManager.Globals;
 
-namespace XisfFileManager.DirectoryOperations;
-
-sealed class DirectoryProperties
+namespace XisfFileManager.Files
 {
-    public Dictionary<string, string> DirectoryStatistics { get; } = [];
-
-
-    /// <summary>
-    /// Sets the directory file statistics by removing old statistics files and creating new ones based on the provided XisfFile list.
-    /// If the flag bNoStatistics is true, the method only removes old statistics files and skips the creation of new ones.
-    /// </summary>
-    /// <param name="xFileList">A list of XisfFile objects used to determine the directory and compute statistics.</param>
-    /// <param name="bNoStatistics">A boolean flag indicating whether to skip the creation of new statistics files.</param>
-    public void SetDirectoryFileStatistics(List<XisfFile> xFileList, bool bNoStatistics)
+    sealed class DirectoryProperties
     {
+        public Dictionary<string, string> DirectoryStatistics { get; } = new();
 
-        Directory.GetDirectories(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*", SearchOption.AllDirectories)
-            // Filter to include directories that contain "\Capture" (matches both "Capture" and "Captures")
-            .Where(dir => Regex.IsMatch(dir, @"\\Capture", RegexOptions.IgnoreCase))
-            // For each filtered directory, get all files recursively, including the base directory, but limit to .xisf files
-            .SelectMany(captureDir => Directory.GetFiles(captureDir, "*.*", SearchOption.AllDirectories))
-            // Add the base directory to the list of directories to search, limit to .xisf files
-            .Concat(Directory.GetFiles(Directory.GetParent(Path.GetDirectoryName(xFileList.First().FilePath)).FullName, "*.*", SearchOption.TopDirectoryOnly))
-            // Filter files using a regular expression to match specific naming patterns
-            .Where(file => Regex.IsMatch(file, @"^(.*\\(?:Stars [LRGBSHO]|[LRGBSHO]|Shutter)) - \d+, \d+\.\d+"))
-            // Convert the result to a list of file paths
-            .ToList()
-            // Delete each file that matches the criteria
-            .ForEach(file => File.Delete(file));
+        /// <summary>
+        /// Sets the directory file statistics by removing old statistics files and creating new ones based on the provided XisfFile list.
+        /// If the flag bNoStatistics is true, the method only removes old statistics files and skips the creation of new ones.
+        /// </summary>
+        /// <param name="xFileList">A list of XisfFile objects used to determine the directory and compute statistics.</param>
+        /// <param name="bNoStatistics">A boolean flag indicating whether to skip the creation of new statistics files.</param>
+        public void SetDirectoryFileStatistics(List<XisfFile> xFileList, bool bNoStatistics)
+        {
+            // Determine the root directory to search, based on the first file in the list
+            var selectedDirectory = DirectoryOperations.SelectedFolder;
 
+            // Search for all directories under the selectedDirectory that include "Captures"
+            Directory
+               .EnumerateFiles(selectedDirectory, "*", SearchOption.AllDirectories) // Recursively get all files
+               .Where(file =>
+                   // Match files ending with " - <digits>, <real number>" and no file extension
+                   Regex.IsMatch(file, @" - \d+, \d+(\.\d+)?$"))
+               .ToList()
+               .ForEach(file =>
+               {
+                   if (file.Contains("Captures") || file.Contains("Mosaic"))
+                       File.Delete(file);
+               });
 
+            // If the flag bNoStatistics is set to true, return after removing the old statistics files
+            if (bNoStatistics)
+                return;
 
-        // If no statistics are to be generated, return after removing old statistics files
-        if (bNoStatistics)
-            return;
+            // Compute new directory statistics based on the provided list of XisfFile objects
+            GetCameraAndFilterStatistics(xFileList);
 
-        // Compute the directory statistics using the provided XisfFile list
-        GetDirectoryStatistics(xFileList);
+            // Create new statistics files directly in the "Captures" directory
+            // If the selected path contains "Mosaic", prepend the panel number to statistics file name
+            DirectoryStatistics
+                .ToList() // Iterate over the dictionary entries (key: directory path, value: statistics string)
+                .ForEach(kvp =>
+                {
+                    string statisticsFilePath;
+                    string capturesPath = Regex.Match(kvp.Key, @"^(.*?\\)Captures", RegexOptions.IgnoreCase).Groups[1].Value;
 
-        // Create new statistics files of the form " - 1, 0.0" for each found directory
-        DirectoryStatistics
-            .Select(group => group.Value)
-            .ToList()
-            .ForEach(newStatistics => File.Create(newStatistics).Dispose());
-    }
+                    // Mosiac panel directory names can take two forms: "Panel xofy" or "Panel Name"
+                    if (capturesPath.Contains("Mosaic"))
+                    {
+                        // First attempt to match the panel name in the form "Panel xofy"
+                        // If the match fails, extract the panel name in the form "Panel Name"
+                        string panelName = "P" + Regex.Match(kvp.Key, @"(?<=\\Panel\s*)\d+(?=of)").Value;
 
+                        // If the panel name is not in the form "Panel xofy", match the panel name in the form "Panel Name"
+                        if (panelName == "P")
+                        {
+                            // panelName is in the form "Panel Name"; extract the panel name
+                            panelName = Regex.Match(kvp.Key, @"(?<=\\Panel\s*)[^\\]+").Value;
+                            statisticsFilePath = Path.Combine(capturesPath, panelName + "  " + kvp.Value);
+                        }
+                        else
+                        {
+                            // panelName is in the form "Panel xofy"; extract the panel number
+                            string panelNumber = "P" + Regex.Match(kvp.Key, @"(?<=\\Panel\s*)\d+(?=of)").Value;
+                            statisticsFilePath = Path.Combine(capturesPath, panelNumber + "  " + kvp.Value);
+                        }
+                    }
+                    else
+                    {
+                        // Single target captures (not mosaic)
+                        statisticsFilePath = Path.Combine(capturesPath, kvp.Value);
+                    }
 
-    /// <summary>
-    /// Computes and updates the directory statistics for a list of XisfFile objects.
-    /// The statistics include the total number of files and the total exposure time in hours for each directory.
-    /// The results are stored in the DirectoryStatistics dictionary.
-    /// </summary>
-    /// <param name="xFileList">A list of XisfFile objects used to compute the directory statistics.</param>
-    public void GetDirectoryStatistics(List<XisfFile> xFileList)
-    {
-        // Clear existing directory statistics
-        DirectoryStatistics.Clear();
+                    // Create the new file in the "Captures" directory and immediately close it
+                    File.Create(statisticsFilePath).Dispose();
+                });
+        }
 
-        // Group the files by their directory paths
-        xFileList
-            .GroupBy(file => Path.GetDirectoryName(file.FilePath))
-            .ToList()
-            .ForEach(group =>
+        /// <summary>
+        /// Computes and updates the directory statistics for a list of XisfFile objects.
+        /// The statistics include the total number of files and the total exposure time in hours for each directory.
+        /// The results are stored in the DirectoryStatistics dictionary.
+        /// </summary>
+        /// <param name="xFileList">A list of XisfFile objects used to compute the directory statistics.</param>
+        public void GetCameraAndFilterStatistics(List<XisfFile> xFileList)
+        {
+            // Clear any existing directory statistics before computing new values
+            DirectoryStatistics.Clear();
+
+            foreach (var camera in GlobalValues.Cameras)
             {
-                var groupName = group.Key;
+                // Group the provided files by their directory paths
+                xFileList
+                    .GroupBy(file => Path.GetDirectoryName(file.FilePath)).Distinct().ToList() // Group files by their parent directory
+                    .ForEach(group =>
+                    {
+                        // Store the name of the current group (directory path)
+                        var groupName = group.Key;
 
-                // Check if the directory path contains the case-insensitive string "reject"
-                if (groupName.Contains("reject", StringComparison.OrdinalIgnoreCase))
-                {
-                    return; // Skip this group if "reject" is found
-                }
+                        if (groupName.Contains(camera))
+                        {
+                            // Calculate the total exposure time for all files in this group (convert seconds to hours)
+                            double totalExposureTime = group.Sum(file => file.ExposureSeconds) / 3600.0;
 
-                // Match the first occurrence of any of these words after the last backslash
-                var match = Regex.Match(groupName, @"^(.*\\(?:Stars [LRGBSHO]|[LRGBSHO]|Shutter))");
+                            // Construct the statistics string in the format " - [file count], [total exposure time]"
+                            string statistics = $"{camera} - {Path.GetFileName(groupName)} - {group.Count()}, {totalExposureTime:F1}";
+                            //groupName += statistics;
 
-                if (match.Success)
-                {
-                    groupName = match.Groups[1].Value;
-                }
-
-                // Calculate the total exposure time in hours
-                double totalExposureTime = group.Sum(file => file.ExposureSeconds) / 3600.0;
-                string statistics = $" - {group.Count()}, {totalExposureTime:F1}";
-                groupName += statistics;
-
-                // Update the DirectoryStatistics dictionary with the computed statistics
-                DirectoryStatistics[group.Key] = groupName;
-            });
+                            // Add the computed statistics to the DirectoryStatistics dictionary
+                            DirectoryStatistics[group.Key] = statistics; // groupName;
+                        }
+                    });
+            }
+        }
     }
 }

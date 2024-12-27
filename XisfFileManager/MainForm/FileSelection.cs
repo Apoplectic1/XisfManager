@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 using XisfFileManager.Files;
 
 namespace XisfFileManager
@@ -121,7 +121,6 @@ namespace XisfFileManager
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             UpdateUI(eUiState.RENAME);
         }
-
 
         /// <summary>
         /// Handles the CheckedChanged event for the WeightIndex radio button.

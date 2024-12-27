@@ -7,8 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using XisfFileManager.Calculations;
-using XisfFileManager.DirectoryOperations;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 using XisfFileManager.Files;
 
 namespace XisfFileManager

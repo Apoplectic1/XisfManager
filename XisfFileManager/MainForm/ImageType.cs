@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using XisfFileManager.Enums;
+using XisfFileManager.Globals;
 using XisfFileManager.Files;
 
 namespace XisfFileManager

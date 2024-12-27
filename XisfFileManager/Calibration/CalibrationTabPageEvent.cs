@@ -1,4 +1,4 @@
-﻿using XisfFileManager.Enums;
+﻿using XisfFileManager.Globals;
 
 namespace XisfFileManager
 {
