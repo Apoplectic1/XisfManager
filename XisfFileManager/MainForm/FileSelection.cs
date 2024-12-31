@@ -113,7 +113,7 @@ namespace XisfFileManager
             else
                 Label_FileSelection_Statistics_OperationStatus.Text = (mFileList.Count).ToString() + " Images Renamed\n" + duplicates.ToString() + " Duplicates";
 
-            // Clear directory statistics and file list
+            // Delete directory statistics files
             mDirectoryProperties.DirectoryStatistics.Clear();
             mFileList.Clear();
 

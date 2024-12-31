@@ -448,7 +448,7 @@ namespace XisfFileManager.Files
             {
                 string attachment = attribute.Value;
 
-                if (attachment.Contains("inline"))
+                if (attachment.Contains("inline") || attachment.Contains("embedded"))
                 {
                     ThumbnailAttachmentStart = -1;     // Thumbnail is inlined
                     ThumbnailAttachmentLength = -1;    // Thumbnail is inlined
@@ -457,8 +457,16 @@ namespace XisfFileManager.Files
 
                 string[] values = attachment.Split(':');
 
-                ThumbnailAttachmentStart = Convert.ToInt32(values[1]);
-                ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
+                if (values.Length == 3)
+                {
+                    ThumbnailAttachmentStart = Convert.ToInt32(values[1]);
+                    ThumbnailAttachmentLength = Convert.ToInt32(values[2]);
+                }
+                else
+                {
+                    ThumbnailAttachmentStart = -1;     // Thumbnail malformed
+                    ThumbnailAttachmentLength = -1;    // Thumbnail malformed
+                }
             }
         }
 

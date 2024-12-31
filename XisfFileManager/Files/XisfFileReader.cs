@@ -122,8 +122,7 @@ namespace XisfFileManager.Files
             HashSet<string> validIds = new HashSet<string> { "integration", "rejection_high", "rejection_low" };
 
             // Find all "Image" elements that either have no "id" attribute or have a valid "id" attribute
-            var imageElements = xFile.mXDoc.Descendants(ns + "Image")
-                                           .Where(element => element.Attribute("id") == null || validIds.Contains((string)element.Attribute("id")));
+            var imageElements = xFile.mXDoc.Descendants(ns + "Image").Where(element => element.Attribute("id") == null || validIds.Contains((string)element.Attribute("id")));
 
             // Process each found image element based on its "id" attribute
             imageElements.ToList().ForEach(element =>

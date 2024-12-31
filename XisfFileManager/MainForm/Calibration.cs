@@ -116,5 +116,11 @@ namespace XisfFileManager
         {
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Enabled = !CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Checked;
         }
+
+        private void Button_CalibrationTab_FindPedestal_Click(object sender, EventArgs e)
+        {
+            int pedestal = mCalibration.FindBackgroundPedestal(mFileList, NumericUpDown_CalibrationTab_MinBackground.Value);
+            Label_CalibrationTab_Pedestal.Text = pedestal.ToString();
+        }
     }
 }

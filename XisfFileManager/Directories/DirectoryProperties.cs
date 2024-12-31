@@ -33,8 +33,7 @@ namespace XisfFileManager.Files
                .ToList()
                .ForEach(file =>
                {
-                   if (file.Contains("Captures") || file.Contains("Mosaic"))
-                       File.Delete(file);
+                   File.Delete(file);
                });
 
             // If the flag bNoStatistics is set to true, return after removing the old statistics files

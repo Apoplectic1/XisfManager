@@ -93,7 +93,7 @@ namespace XisfFileManager
             ProgressBar_CalibrationTab.Value = data.Progress;
             Label_CalibrationTab_ReadFileName.Text = data.FileName;
             Label_CalibrationTab_TotalFiles.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Calibration Library Files";
+            Label_CalibrationTab_TotalFiles.Text = "Found " + data.TotalFiles.ToString() + " Library Files";
 
             switch (data.MessageMode)
             {
@@ -131,11 +131,13 @@ namespace XisfFileManager
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
-
-            if (!mFolderBrowseState.Contains("Processing"))
+            
+            /*
+            if (!mFolderBrowseState.Contains(@"E:\Photography\Astro Photography\Processing"))
             {
-                mFolderBrowseState = "E:\\Photography\\Astro Photography\\Processing";
+                mFolderBrowseState = @"E:\Photography\Astro Photography\Processing\";
             }
+            */
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -179,28 +181,34 @@ namespace XisfFileManager
 
             // Exclude List
             // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
-            // that contains the string BELOW the selected folder.
+            // that contains the string below the selected folder.
 
             List<string> mExcludeList = new List<string>()
                 {
-                    "Calibration",
-                    "PreProcessing",
-                    "Duplicates",
-                    "Registered",
                     "Calibrated",
-                    "Project"
+                    "Calibration",
+                    "Cosmetized",
+                    "Duplicates",
+                    "Master",
+                    "PreProcessing",
+                    "Project",
+                    "Registered"
                 };
 
+            // Recurese into subdirectories?
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
+            // Open a dialog to select a folder
             DialogResult result = Files.DirectoryOperations.FindTargetFiles(mFolderBrowseState, mExcludeList);
-            
+
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
                 UpdateUI(eUiState.DISABLED);
                 MessageBox.Show("No Xisf Files Found", "Select a different folder");
                 return;
             }
+
+            mFolderBrowseState = Files.DirectoryOperations.SelectedFolder;
 
             Label_FileSelection_Statistics_OperationStatus.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
@@ -476,7 +484,7 @@ namespace XisfFileManager
                     GroupBox_FileSelection_Statistics.Enabled = true;
                     break;
 
-                    case eUiState.RENAME:
+                case eUiState.RENAME:
                     TabControl.Enabled = false;
                     CheckBox_FileSelection_DirectorySelection_Master.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;

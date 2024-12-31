@@ -68,6 +68,11 @@
             TreeView_SchedulerTab_ProfileTree = new System.Windows.Forms.TreeView();
             Button_SchedulerTab_OpenDatabase = new System.Windows.Forms.Button();
             TabPage_Calibration = new System.Windows.Forms.TabPage();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            Label_CalibrationTab_Minimum = new System.Windows.Forms.Label();
+            Button_CalibrationTab_FindPedestal = new System.Windows.Forms.Button();
+            Label_CalibrationTab_Pedestal = new System.Windows.Forms.Label();
+            NumericUpDown_CalibrationTab_MinBackground = new System.Windows.Forms.NumericUpDown();
             CheckBox_CalibrationTab_CreateNew = new System.Windows.Forms.CheckBox();
             TreeView_CalibrationTab_TargetFileTree = new System.Windows.Forms.TreeView();
             TextBox_CalibrationTab_Messgaes = new System.Windows.Forms.TextBox();
@@ -205,6 +210,8 @@
             TabPage_TargetScheduler.SuspendLayout();
             GroupBox_Project_Priority.SuspendLayout();
             TabPage_Calibration.SuspendLayout();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_CalibrationTab_MinBackground).BeginInit();
             GroupBox_CalibrationTab_MatchingTolerance.SuspendLayout();
             TabPage_Keywords.SuspendLayout();
             GroupBox_KeywordUpdateTab_CaptureSoftware.SuspendLayout();
@@ -289,7 +296,7 @@
             RadioButton_FileSelection_Index_ByTime.Location = new System.Drawing.Point(110, 16);
             RadioButton_FileSelection_Index_ByTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_Index_ByTime.Name = "RadioButton_FileSelection_Index_ByTime";
-            RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(67, 19);
+            RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(68, 19);
             RadioButton_FileSelection_Index_ByTime.TabIndex = 5;
             RadioButton_FileSelection_Index_ByTime.Text = "By Time";
             RadioButton_FileSelection_Index_ByTime.UseVisualStyleBackColor = true;
@@ -301,7 +308,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Location = new System.Drawing.Point(27, 16);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Name = "RadioButton_FileSelection_SequenceNumbering_IndexOnly";
-            RadioButton_FileSelection_SequenceNumbering_IndexOnly.Size = new System.Drawing.Size(82, 19);
+            RadioButton_FileSelection_SequenceNumbering_IndexOnly.Size = new System.Drawing.Size(81, 19);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabIndex = 2;
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabStop = true;
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Text = "Index Only";
@@ -314,7 +321,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Location = new System.Drawing.Point(122, 16);
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Name = "RadioButton_FileSelection_SequenceNumbering_IndexWeight";
-            RadioButton_FileSelection_SequenceNumbering_IndexWeight.Size = new System.Drawing.Size(95, 19);
+            RadioButton_FileSelection_SequenceNumbering_IndexWeight.Size = new System.Drawing.Size(94, 19);
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.TabIndex = 1;
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.Text = "Index Weight";
             RadioButton_FileSelection_SequenceNumbering_IndexWeight.UseVisualStyleBackColor = true;
@@ -326,7 +333,7 @@
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Location = new System.Drawing.Point(122, 38);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Name = "RadioButton_FileSelection_SequenceNumbering_WeightIndex";
-            RadioButton_FileSelection_SequenceNumbering_WeightIndex.Size = new System.Drawing.Size(95, 19);
+            RadioButton_FileSelection_SequenceNumbering_WeightIndex.Size = new System.Drawing.Size(94, 19);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.TabIndex = 0;
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Text = "Weight Index";
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.UseVisualStyleBackColor = true;
@@ -468,7 +475,7 @@
             Label_FileSelection_Statistics_TempratureCoefficient.Location = new System.Drawing.Point(16, 57);
             Label_FileSelection_Statistics_TempratureCoefficient.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_FileSelection_Statistics_TempratureCoefficient.Name = "Label_FileSelection_Statistics_TempratureCoefficient";
-            Label_FileSelection_Statistics_TempratureCoefficient.Size = new System.Drawing.Size(220, 15);
+            Label_FileSelection_Statistics_TempratureCoefficient.Size = new System.Drawing.Size(221, 15);
             Label_FileSelection_Statistics_TempratureCoefficient.TabIndex = 13;
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
             // 
@@ -575,7 +582,7 @@
             Label_SchedulerTab_PlansText.AutoSize = true;
             Label_SchedulerTab_PlansText.Location = new System.Drawing.Point(590, 21);
             Label_SchedulerTab_PlansText.Name = "Label_SchedulerTab_PlansText";
-            Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(86, 15);
+            Label_SchedulerTab_PlansText.Size = new System.Drawing.Size(85, 15);
             Label_SchedulerTab_PlansText.TabIndex = 8;
             Label_SchedulerTab_PlansText.Text = "Exposure Plans";
             // 
@@ -584,7 +591,7 @@
             Label_SchedulerTab_TargetsText.AutoSize = true;
             Label_SchedulerTab_TargetsText.Location = new System.Drawing.Point(403, 21);
             Label_SchedulerTab_TargetsText.Name = "Label_SchedulerTab_TargetsText";
-            Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(44, 15);
+            Label_SchedulerTab_TargetsText.Size = new System.Drawing.Size(45, 15);
             Label_SchedulerTab_TargetsText.TabIndex = 6;
             Label_SchedulerTab_TargetsText.Text = "Targets";
             // 
@@ -646,6 +653,7 @@
             // TabPage_Calibration
             // 
             TabPage_Calibration.BackColor = System.Drawing.SystemColors.Control;
+            TabPage_Calibration.Controls.Add(groupBox1);
             TabPage_Calibration.Controls.Add(CheckBox_CalibrationTab_CreateNew);
             TabPage_Calibration.Controls.Add(TreeView_CalibrationTab_TargetFileTree);
             TabPage_Calibration.Controls.Add(TextBox_CalibrationTab_Messgaes);
@@ -664,17 +672,69 @@
             TabPage_Calibration.TabIndex = 1;
             TabPage_Calibration.Text = "Calibration";
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(Label_CalibrationTab_Minimum);
+            groupBox1.Controls.Add(Button_CalibrationTab_FindPedestal);
+            groupBox1.Controls.Add(Label_CalibrationTab_Pedestal);
+            groupBox1.Controls.Add(NumericUpDown_CalibrationTab_MinBackground);
+            groupBox1.Location = new System.Drawing.Point(231, 187);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new System.Drawing.Size(301, 83);
+            groupBox1.TabIndex = 17;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Background";
+            // 
+            // Label_CalibrationTab_Minimum
+            // 
+            Label_CalibrationTab_Minimum.AutoSize = true;
+            Label_CalibrationTab_Minimum.Location = new System.Drawing.Point(37, 29);
+            Label_CalibrationTab_Minimum.Name = "Label_CalibrationTab_Minimum";
+            Label_CalibrationTab_Minimum.Size = new System.Drawing.Size(63, 15);
+            Label_CalibrationTab_Minimum.TabIndex = 16;
+            Label_CalibrationTab_Minimum.Text = "Minimum:";
+            // 
+            // Button_CalibrationTab_FindPedestal
+            // 
+            Button_CalibrationTab_FindPedestal.Location = new System.Drawing.Point(187, 25);
+            Button_CalibrationTab_FindPedestal.Name = "Button_CalibrationTab_FindPedestal";
+            Button_CalibrationTab_FindPedestal.Size = new System.Drawing.Size(75, 23);
+            Button_CalibrationTab_FindPedestal.TabIndex = 12;
+            Button_CalibrationTab_FindPedestal.Text = "Find Pedestal";
+            Button_CalibrationTab_FindPedestal.UseVisualStyleBackColor = true;
+            Button_CalibrationTab_FindPedestal.Click += Button_CalibrationTab_FindPedestal_Click;
+            // 
+            // Label_CalibrationTab_Pedestal
+            // 
+            Label_CalibrationTab_Pedestal.AutoSize = true;
+            Label_CalibrationTab_Pedestal.Location = new System.Drawing.Point(80, 56);
+            Label_CalibrationTab_Pedestal.Name = "Label_CalibrationTab_Pedestal";
+            Label_CalibrationTab_Pedestal.Size = new System.Drawing.Size(113, 15);
+            Label_CalibrationTab_Pedestal.TabIndex = 14;
+            Label_CalibrationTab_Pedestal.Text = "Required Pedestal: 0";
+            // 
+            // NumericUpDown_CalibrationTab_MinBackground
+            // 
+            NumericUpDown_CalibrationTab_MinBackground.Increment = new decimal(new int[] { 16, 0, 0, 0 });
+            NumericUpDown_CalibrationTab_MinBackground.Location = new System.Drawing.Point(107, 25);
+            NumericUpDown_CalibrationTab_MinBackground.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            NumericUpDown_CalibrationTab_MinBackground.Name = "NumericUpDown_CalibrationTab_MinBackground";
+            NumericUpDown_CalibrationTab_MinBackground.Size = new System.Drawing.Size(70, 23);
+            NumericUpDown_CalibrationTab_MinBackground.TabIndex = 13;
+            NumericUpDown_CalibrationTab_MinBackground.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            NumericUpDown_CalibrationTab_MinBackground.ThousandsSeparator = true;
+            // 
             // CheckBox_CalibrationTab_CreateNew
             // 
             CheckBox_CalibrationTab_CreateNew.AutoSize = true;
             CheckBox_CalibrationTab_CreateNew.Checked = true;
             CheckBox_CalibrationTab_CreateNew.CheckState = System.Windows.Forms.CheckState.Checked;
-            CheckBox_CalibrationTab_CreateNew.Location = new System.Drawing.Point(147, 221);
+            CheckBox_CalibrationTab_CreateNew.Location = new System.Drawing.Point(12, 211);
             CheckBox_CalibrationTab_CreateNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_CalibrationTab_CreateNew.Name = "CheckBox_CalibrationTab_CreateNew";
-            CheckBox_CalibrationTab_CreateNew.Size = new System.Drawing.Size(87, 19);
+            CheckBox_CalibrationTab_CreateNew.Size = new System.Drawing.Size(60, 19);
             CheckBox_CalibrationTab_CreateNew.TabIndex = 11;
-            CheckBox_CalibrationTab_CreateNew.Text = "Create New";
+            CheckBox_CalibrationTab_CreateNew.Text = "Create";
             CheckBox_CalibrationTab_CreateNew.UseVisualStyleBackColor = true;
             // 
             // TreeView_CalibrationTab_TargetFileTree
@@ -714,7 +774,7 @@
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Gain);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(Label_CalibrationTab_MatchingTolerance_Exposure);
             GroupBox_CalibrationTab_MatchingTolerance.Controls.Add(TextBox_CalibrationTab_MatchingTolerance_Exposure);
-            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(237, 40);
+            GroupBox_CalibrationTab_MatchingTolerance.Location = new System.Drawing.Point(231, 5);
             GroupBox_CalibrationTab_MatchingTolerance.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_CalibrationTab_MatchingTolerance.Name = "GroupBox_CalibrationTab_MatchingTolerance";
             GroupBox_CalibrationTab_MatchingTolerance.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -856,7 +916,7 @@
             Label_CalibrationTab_MatchingTolerance_Temperature.Location = new System.Drawing.Point(24, 140);
             Label_CalibrationTab_MatchingTolerance_Temperature.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Temperature.Name = "Label_CalibrationTab_MatchingTolerance_Temperature";
-            Label_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(73, 15);
+            Label_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(74, 15);
             Label_CalibrationTab_MatchingTolerance_Temperature.TabIndex = 4;
             Label_CalibrationTab_MatchingTolerance_Temperature.Text = "Temperature";
             // 
@@ -886,7 +946,7 @@
             Label_CalibrationTab_MatchingTolerance_Exposure.Location = new System.Drawing.Point(24, 54);
             Label_CalibrationTab_MatchingTolerance_Exposure.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_MatchingTolerance_Exposure.Name = "Label_CalibrationTab_MatchingTolerance_Exposure";
-            Label_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(55, 15);
+            Label_CalibrationTab_MatchingTolerance_Exposure.Size = new System.Drawing.Size(54, 15);
             Label_CalibrationTab_MatchingTolerance_Exposure.TabIndex = 1;
             Label_CalibrationTab_MatchingTolerance_Exposure.Text = "Exposure";
             // 
@@ -904,7 +964,7 @@
             // Label_CalibrationTab_TotalFiles
             // 
             Label_CalibrationTab_TotalFiles.AutoSize = true;
-            Label_CalibrationTab_TotalFiles.Location = new System.Drawing.Point(31, 18);
+            Label_CalibrationTab_TotalFiles.Location = new System.Drawing.Point(56, 8);
             Label_CalibrationTab_TotalFiles.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_CalibrationTab_TotalFiles.Name = "Label_CalibrationTab_TotalFiles";
             Label_CalibrationTab_TotalFiles.Size = new System.Drawing.Size(125, 15);
@@ -932,7 +992,7 @@
             // 
             // Button_CalibrationTab_CreateCalibrationDirectory
             // 
-            Button_CalibrationTab_CreateCalibrationDirectory.Location = new System.Drawing.Point(51, 192);
+            Button_CalibrationTab_CreateCalibrationDirectory.Location = new System.Drawing.Point(74, 182);
             Button_CalibrationTab_CreateCalibrationDirectory.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_CalibrationTab_CreateCalibrationDirectory.Name = "Button_CalibrationTab_CreateCalibrationDirectory";
             Button_CalibrationTab_CreateCalibrationDirectory.Size = new System.Drawing.Size(88, 76);
@@ -943,7 +1003,7 @@
             // 
             // Button_CalibrationTab_MatchCalibrationFrames
             // 
-            Button_CalibrationTab_MatchCalibrationFrames.Location = new System.Drawing.Point(51, 114);
+            Button_CalibrationTab_MatchCalibrationFrames.Location = new System.Drawing.Point(74, 104);
             Button_CalibrationTab_MatchCalibrationFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_CalibrationTab_MatchCalibrationFrames.Name = "Button_CalibrationTab_MatchCalibrationFrames";
             Button_CalibrationTab_MatchCalibrationFrames.Size = new System.Drawing.Size(88, 76);
@@ -954,7 +1014,7 @@
             // 
             // Button_CalibrationTab_FindCalibrationFrames
             // 
-            Button_CalibrationTab_FindCalibrationFrames.Location = new System.Drawing.Point(51, 36);
+            Button_CalibrationTab_FindCalibrationFrames.Location = new System.Drawing.Point(74, 28);
             Button_CalibrationTab_FindCalibrationFrames.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_CalibrationTab_FindCalibrationFrames.Name = "Button_CalibrationTab_FindCalibrationFrames";
             Button_CalibrationTab_FindCalibrationFrames.Size = new System.Drawing.Size(88, 76);
@@ -1101,7 +1161,7 @@
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Location = new System.Drawing.Point(23, 24);
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX";
-            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Size = new System.Drawing.Size(72, 19);
+            RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Size = new System.Drawing.Size(73, 19);
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.TabIndex = 0;
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.Text = "The SkyX";
             RadioButton_KeywordUpdateTab_CaptureSoftware_TheSkyX.UseVisualStyleBackColor = true;
@@ -1522,7 +1582,7 @@
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Location = new System.Drawing.Point(9, 66);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName";
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(235, 19);
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(236, 19);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name (and include Stars)";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
@@ -1556,7 +1616,7 @@
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Location = new System.Drawing.Point(84, 22);
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Name = "Label_KeywordUpdateTab_SubFrameKeywords_TagetName";
-            Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Size = new System.Drawing.Size(74, 15);
+            Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Size = new System.Drawing.Size(75, 15);
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.TabIndex = 0;
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.Text = "Target Name";
             Label_KeywordUpdateTab_SubFrameKeywords_TagetName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1840,7 +1900,7 @@
             Label_KeywordUpdateTab_Camera_SensorTemp.Location = new System.Drawing.Point(257, 21);
             Label_KeywordUpdateTab_Camera_SensorTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             Label_KeywordUpdateTab_Camera_SensorTemp.Name = "Label_KeywordUpdateTab_Camera_SensorTemp";
-            Label_KeywordUpdateTab_Camera_SensorTemp.Size = new System.Drawing.Size(71, 15);
+            Label_KeywordUpdateTab_Camera_SensorTemp.Size = new System.Drawing.Size(72, 15);
             Label_KeywordUpdateTab_Camera_SensorTemp.TabIndex = 16;
             Label_KeywordUpdateTab_Camera_SensorTemp.Text = "SensorTemp";
             // 
@@ -2175,6 +2235,9 @@
             GroupBox_Project_Priority.PerformLayout();
             TabPage_Calibration.ResumeLayout(false);
             TabPage_Calibration.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumericUpDown_CalibrationTab_MinBackground).EndInit();
             GroupBox_CalibrationTab_MatchingTolerance.ResumeLayout(false);
             GroupBox_CalibrationTab_MatchingTolerance.PerformLayout();
             TabPage_Keywords.ResumeLayout(false);
@@ -2370,5 +2433,10 @@
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
         private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_TotalFrames;
         private System.Windows.Forms.Panel Panel_TargetScheduler;
+        private System.Windows.Forms.Label Label_CalibrationTab_Pedestal;
+        private System.Windows.Forms.NumericUpDown NumericUpDown_CalibrationTab_MinBackground;
+        private System.Windows.Forms.Button Button_CalibrationTab_FindPedestal;
+        private System.Windows.Forms.Label Label_CalibrationTab_Minimum;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Persist_FolderBrowseState" Type="System.String" Scope="User">
-      <Value Profile="(Default)">"E:\\Photography\\Astro Photography\\Processing"</Value>
+      <Value Profile="(Default)">@"E:\Photography\Astro Photography\Processing"</Value>
     </Setting>
     <Setting Name="Persist_UpdateTargetNameState" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

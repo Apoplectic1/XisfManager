@@ -217,6 +217,10 @@ namespace XisfFileManager
                     if (darkMatchedTargetPair.CalibrationFile.FilePath == uniqueDarkCalibrationFile.FilePath)
                     {
                         darkMatchedTargetPair.TargetFile.CDARK = "D" + darkIndex.ToString();
+
+                        var target = darkMatchedTargetPair.TargetFile;
+                        var dark = darkMatchedTargetPair.CalibrationFile;
+
                         uniqueDarkCalibrationFile.CDARK = "D" + darkIndex.ToString();
                         uniqueDarkCalibrationFile.RemoveKeyword("CFLAT"); // For WBPP
                     }
@@ -703,5 +707,24 @@ namespace XisfFileManager
 
         // ******************************************************************************************************************
         // ******************************************************************************************************************
+
+        public int FindBackgroundPedestal(List<XisfFile> targetFileList, decimal minBackground)
+        {
+            int pedestal = 0;
+
+            foreach ((XisfFile TargetFile, XisfFile CalibrationFile) darkMatchedTargetPair in mDarkMatchedTargetPairList)
+            {
+                var target = darkMatchedTargetPair.TargetFile;
+                var dark = darkMatchedTargetPair.CalibrationFile;
+
+            }
+
+
+            return pedestal;
+        }
+
+        // ******************************************************************************************************************
+        // ******************************************************************************************************************
+
     }
 }

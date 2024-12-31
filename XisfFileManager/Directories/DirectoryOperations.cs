@@ -32,20 +32,26 @@ namespace XisfFileManager.Files
                 folderDialog.Description = "Select Xisf Folder Tree";
                 folderDialog.ShowNewFolderButton = false;
 
+                // Set the initial directory to display
                 if (!string.IsNullOrEmpty(defaultFolderPath) && Directory.Exists(defaultFolderPath))
                 {
-                    folderDialog.SelectedPath = defaultFolderPath;
+                    folderDialog.SelectedPath = @"E:\Photography\Astro Photography\Processing\";
                 }
 
+                // Show the folder dialog
                 if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(folderDialog.SelectedPath))
                 {
                     SelectedFolder = folderDialog.SelectedPath;
+
+                    // Search for Xisf files in the selected directory
                     SearchXisfFilesInDirectory(SelectedFolder, mXisfExclude, !Recurse);
                 }
 
+                // Return OK or Cancel based on the user's selection
                 return string.IsNullOrEmpty(SelectedFolder) ? DialogResult.Cancel : DialogResult.OK;
             }
         }
+
 
         /// <summary>
         /// Finds calibration files (.xisf) in the specified folder and its subdirectories.
