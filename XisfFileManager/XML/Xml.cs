@@ -13,14 +13,23 @@ namespace XisfFileManager.XML
 
         public static string FixXisfXml(string xmlString)
         {
-            // Remove anthing after </xisf> in xmlString
-            xmlString = xmlString.Substring(0, xmlString.IndexOf("</xisf>") + "</xisf>".Length);
+            // Remove anything after </xisf> in xmlString
+            int endIndex = xmlString.IndexOf("</xisf>") + "</xisf>".Length;
+            if (endIndex > 0)
+            {
+                xmlString = xmlString.Substring(0, endIndex);
+            }
+            else
+            {
+                // Throw an exception if </xisf> is not found
+                throw new XisfXmlException("Closing </xisf> tag not found in the XML string.");
+            }
 
             // Remove all non-ASCII characters
             xmlString = Regex.Replace(xmlString, @"[^\x00-\x7F]", "");
 
-            // Some XISF files have single quotes inside FITS Keywords - Remove them.
-            xmlString = Regex.Replace(xmlString, @"'", "");
+            // Remove single quotes inside FITS Keywords
+            xmlString = xmlString.Replace("'", "");
 
             // Remove Processing History Property if it exists
             string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
@@ -48,10 +57,10 @@ namespace XisfFileManager.XML
                         }
                         return xmlString; // Return the modified string on successful parsing
                     }
-                    catch (XmlSchemaValidationException)
+                    catch (XmlSchemaValidationException ex)
                     {
-                        // Handle schema validation error here
-                        return null; // Indicate failure by returning null
+                        // Throw an exception with a detailed message
+                        throw new XisfXmlException($"Xml.cs ValidateXisfXml() - XML schema validation error: {ex.Message}");
                     }
                     catch (XmlException ex)
                     {
@@ -60,14 +69,19 @@ namespace XisfFileManager.XML
                         int endIndex = xmlString.IndexOf('<', errorPosition);
 
                         if (startIndex >= 0 && endIndex >= 0)
+                        {
                             xmlString = xmlString.Remove(startIndex, endIndex - startIndex);
+                        }
                         else
-                            return null; // Indicate failure by returning nul
+                        {
+                            // Throw an exception with a detailed message
+                            throw new XisfXmlException($"Xml.cs ValidateXisfXml() - XML parsing error at line {ex.LineNumber}, position {ex.LinePosition}: {ex.Message}");
+                        }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Handle other exceptions here
-                        return null; // Indicate failure by returning null
+                        // Throw an exception with a detailed message
+                        throw new XisfXmlException($"Xml.cs ValidateXisfXml() - Unexpected error: {ex.Message}");
                     }
                 }
             }
@@ -84,17 +98,17 @@ namespace XisfFileManager.XML
             string pattern = $@"{Regex.Escape(openString)}[^{Regex.Escape(openString + closeString)}]*{Regex.Escape(closeString)}";
             MatchCollection matches = Regex.Matches(input, pattern);
 
-            string result = "";
+            var result = new System.Text.StringBuilder();
 
             foreach (Match match in matches)
             {
                 if (HasEvenPairs(match.Value, openString, closeString))
                 {
-                    result += match.Value;
+                    result.Append(match.Value);
                 }
             }
 
-            return result;
+            return result.ToString();
         }
 
         // ***********************************************************************************
@@ -126,23 +140,15 @@ namespace XisfFileManager.XML
 
             firstInvalidChar = '\0';
 
-            int quoteCount = 0;
-
-            foreach (char c in input)
-            {
-                if (c == '"')
-                {
-                    quoteCount++;
-                }
-            }
-
-            bool quotesMatch = quoteCount % 2 == 0;
-
-
             return containsNonAscii;
         }
 
         // ***********************************************************************************
         // ***********************************************************************************
+    }
+
+    public class XisfXmlException : Exception
+    {
+        public XisfXmlException(string message) : base(message) { }
     }
 }
