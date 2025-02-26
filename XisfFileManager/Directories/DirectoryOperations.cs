@@ -87,6 +87,12 @@ namespace XisfFileManager.Files
                 var xisfFiles = Directory.EnumerateFiles(directoryPath, "*.xisf")
                                          .Select(filePath => new FileInfo(filePath))
                                          .Where(fileInfo => !IsExcluded(fileInfo, excludeList));
+                /*
+                // Alternative method to exclude files based on the exclusion list - directory names are excluded
+                var xisfFiles = Directory.EnumerateFiles(directoryPath, "*.xisf")
+                         .Select(filePath => new FileInfo(filePath))
+                         .Where(fileInfo => !excludeList.Contains(fileInfo.DirectoryName));
+                */
 
                 FileInfoList.AddRange(xisfFiles);
 

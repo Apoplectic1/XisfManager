@@ -108,6 +108,8 @@ namespace XisfFileManager.Files
 
             try
             {
+                xFile.Modified = false;
+
                 using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
                     // *******************************************************************************************************************************
@@ -128,8 +130,10 @@ namespace XisfFileManager.Files
                     // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
-                    // Remove any blatent garbage from xmlString
-                    xmlString = Xml.FixXisfXml(xmlString);
+                    // Clean up and validate XML string
+                    var result = Xml.FixXisfXml(xmlString);
+                    xFile.Modified = result.Modified;
+                    xmlString = Xml.ValidateXisfXml(result.FixedXml);
 
                     // Remove any malformed xml from xmlString
                     xmlString = Xml.ValidateXisfXml(xmlString);
@@ -502,6 +506,9 @@ namespace XisfFileManager.Files
         /// <returns>True if the keywords match the XML FITSKeyword elements; otherwise, false.</returns>
         private static bool KeywordsMatchXml(XisfFile xFile)
         {
+            if (xFile.Modified)
+                return false;
+
             // Load the XML string into an XmlDocument
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xFile.XmlString);

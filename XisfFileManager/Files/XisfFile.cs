@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Windows.Security.Cryptography.Core;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
@@ -15,6 +16,8 @@ namespace XisfFileManager.Files
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
         public string XmlString { get; set; }
+
+        public bool Modified { get; set; }
 
         // ************************************************************************************************
         // ************************************************************************************************
