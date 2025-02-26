@@ -18,7 +18,9 @@ namespace XisfFileManager.Files
 
         private Match xmlVersionBlockMatch;
         private Match xmlCommentBlockMatch;
-        private Match xmlKeywordBlockMatch;
+        private Match xmlXisfBlockMatch;
+        private Match xmlImageBlockMatch;
+        private Match xmlMetadataBlockMatch;
 
         /// <summary>
         /// Reads the header keywords from an XISF file asynchronously.
@@ -28,6 +30,8 @@ namespace XisfFileManager.Files
         /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task ReadXisfFileHeaderKeywords(XisfFile xFile)
         {
+            xFile.Modified = false;
+
             await Task.Run(async () =>
             {
                 using (FileStream xFileStream = new(xFile.FilePath, FileMode.Open, FileAccess.Read))
@@ -35,7 +39,7 @@ namespace XisfFileManager.Files
                     // Initialize regex matches and buffer
                     xmlVersionBlockMatch = Match.Empty;
                     xmlCommentBlockMatch = Match.Empty;
-                    xmlKeywordBlockMatch = Match.Empty;
+                    xmlXisfBlockMatch = Match.Empty;
 
                     bytesRead = 0;
                     int nXisfSignatureBlockSize = 16;
@@ -61,15 +65,19 @@ namespace XisfFileManager.Files
 
                     // Match XML version, comment, and keyword blocks
                     xmlVersionBlockMatch = Regex.Match(xmlString, @"<\?xml[\s\S]*?\?>");
-                    xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->");
-                    xmlKeywordBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+                    xmlCommentBlockMatch = Regex.Match(xmlString, @"<!--[\s\S]*?-->"); 
+                    xmlXisfBlockMatch = Regex.Match(xmlString, @"<xisf[\s\S]*?xisf>");
+                    xmlImageBlockMatch = Regex.Match(xmlString, @"<Image[\s\S]*?Image>");
+                    xmlMetadataBlockMatch = Regex.Match(xmlString, @"<Metadata[\s\S]*?Metadata>");
 
-                    // Extract the <xisf>...</xisf> section
-                    xmlString = xmlKeywordBlockMatch.ToString();
 
-                    // Clean and validate XML string
-                    xmlString = Xml.FixXisfXml(xmlString);
-                    xmlString = Xml.ValidateXisfXml(xmlString);
+                    // Convert the <xisf>...</xisf> section to a string
+                    xmlString = xmlXisfBlockMatch.ToString();
+
+                    // Clean up and validate XML string
+                    var result = Xml.FixXisfXml(xmlString);
+                    xFile.Modified = result.Modified;
+                    xmlString = Xml.ValidateXisfXml(result.FixedXml);
 
                     // Store isolated copies of XML sections
                     xFile.XmlVersionText = xmlVersionBlockMatch.ToString().Clone() as string;

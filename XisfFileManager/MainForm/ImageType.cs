@@ -9,40 +9,37 @@ namespace XisfFileManager
     {
         public void ClearFilterFrameTypeGroup()
         {
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked = false;
 
-            CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Black;
-            CheckBox_FileSelection_DirectorySelection_Master.Checked = false;
+            Button_KeywordsTab_ImageType_Frame_SetMaster.ForeColor = Color.Black;
+            Button_KeywordsTab_ImageType_SetAll.ForeColor = Color.Black;
+            Button_KeywordsTab_ImageType_SetByFile.ForeColor = Color.Black;
 
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
-            Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Black;
-
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = false;
         }
 
         public void FindFilterFrameType()
@@ -157,58 +154,58 @@ namespace XisfFileManager
                 if (foundLuma)
                 {
                     if (lumaCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Luma.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked = true;
                 }
                 if (foundRed)
                 {
                     if (redCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Red.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Red.Checked = true;
                 }
                 if (foundGreen)
                 {
                     if (greenCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Green.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Green.Checked = true;
                 }
                 if (foundBlue)
                 {
                     if (blueCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Blue.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked = true;
                 }
                 if (foundHa)
                 {
                     if (haCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Ha.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked = true;
                 }
                 if (foundO3)
                 {
                     if (o3Count != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_O3.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_O3.Checked = true;
                 }
                 if (foundS2)
                 {
                     if (s2Count != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_S2.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_S2.Checked = true;
                 }
                 if (foundShutter)
                 {
                     if (shutterCount != filterCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Filter_Shutter.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked = true;
                 }
             }
             else
@@ -219,12 +216,12 @@ namespace XisfFileManager
                 {
                     if (foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Luma.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked = true;
                     }
                 }
 
@@ -232,12 +229,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Red.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Red.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Red.Checked = true;
                     }
                 }
 
@@ -245,12 +242,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundBlue || foundHa || foundO3 || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Green.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Green.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Green.Checked = true;
                     }
                 }
 
@@ -258,12 +255,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundGreen || foundHa || foundO3 || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Blue.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked = true;
                     }
                 }
 
@@ -271,12 +268,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundGreen || foundBlue || foundO3 || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Ha.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked = true;
                     }
                 }
 
@@ -284,12 +281,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundS2 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_O3.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_O3.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_O3.Checked = true;
                     }
                 }
 
@@ -297,12 +294,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundShutter)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_S2.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_S2.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_S2.Checked = true;
                     }
                 }
 
@@ -310,12 +307,12 @@ namespace XisfFileManager
                 {
                     if (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Filter_Shutter.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked = true;
                     }
                 }
             }
@@ -323,15 +320,15 @@ namespace XisfFileManager
 
             // Now check each and every source file for a valid frame type
 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Black;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.Black;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.Black;
 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = false;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = false;
 
             bool foundLight = false;
             bool foundDark = false;
@@ -393,30 +390,30 @@ namespace XisfFileManager
                 if (foundLight)
                 {
                     if (lightCount != frameTypeCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = true;
                 }
                 if (foundDark)
                 {
                     if (darkCount != frameTypeCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = true;
                 }
                 if (foundFlat)
                 {
                     if (flatCount != frameTypeCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = true;
                 }
                 if (foundBias)
                 {
                     if (biasCount != frameTypeCount)
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkGreen;
+                        RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.DarkGreen;
                     else
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = true;
                 }
             }
             else
@@ -425,12 +422,12 @@ namespace XisfFileManager
                 {
                     if (foundDark || foundFlat || foundBias)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = true;
                     }
                 }
 
@@ -438,12 +435,12 @@ namespace XisfFileManager
                 {
                     if (foundLight || foundFlat || foundBias)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = true;
                     }
                 }
 
@@ -451,12 +448,12 @@ namespace XisfFileManager
                 {
                     if (foundLight || foundDark || foundBias)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = true;
                     }
                 }
 
@@ -464,21 +461,21 @@ namespace XisfFileManager
                 {
                     if (foundLight || foundDark || foundFlat)
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.Red;
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = false;
+                        RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.Red;
+                        RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = false;
                     }
                     else
                     {
-                        RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked = true;
+                        RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = true;
                     }
                 }
 
                 if (!foundLight && !foundDark && !foundFlat && !foundBias)
                 {
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Light.ForeColor = Color.DarkViolet;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.ForeColor = Color.DarkViolet;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.ForeColor = Color.DarkViolet;
-                    RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.DarkViolet;
+                    RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.DarkViolet;
 
                     return;
                 }
@@ -487,12 +484,12 @@ namespace XisfFileManager
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
-                    CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
-                    Button_KeywordUpdateTab_ImageType_Frame_SetMaster.ForeColor = Color.Red;
+                    CheckBox_FileSelection_DirectorySelection_Masters.ForeColor = Color.Red;
+                    Button_KeywordsTab_ImageType_Frame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
-                    CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
+                    CheckBox_FileSelection_DirectorySelection_Masters.Checked = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
                 }
             }
@@ -504,25 +501,25 @@ namespace XisfFileManager
             if ((foundLight || foundDark || foundFlat || foundBias) & (foundLuma || foundRed || foundGreen || foundBlue || foundHa || foundO3 || foundS2 || foundShutter))
             {
                 // Set "SetAll" to black if only a single filter and a single frame type was found
-                Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Black;
+                Button_KeywordsTab_ImageType_SetAll.ForeColor = Color.Black;
             }
             else
             {
                 // More that one software program - set "SetByFile" to red
-                Button_KeywordUpdateTab_ImageType_SetAll.ForeColor = Color.Red;
+                Button_KeywordsTab_ImageType_SetAll.ForeColor = Color.Red;
             }
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
-                CheckBox_FileSelection_DirectorySelection_Master.ForeColor = Color.Red;
-                Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Red;
+                CheckBox_FileSelection_DirectorySelection_Masters.ForeColor = Color.Red;
+                Button_KeywordsTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
 
             if ((filterCount != mFileList.Count) || (frameTypeCount != mFileList.Count))
             {
                 // The number of source files didn't equal the number of files with a known filter
                 // Set "SetByFile" to red
-                Button_KeywordUpdateTab_ImageType_SetByFile.ForeColor = Color.Red;
+                Button_KeywordsTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
         }
 
@@ -588,9 +585,9 @@ namespace XisfFileManager
         {
             foreach (XisfFile file in mFileList)
             {
-                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Frame_Light.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Light", "Integration Master");
                     }
@@ -600,9 +597,9 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Dark", "Integration Master");
                     }
@@ -612,9 +609,9 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Flat", "Integration Master");
                     }
@@ -624,9 +621,9 @@ namespace XisfFileManager
                     }
                 }
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Bias", "Integration Master");
                     }
@@ -637,28 +634,28 @@ namespace XisfFileManager
 
                 }
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked)
                     file.AddKeyword("FILTER", "L", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Red.Checked)
                     file.AddKeyword("FILTER", "R", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Green.Checked)
                     file.AddKeyword("FILTER", "G", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked)
                     file.AddKeyword("FILTER", "B", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked)
                     file.AddKeyword("FILTER", "H", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_O3.Checked)
                     file.AddKeyword("FILTER", "O", "Astrodon O3 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_S2.Checked)
                     file.AddKeyword("FILTER", "S", "Astrodon S2 E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Checked)
+                if (RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked)
                     file.AddKeyword("FILTER", "Shutter", "Opaque 1.25 or placeholder via Starlight Xpress USB 7 Position Wheel");
             }
 
@@ -670,7 +667,7 @@ namespace XisfFileManager
         {
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
-            CheckBox_FileSelection_DirectorySelection_Master.Checked = true;
+            CheckBox_FileSelection_DirectorySelection_Masters.Checked = true;
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
         }
 
