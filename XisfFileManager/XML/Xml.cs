@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -11,32 +12,82 @@ namespace XisfFileManager.XML
         // ***********************************************************************************
         // ***********************************************************************************
 
-        public static string FixXisfXml(string xmlString)
+        public static (string FixedXml, bool Modified) FixXisfXml(string xmlString)
         {
-            // Remove anything after </xisf> in xmlString
+            bool modified = false;
+            string step;
+
+            // Step 1: Remove all non-ASCII characters
+            step = new string(xmlString.Where(c => c < 128).ToArray());
+            if (!string.Equals(step, xmlString, StringComparison.Ordinal))
+            {
+                modified = true;
+            }
+            xmlString = step;
+
+            // Step 2: Remove single quotes inside FITS Keywords
+            step = xmlString.Replace("'", "");
+            if (!string.Equals(step, xmlString, StringComparison.Ordinal))
+            {
+                modified = true;
+            }
+            xmlString = step;
+
+            // Step 3: Remove anything after </xisf> in xmlString
             int endIndex = xmlString.IndexOf("</xisf>") + "</xisf>".Length;
             if (endIndex > 0)
             {
-                xmlString = xmlString.Substring(0, endIndex);
+                if (endIndex < xmlString.Length)
+                {
+                    modified = true;
+                }
+                step = xmlString.Substring(0, endIndex);
+                xmlString = step;
             }
             else
             {
-                // Throw an exception if </xisf> is not found
                 throw new XisfXmlException("Closing </xisf> tag not found in the XML string.");
             }
 
-            // Remove all non-ASCII characters
-            xmlString = Regex.Replace(xmlString, @"[^\x00-\x7F]", "");
-
-            // Remove single quotes inside FITS Keywords
-            xmlString = xmlString.Replace("'", "");
-
-            // Remove Processing History Property if it exists
+            // Step 4: Remove Processing History Property if it exists
             string pattern = Regex.Escape("<Property") + @"(.*?)" + Regex.Escape(";</Property>");
-            xmlString = Regex.Replace(xmlString, pattern, "");
+            step = Regex.Replace(xmlString, pattern, "");
+            if (!string.Equals(step, xmlString, StringComparison.Ordinal))
+            {
+                modified = true;
+            }
+            xmlString = step;
 
-            return xmlString;
+            // Step 5: Remove all <Property ... /Property> or <Property ... /> lines inside <Image> blocks
+            step = Regex.Replace(
+                xmlString,
+                @"(<Image.*?>)(.*?)(</Image>)",
+                m =>
+                {
+                    // Capture the content inside the <Image> block.
+                    string imageContent = m.Groups[2].Value;
+                    // Build a pattern that matches segments starting with "<Property" and ending with either "/Property>" or "/>"
+                    string propertyPattern = Regex.Escape("<Property")
+                        + ".*?(?:"
+                        + Regex.Escape("/Property>")
+                        + "|"
+                        + Regex.Escape("/>")
+                        + ")";
+                    // Remove any such segment from the <Image> block content.
+                    string newContent = Regex.Replace(imageContent, propertyPattern, "", RegexOptions.Singleline);
+                    // Reassemble the <Image> block.
+                    return m.Groups[1].Value + newContent + m.Groups[3].Value;
+                },
+                RegexOptions.Singleline);
+            if (!string.Equals(step, xmlString, StringComparison.Ordinal))
+            {
+                modified = true;
+            }
+            xmlString = step;
+
+            return (xmlString, modified);
         }
+
 
         // ***********************************************************************************
         // ***********************************************************************************

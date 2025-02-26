@@ -75,7 +75,7 @@ namespace XisfFileManager
             int duplicates = XisfFileRename.MoveDuplicates(mFileList);
 
             // Do not consider directory statistics if we are dealing with Master frames
-            if (!CheckBox_FileSelection_DirectorySelection_Master.Checked)
+            if (!CheckBox_FileSelection_DirectorySelection_Masters.Checked)
             {
                 // Set or remove directory file statistics
                 mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked);
@@ -195,10 +195,10 @@ namespace XisfFileManager
 
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Master.Checked;
+            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
+            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
 
-            if (CheckBox_FileSelection_DirectorySelection_Master.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
             {
                 // Set master frame keywords for each file in the file list
                 mFileList.ForEach(file => file.KeywordList.SetMasterFrameKeywords());

@@ -42,7 +42,7 @@
             CheckBox_FileSlection_DirectorySelection_NoStatistics = new System.Windows.Forms.CheckBox();
             TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
-            CheckBox_FileSelection_DirectorySelection_Master = new System.Windows.Forms.CheckBox();
+            CheckBox_FileSelection_DirectorySelection_Masters = new System.Windows.Forms.CheckBox();
             Button_FileSelection_DirectorySelection_Rename = new System.Windows.Forms.Button();
             Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
             CheckBox_FileSelection_DirectorySelection_Recurse = new System.Windows.Forms.CheckBox();
@@ -184,23 +184,23 @@
             Label_KeywordUpdateTab_Camera_Offset = new System.Windows.Forms.Label();
             Label_KeywordUpdateTab_Camera_Gain = new System.Windows.Forms.Label();
             GroupBox_KeywordUpdateTab_ImageType = new System.Windows.Forms.GroupBox();
-            Button_KeywordUpdateTab_ImageType_SetByFile = new System.Windows.Forms.Button();
-            Button_KeywordUpdateTab_ImageType_SetAll = new System.Windows.Forms.Button();
+            Button_KeywordsTab_ImageType_SetByFile = new System.Windows.Forms.Button();
+            Button_KeywordsTab_ImageType_SetAll = new System.Windows.Forms.Button();
             GroupBox_KeywordUpdateTab_ImageType_Frame = new System.Windows.Forms.GroupBox();
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster = new System.Windows.Forms.Button();
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light = new System.Windows.Forms.RadioButton();
+            Button_KeywordsTab_ImageType_Frame_SetMaster = new System.Windows.Forms.Button();
+            RadioButton_KeywordsTab_ImageType_Frame_Bias = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Frame_Flat = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Frame_Dark = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Frame_Light = new System.Windows.Forms.RadioButton();
             GroupBox_KeywordUpdateTab_ImageType_Filter = new System.Windows.Forms.GroupBox();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2 = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Luma = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Red = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_S2 = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Ha = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Blue = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
+            RadioButton_KeywordsTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl = new System.Windows.Forms.TabControl();
             GroupBox_FileSelection_SequenceNumbering.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
@@ -344,7 +344,7 @@
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSlection_DirectorySelection_NoStatistics);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_TotalFrames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Master);
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Masters);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Rename);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Browse);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Recurse);
@@ -388,17 +388,18 @@
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.TabIndex = 8;
             ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text = "Rejection";
             // 
-            // CheckBox_FileSelection_DirectorySelection_Master
+            // CheckBox_FileSelection_DirectorySelection_Masters
             // 
-            CheckBox_FileSelection_DirectorySelection_Master.AutoSize = true;
-            CheckBox_FileSelection_DirectorySelection_Master.Location = new System.Drawing.Point(14, 60);
-            CheckBox_FileSelection_DirectorySelection_Master.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            CheckBox_FileSelection_DirectorySelection_Master.Name = "CheckBox_FileSelection_DirectorySelection_Master";
-            CheckBox_FileSelection_DirectorySelection_Master.Size = new System.Drawing.Size(95, 19);
-            CheckBox_FileSelection_DirectorySelection_Master.TabIndex = 3;
-            CheckBox_FileSelection_DirectorySelection_Master.Text = "Set as Master";
-            CheckBox_FileSelection_DirectorySelection_Master.UseVisualStyleBackColor = true;
-            CheckBox_FileSelection_DirectorySelection_Master.CheckedChanged += CheckBox_Master_CheckedChanged;
+            CheckBox_FileSelection_DirectorySelection_Masters.AutoSize = true;
+            CheckBox_FileSelection_DirectorySelection_Masters.Enabled = false;
+            CheckBox_FileSelection_DirectorySelection_Masters.Location = new System.Drawing.Point(25, 60);
+            CheckBox_FileSelection_DirectorySelection_Masters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CheckBox_FileSelection_DirectorySelection_Masters.Name = "CheckBox_FileSelection_DirectorySelection_Masters";
+            CheckBox_FileSelection_DirectorySelection_Masters.Size = new System.Drawing.Size(67, 19);
+            CheckBox_FileSelection_DirectorySelection_Masters.TabIndex = 3;
+            CheckBox_FileSelection_DirectorySelection_Masters.Text = "Masters";
+            CheckBox_FileSelection_DirectorySelection_Masters.UseVisualStyleBackColor = true;
+            CheckBox_FileSelection_DirectorySelection_Masters.CheckedChanged += CheckBox_Master_CheckedChanged;
             // 
             // Button_FileSelection_DirectorySelection_Rename
             // 
@@ -1968,8 +1969,8 @@
             // 
             // GroupBox_KeywordUpdateTab_ImageType
             // 
-            GroupBox_KeywordUpdateTab_ImageType.Controls.Add(Button_KeywordUpdateTab_ImageType_SetByFile);
-            GroupBox_KeywordUpdateTab_ImageType.Controls.Add(Button_KeywordUpdateTab_ImageType_SetAll);
+            GroupBox_KeywordUpdateTab_ImageType.Controls.Add(Button_KeywordsTab_ImageType_SetByFile);
+            GroupBox_KeywordUpdateTab_ImageType.Controls.Add(Button_KeywordsTab_ImageType_SetAll);
             GroupBox_KeywordUpdateTab_ImageType.Controls.Add(GroupBox_KeywordUpdateTab_ImageType_Frame);
             GroupBox_KeywordUpdateTab_ImageType.Controls.Add(GroupBox_KeywordUpdateTab_ImageType_Filter);
             GroupBox_KeywordUpdateTab_ImageType.Location = new System.Drawing.Point(788, 212);
@@ -1981,35 +1982,35 @@
             GroupBox_KeywordUpdateTab_ImageType.TabStop = false;
             GroupBox_KeywordUpdateTab_ImageType.Text = "Image Type";
             // 
-            // Button_KeywordUpdateTab_ImageType_SetByFile
+            // Button_KeywordsTab_ImageType_SetByFile
             // 
-            Button_KeywordUpdateTab_ImageType_SetByFile.Location = new System.Drawing.Point(170, 181);
-            Button_KeywordUpdateTab_ImageType_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Button_KeywordUpdateTab_ImageType_SetByFile.Name = "Button_KeywordUpdateTab_ImageType_SetByFile";
-            Button_KeywordUpdateTab_ImageType_SetByFile.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_ImageType_SetByFile.TabIndex = 18;
-            Button_KeywordUpdateTab_ImageType_SetByFile.Text = "Set By File";
-            Button_KeywordUpdateTab_ImageType_SetByFile.UseVisualStyleBackColor = true;
-            Button_KeywordUpdateTab_ImageType_SetByFile.Click += Button_KeywordImageTypeFrame_SetByFile_Click;
+            Button_KeywordsTab_ImageType_SetByFile.Location = new System.Drawing.Point(170, 181);
+            Button_KeywordsTab_ImageType_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Button_KeywordsTab_ImageType_SetByFile.Name = "Button_KeywordsTab_ImageType_SetByFile";
+            Button_KeywordsTab_ImageType_SetByFile.Size = new System.Drawing.Size(88, 27);
+            Button_KeywordsTab_ImageType_SetByFile.TabIndex = 18;
+            Button_KeywordsTab_ImageType_SetByFile.Text = "Set By File";
+            Button_KeywordsTab_ImageType_SetByFile.UseVisualStyleBackColor = true;
+            Button_KeywordsTab_ImageType_SetByFile.Click += Button_KeywordImageTypeFrame_SetByFile_Click;
             // 
-            // Button_KeywordUpdateTab_ImageType_SetAll
+            // Button_KeywordsTab_ImageType_SetAll
             // 
-            Button_KeywordUpdateTab_ImageType_SetAll.Location = new System.Drawing.Point(68, 181);
-            Button_KeywordUpdateTab_ImageType_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Button_KeywordUpdateTab_ImageType_SetAll.Name = "Button_KeywordUpdateTab_ImageType_SetAll";
-            Button_KeywordUpdateTab_ImageType_SetAll.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_ImageType_SetAll.TabIndex = 18;
-            Button_KeywordUpdateTab_ImageType_SetAll.Text = "Set All";
-            Button_KeywordUpdateTab_ImageType_SetAll.UseVisualStyleBackColor = true;
-            Button_KeywordUpdateTab_ImageType_SetAll.Click += Button_KeywordImageTypeFrame_SetAll_Click;
+            Button_KeywordsTab_ImageType_SetAll.Location = new System.Drawing.Point(68, 181);
+            Button_KeywordsTab_ImageType_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Button_KeywordsTab_ImageType_SetAll.Name = "Button_KeywordsTab_ImageType_SetAll";
+            Button_KeywordsTab_ImageType_SetAll.Size = new System.Drawing.Size(88, 27);
+            Button_KeywordsTab_ImageType_SetAll.TabIndex = 18;
+            Button_KeywordsTab_ImageType_SetAll.Text = "Set All";
+            Button_KeywordsTab_ImageType_SetAll.UseVisualStyleBackColor = true;
+            Button_KeywordsTab_ImageType_SetAll.Click += Button_KeywordImageTypeFrame_SetAll_Click;
             // 
             // GroupBox_KeywordUpdateTab_ImageType_Frame
             // 
-            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(Button_KeywordUpdateTab_ImageType_Frame_SetMaster);
-            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Frame_Bias);
-            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Frame_Flat);
-            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Frame_Dark);
-            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Frame_Light);
+            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(Button_KeywordsTab_ImageType_Frame_SetMaster);
+            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordsTab_ImageType_Frame_Bias);
+            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordsTab_ImageType_Frame_Flat);
+            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordsTab_ImageType_Frame_Dark);
+            GroupBox_KeywordUpdateTab_ImageType_Frame.Controls.Add(RadioButton_KeywordsTab_ImageType_Frame_Light);
             GroupBox_KeywordUpdateTab_ImageType_Frame.Location = new System.Drawing.Point(10, 100);
             GroupBox_KeywordUpdateTab_ImageType_Frame.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_ImageType_Frame.Name = "GroupBox_KeywordUpdateTab_ImageType_Frame";
@@ -2019,75 +2020,75 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.TabStop = false;
             GroupBox_KeywordUpdateTab_ImageType_Frame.Text = "Frame";
             // 
-            // Button_KeywordUpdateTab_ImageType_Frame_SetMaster
+            // Button_KeywordsTab_ImageType_Frame_SetMaster
             // 
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Location = new System.Drawing.Point(112, 43);
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Name = "Button_KeywordUpdateTab_ImageType_Frame_SetMaster";
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.TabIndex = 4;
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Text = "Set Master";
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.UseVisualStyleBackColor = true;
-            Button_KeywordUpdateTab_ImageType_Frame_SetMaster.Click += Button_KeywordImageTypeFrame_SetMaster_Click;
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Location = new System.Drawing.Point(112, 43);
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Name = "Button_KeywordsTab_ImageType_Frame_SetMaster";
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Size = new System.Drawing.Size(88, 27);
+            Button_KeywordsTab_ImageType_Frame_SetMaster.TabIndex = 4;
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Text = "Set Master";
+            Button_KeywordsTab_ImageType_Frame_SetMaster.UseVisualStyleBackColor = true;
+            Button_KeywordsTab_ImageType_Frame_SetMaster.Click += Button_KeywordImageTypeFrame_SetMaster_Click;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Frame_Bias
+            // RadioButton_KeywordsTab_ImageType_Frame_Bias
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Location = new System.Drawing.Point(231, 20);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Bias";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Size = new System.Drawing.Size(46, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.TabIndex = 3;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.Text = "Bias";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Bias.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Location = new System.Drawing.Point(231, 20);
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Name = "RadioButton_KeywordsTab_ImageType_Frame_Bias";
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Size = new System.Drawing.Size(46, 19);
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.TabIndex = 3;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.Text = "Bias";
+            RadioButton_KeywordsTab_ImageType_Frame_Bias.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Frame_Flat
+            // RadioButton_KeywordsTab_ImageType_Frame_Flat
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Location = new System.Drawing.Point(170, 20);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Flat";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Size = new System.Drawing.Size(44, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.TabIndex = 2;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.Text = "Flat";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Flat.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Location = new System.Drawing.Point(170, 20);
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Name = "RadioButton_KeywordsTab_ImageType_Frame_Flat";
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Size = new System.Drawing.Size(44, 19);
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.TabIndex = 2;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.Text = "Flat";
+            RadioButton_KeywordsTab_ImageType_Frame_Flat.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Frame_Dark
+            // RadioButton_KeywordsTab_ImageType_Frame_Dark
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Location = new System.Drawing.Point(104, 20);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Dark";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Size = new System.Drawing.Size(49, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.TabIndex = 1;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.Text = "Dark";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Dark.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Location = new System.Drawing.Point(104, 20);
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Name = "RadioButton_KeywordsTab_ImageType_Frame_Dark";
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Size = new System.Drawing.Size(49, 19);
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.TabIndex = 1;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.Text = "Dark";
+            RadioButton_KeywordsTab_ImageType_Frame_Dark.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Frame_Light
+            // RadioButton_KeywordsTab_ImageType_Frame_Light
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Location = new System.Drawing.Point(35, 20);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Name = "RadioButton_KeywordUpdateTab_ImageType_Frame_Light";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Size = new System.Drawing.Size(52, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.TabIndex = 0;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.Text = "Light";
-            RadioButton_KeywordUpdateTab_ImageType_Frame_Light.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Location = new System.Drawing.Point(35, 20);
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Name = "RadioButton_KeywordsTab_ImageType_Frame_Light";
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Size = new System.Drawing.Size(52, 19);
+            RadioButton_KeywordsTab_ImageType_Frame_Light.TabIndex = 0;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Frame_Light.Text = "Light";
+            RadioButton_KeywordsTab_ImageType_Frame_Light.UseVisualStyleBackColor = true;
             // 
             // GroupBox_KeywordUpdateTab_ImageType_Filter
             // 
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Luma);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Red);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_S2);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Ha);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Blue);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_Green);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordUpdateTab_ImageType_Filter_O3);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Luma);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Shutter);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Red);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_S2);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Ha);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Blue);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_Green);
+            GroupBox_KeywordUpdateTab_ImageType_Filter.Controls.Add(RadioButton_KeywordsTab_ImageType_Filter_O3);
             GroupBox_KeywordUpdateTab_ImageType_Filter.Location = new System.Drawing.Point(10, 20);
             GroupBox_KeywordUpdateTab_ImageType_Filter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_ImageType_Filter.Name = "GroupBox_KeywordUpdateTab_ImageType_Filter";
@@ -2097,101 +2098,101 @@
             GroupBox_KeywordUpdateTab_ImageType_Filter.TabStop = false;
             GroupBox_KeywordUpdateTab_ImageType_Filter.Text = "Filter";
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Luma
+            // RadioButton_KeywordsTab_ImageType_Filter_Luma
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Location = new System.Drawing.Point(34, 21);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Luma";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Size = new System.Drawing.Size(55, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.TabIndex = 0;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.Text = "Luma";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Luma.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Location = new System.Drawing.Point(34, 21);
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Name = "RadioButton_KeywordsTab_ImageType_Filter_Luma";
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Size = new System.Drawing.Size(55, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.TabIndex = 0;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.Text = "Luma";
+            RadioButton_KeywordsTab_ImageType_Filter_Luma.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter
+            // RadioButton_KeywordsTab_ImageType_Filter_Shutter
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Location = new System.Drawing.Point(231, 51);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Size = new System.Drawing.Size(63, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.TabIndex = 8;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.Text = "Shutter";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Location = new System.Drawing.Point(231, 51);
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Name = "RadioButton_KeywordsTab_ImageType_Filter_Shutter";
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Size = new System.Drawing.Size(63, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.TabIndex = 8;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Text = "Shutter";
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Red
+            // RadioButton_KeywordsTab_ImageType_Filter_Red
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Location = new System.Drawing.Point(34, 51);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Red";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Size = new System.Drawing.Size(45, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.TabIndex = 1;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.Text = "Red";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Red.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Location = new System.Drawing.Point(34, 51);
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Name = "RadioButton_KeywordsTab_ImageType_Filter_Red";
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Size = new System.Drawing.Size(45, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Red.TabIndex = 1;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.Text = "Red";
+            RadioButton_KeywordsTab_ImageType_Filter_Red.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_S2
+            // RadioButton_KeywordsTab_ImageType_Filter_S2
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Location = new System.Drawing.Point(231, 21);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_S2";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Size = new System.Drawing.Size(40, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.TabIndex = 6;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.Text = "S II";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_S2.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Location = new System.Drawing.Point(231, 21);
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Name = "RadioButton_KeywordsTab_ImageType_Filter_S2";
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Size = new System.Drawing.Size(40, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_S2.TabIndex = 6;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.Text = "S II";
+            RadioButton_KeywordsTab_ImageType_Filter_S2.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Ha
+            // RadioButton_KeywordsTab_ImageType_Filter_Ha
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Location = new System.Drawing.Point(108, 21);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Ha";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Size = new System.Drawing.Size(40, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.TabIndex = 2;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.Text = "Ha";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Ha.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Location = new System.Drawing.Point(108, 21);
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Name = "RadioButton_KeywordsTab_ImageType_Filter_Ha";
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Size = new System.Drawing.Size(40, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.TabIndex = 2;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.Text = "Ha";
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Blue
+            // RadioButton_KeywordsTab_ImageType_Filter_Blue
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Location = new System.Drawing.Point(167, 51);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Blue";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Size = new System.Drawing.Size(48, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.TabIndex = 5;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.Text = "Blue";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Blue.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Location = new System.Drawing.Point(167, 51);
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Name = "RadioButton_KeywordsTab_ImageType_Filter_Blue";
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Size = new System.Drawing.Size(48, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.TabIndex = 5;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.Text = "Blue";
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_Green
+            // RadioButton_KeywordsTab_ImageType_Filter_Green
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Location = new System.Drawing.Point(95, 51);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_Green";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Size = new System.Drawing.Size(56, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.TabIndex = 3;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.Text = "Green";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_Green.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Location = new System.Drawing.Point(95, 51);
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Name = "RadioButton_KeywordsTab_ImageType_Filter_Green";
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Size = new System.Drawing.Size(56, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_Green.TabIndex = 3;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.Text = "Green";
+            RadioButton_KeywordsTab_ImageType_Filter_Green.UseVisualStyleBackColor = true;
             // 
-            // RadioButton_KeywordUpdateTab_ImageType_Filter_O3
+            // RadioButton_KeywordsTab_ImageType_Filter_O3
             // 
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.AutoSize = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Location = new System.Drawing.Point(167, 21);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Name = "RadioButton_KeywordUpdateTab_ImageType_Filter_O3";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Size = new System.Drawing.Size(46, 19);
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.TabIndex = 4;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.TabStop = true;
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.Text = "O III";
-            RadioButton_KeywordUpdateTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.AutoSize = true;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Location = new System.Drawing.Point(167, 21);
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Name = "RadioButton_KeywordsTab_ImageType_Filter_O3";
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Size = new System.Drawing.Size(46, 19);
+            RadioButton_KeywordsTab_ImageType_Filter_O3.TabIndex = 4;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.TabStop = true;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.Text = "O III";
+            RadioButton_KeywordsTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;
             // 
             // TabControl
             // 
@@ -2273,7 +2274,7 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightIndex;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
         private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm;
-        private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Master;
+        private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Masters;
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Browse;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Rename;
@@ -2406,23 +2407,23 @@
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Offset;
         private System.Windows.Forms.Label Label_KeywordUpdateTab_Camera_Gain;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType;
-        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_SetByFile;
-        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_SetAll;
+        private System.Windows.Forms.Button Button_KeywordsTab_ImageType_SetByFile;
+        private System.Windows.Forms.Button Button_KeywordsTab_ImageType_SetAll;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Frame;
-        private System.Windows.Forms.Button Button_KeywordUpdateTab_ImageType_Frame_SetMaster;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Bias;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Flat;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Dark;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Frame_Light;
+        private System.Windows.Forms.Button Button_KeywordsTab_ImageType_Frame_SetMaster;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Frame_Bias;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Frame_Flat;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Frame_Dark;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Frame_Light;
         private System.Windows.Forms.GroupBox GroupBox_KeywordUpdateTab_ImageType_Filter;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Luma;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Shutter;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Red;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_S2;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Ha;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Blue;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_Green;
-        private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_ImageType_Filter_O3;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Luma;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Shutter;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Red;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_S2;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Ha;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Blue;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_Green;
+        private System.Windows.Forms.RadioButton RadioButton_KeywordsTab_ImageType_Filter_O3;
         private System.Windows.Forms.TabControl TabControl;
         private System.Windows.Forms.Button Button_KeywordUpdateTab_Cancel;
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest;
