@@ -156,7 +156,8 @@ namespace XisfFileManager
 
         private async void Button_Browse_Click(object sender, EventArgs e)
         {
-            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
+            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
+            // 
             mBCancel = false;
             mFileList.Clear();
             ImageParameterLists.Clear();
