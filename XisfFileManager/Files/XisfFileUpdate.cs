@@ -313,9 +313,27 @@ namespace XisfFileManager.Files
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
 
-            // Select and remove all <Image> elements that have an id attribute with a value that is not 'integration'
-            var imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager).Cast<XmlNode>().ToList();
+            // List of id values you want to remove.
+            List<string> idsToRemove = new List<string> { "rejection_high", "rejection_low" };
+
+            // Build an XPath predicate that matches any node with an id equal to one of the remove values.
+            // This produces a predicate like: "@id='integration' or @id='integration1' or @id='otherId'"
+            string predicate = string.Join(" or ", idsToRemove.Select(id => $"@id='{id}'"));
+
+            // Construct the full XPath expression.
+            string xpath = $"//ns:Image[{predicate}]";
+
+            // Select the nodes to remove.
+            var imageNodesToRemove = document.SelectNodes(xpath, nsManager)
+                                             .Cast<XmlNode>()
+                                             .ToList();
+
+            // Remove each selected node from its parent.
             imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
+
+
+            //var imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager).Cast<XmlNode>().ToList();
+            //imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
 
             // Remove <Thumbnail> element if it exists
             var thumbnailNode = document.SelectSingleNode("//ns:Thumbnail", nsManager);

@@ -388,7 +388,6 @@ namespace XisfFileManager.Files
                 TargetAttachmentStart = Convert.ToInt32(values[1]);
                 TargetAttachmentLength = Convert.ToInt32(values[2]);
             }
-
         }
 
         public void ImageRejectionHighAttachment(XElement element)
