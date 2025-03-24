@@ -132,6 +132,9 @@ namespace XisfFileManager.Files
             // Find all "Image" elements that either have no "id" attribute or have a valid "id" attribute
             var imageElements = xFile.mXDoc.Descendants(ns + "Image").Where(element => element.Attribute("id") == null || validIds.Contains((string)element.Attribute("id")));
 
+            // Find each <Image ... >...</Image> 
+            imageElements = xFile.mXDoc.Descendants(ns + "Image");
+
             // Process each found image element based on its "id" attribute
             imageElements.ToList().ForEach(element =>
             {
@@ -139,15 +142,15 @@ namespace XisfFileManager.Files
 
                 switch (idValue)
                 {
-                    case null:
-                    case "integration":
-                        xFile.ImageAttachment(element);
-                        break;
                     case "rejection_high":
                         xFile.ImageRejectionHighAttachment(element);
                         break;
                     case "rejection_low":
                         xFile.ImageRejectionLowAttachment(element);
+                        break;
+                    
+                    default:
+                        xFile.ImageAttachment(element);
                         break;
                 }
             });
