@@ -105,7 +105,7 @@ namespace XisfFileManager
             // Recursively search sCalibrationFrameDirectory to find calibration frames
             // Add the frames to either mLocalCalibrationFileList or mLibraryCalibrationFileList
 
-            XisfFileReader fileReader = new XisfFileReader();
+            XisfXmlReader xmlReader = new XisfXmlReader();
 
             mCalibrationTabValues.MessageMode = eMessageMode.CLEAR;
             mCalibrationTabValues.Progress = 0;
@@ -150,11 +150,10 @@ namespace XisfFileManager
                 mCalibrationTabValues.FileName = Path.GetDirectoryName(calibrationFile.FilePath) + "\n" + Path.GetFileName(calibrationFile.FilePath);
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
 
-                await fileReader.ReadXisfFileHeaderKeywords(calibrationFile);
+                await xmlReader.ReadXisfFileHeaderKeywords(calibrationFile);
 
                 mLibraryCalibrationFileList.Add(calibrationFile);
             }
-
 
             // There should not be any duplicate calibration files in the library but just in case...
             mLibraryCalibrationFileList = mLibraryCalibrationFileList.Distinct().ToList();

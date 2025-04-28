@@ -669,6 +669,17 @@ namespace XisfFileManager
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Masters.Checked = true;
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
+
+            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            {
+                TextBox_FileSelection_DirectorySelection_Frames.Text = mFileList[0].MSTRFRMS.ToString();
+                TextBox_FileSelection_DirectorySelection_Algo.Text = mFileList[0].MSTRALG;
+            }
+            else
+            {
+                TextBox_FileSelection_DirectorySelection_Frames.Text = "Frames";
+                TextBox_FileSelection_DirectorySelection_Algo.Text = "Algo";
+            }
         }
 
     }

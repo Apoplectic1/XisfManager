@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using XisfFileManager.Globals;
 
@@ -679,6 +680,17 @@ namespace XisfFileManager
 
         public void SetMasterFrameKeywords()
         {
+            // In PixInsight 1.9.2+ , these parameters get moved to within multiple <Property> sections
+
+            // <Property id="PixInsight:ProcessingHistory"
+            // ...
+            // &lt;parameter id=&quot;numberOfImages&quot; value=&quot;33&quot;/&gt;
+            // &lt; parameter id = &quot; rejection & quot; value = &quot; WinsorizedSigmaClip & quot;/ &gt;
+            // ...
+            // </Property>
+
+
+            // This code is used in older versions of PixInsight and WBPP
             List<Keyword> keywords = new List<Keyword>(mKeywordList);
 
             foreach (Keyword node in keywords)
@@ -697,18 +709,18 @@ namespace XisfFileManager
                     {
                         AddKeyword("MSTRALG", "LFC", "Linear Fit Clipping");
                     }
-
-                    if (node.Comment.Contains("Studentized"))
+                    
+                    else if (node.Comment.Contains("Studentized"))
                     {
                         AddKeyword("MSTRALG", "ESD", "Generalized Extreme Studentized Deviate Clipping");
                     }
 
-                    if (node.Comment.Contains("Winsor"))
+                    else if (node.Comment.Contains("Winsor"))
                     {
                         AddKeyword("MSTRALG", "WSC", "Winsorized Sigma Clipping");
                     }
 
-                    if (node.Comment.Contains("Sigma"))
+                    else if (node.Comment.Contains("Sigma"))
                     {
                         AddKeyword("MSTRALG", "SC", "Sigma Clipping");
                     }

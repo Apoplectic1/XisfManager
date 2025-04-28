@@ -8,8 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using XisfFileManager.Files.XML;
 using XisfFileManager.Globals;
-using XisfFileManager.XML;
 
 namespace XisfFileManager.Files
 {
@@ -108,10 +108,11 @@ namespace XisfFileManager.Files
 
             try
             {
-                xFile.Modified = false;
-
+                xFile.bModified = false;
+               
                 using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
+                    bool modified;
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
@@ -127,36 +128,52 @@ namespace XisfFileManager.Files
                     // NOTE: This value will change AFTER Keyword Replacement a few lines below
                     xisfEnd = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
-                    // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
+                    // Convert <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
-                    // Clean up and validate XML string
-                    var result = Xml.FixXisfXml(xmlString);
-                    xFile.Modified = result.Modified;
-                    xmlString = Xml.ValidateXisfXml(result.FixedXml);
+                    // ******************************************************************************************
+                    // Clean up and validate xmlString
 
-                    // Remove any malformed xml from xmlString
-                    xmlString = Xml.ValidateXisfXml(xmlString);
+                    // This should not be needed once all xisf files have been passed throught this application
+                    (xmlString, modified) = Xml.FixXisfXml(xmlString);
+                    //xFile.bModified |= modified;
 
-                    // Create an Xml Document from the xmlString with the proper namespace
-                    XmlDocument xmlDoc = new XmlDocument();
-                    XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
-                    namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
-
-                    // The new  does not include the XmLVersion and PixInsight comment section - Add them
-                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
+                    // This should not be needed once all xisf files have been passed throught this application
+                    (xmlString, modified) = Xml.ValidateXisfXml(xmlString);
+                    //xFile.bModified |= modified;
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // Remove all descendants from xFile.mXDoc that contain an "attachment" attribute that do not match the criteria specified by imageNode (our main image)
 
-                    RemoveUnwantedAttachments(xmlDoc);
+                    // Remove rejection image blocks
+                    (xmlString, modified) = Xml.RemoveImage_ById(xmlString, "rejection_high");
+                    xFile.bModified |= modified;
+
+                    (xmlString, modified) = Xml.RemoveImage_ById(xmlString, "rejection_low");
+                    xFile.bModified |= modified;
+
+                    (xmlString, modified) = Xml.RemoveImageProperties_ById(xmlString, "integration"); // Includes ProcessHistory
+                    xFile.bModified |= modified;
+
+                    // ******************************************************************************************
+
+                    // Create an Xml Document from the xmlString with the proper namespace
+                    XmlDocument xmlDoc = new XmlDocument();
+                    XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+                    namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
+
+                    // The new document does not include the XmLVersion and PixInsight comment section - Add them
+                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
+
+                    
+                    //RemoveUnwantedAttachments(xmlDoc);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    // A list of unsed FITSKeywords will be removed. This method should be able to be removed in the future.
+                    // A list of unsed FITSKeywords will be removed. This method call should be able to be removed in the future.
 
                     xFile.KeywordList.RemoveUnwantedKeywords();
 
@@ -313,6 +330,7 @@ namespace XisfFileManager.Files
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
 
+            
             // List of id values you want to remove.
             List<string> idsToRemove = new List<string> { "rejection_high", "rejection_low" };
 
@@ -524,9 +542,6 @@ namespace XisfFileManager.Files
         /// <returns>True if the keywords match the XML FITSKeyword elements; otherwise, false.</returns>
         private static bool KeywordsMatchXml(XisfFile xFile)
         {
-            if (xFile.Modified)
-                return false;
-
             // Load the XML string into an XmlDocument
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xFile.XmlString);

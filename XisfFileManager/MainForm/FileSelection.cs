@@ -195,8 +195,8 @@ namespace XisfFileManager
 
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
+            TextBox_FileSelection_DirectorySelection_Frames.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
+            TextBox_FileSelection_DirectorySelection_Algo.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
 
             if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
             {
@@ -218,8 +218,8 @@ namespace XisfFileManager
             List<string> WeightKeywords = new List<string>();
 
             bool bStatus;
-            string frames = TextBox_FileSelection_DirectorySelection_TotalFrames.Text;
-            string algo = ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text;
+            string frames = TextBox_FileSelection_DirectorySelection_Frames.Text;
+            string algo = TextBox_FileSelection_DirectorySelection_Algo.Text;
 
             int mTotalFrames = 0;
             bStatus = int.TryParse(frames, out mTotalFrames);

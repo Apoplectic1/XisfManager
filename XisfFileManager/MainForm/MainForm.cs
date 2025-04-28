@@ -25,7 +25,7 @@ namespace XisfFileManager
         private XisfFile mFile;
         private readonly Calibration mCalibration;
         private readonly ImageCalculations ImageParameterLists;
-        private readonly XisfFileReader mFileReader;
+        private readonly XisfXmlReader mXmlReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
         private readonly XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
@@ -58,7 +58,7 @@ namespace XisfFileManager
 
             mDirectoryProperties = new DirectoryProperties();
             mCalibration = new Calibration();
-            mFileReader = new XisfFileReader();
+            mXmlReader = new XisfXmlReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
             mXisfFileUpdate = new XisfFileUpdate();
             mKeywordUpdateProtection = eKeywordUpdateMode.UPDATE_NEW;
@@ -131,7 +131,7 @@ namespace XisfFileManager
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
-            
+
             /*
             if (!mFolderBrowseState.Contains(@"E:\Photography\Astro Photography\Processing"))
             {
@@ -195,7 +195,7 @@ namespace XisfFileManager
                     "Registered"
                 };
 
-            // remove "Master" from the list if the Masters checkbox is checked
+            // remove "Master" from the exclude list if the Masters checkbox is checked
             if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
             {
                 mExcludeList.Remove("Master");
@@ -227,7 +227,6 @@ namespace XisfFileManager
 
 
             // Upate the UI with data from the .xisf recursive directory search
-            ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
             System.Windows.Forms.Application.DoEvents();
 
             foreach (FileInfo xFile in Files.DirectoryOperations.FileInfoList)
@@ -241,19 +240,30 @@ namespace XisfFileManager
                     FilePath = xFile.FullName
                 };
 
-                await mFileReader.ReadXisfFileHeaderKeywords(mFile);
+                await mXmlReader.ReadXisfFileHeaderKeywords(mFile);
 
                 mFileList.Add(mFile);
             }
 
             mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
 
-            // **********************************************************************
-            // Get TargetName and and Weights to populate ComboBoxes
+            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            {
+                TextBox_FileSelection_DirectorySelection_Frames.Text = mFileList[0].MSTRFRMS.ToString();
+                TextBox_FileSelection_DirectorySelection_Algo.Text = mFileList[0].MSTRALG;
+            }
+            else
+            {
+                TextBox_FileSelection_DirectorySelection_Frames.Text = "Frames";
+                TextBox_FileSelection_DirectorySelection_Algo.Text = "Algo";
+            }
 
-            // First get a list of all the target names found in the source files, then find unique names and sort.
-            // Place culled list in the target name combobox
-            List<string> targetNameList = new();
+                // **********************************************************************
+                // Get TargetName and and Weights to populate ComboBoxes
+
+                // First get a list of all the target names found in the source files, then find unique names and sort.
+                // Place culled list in the target name combobox
+                List<string> targetNameList = new();
             List<string> weightKeywordList = new();
 
             foreach (XisfFile file in mFileList)
@@ -571,8 +581,8 @@ namespace XisfFileManager
                 case eUiState.DISABLED:
                     TabControl.Enabled = false;
                     CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
@@ -586,8 +596,8 @@ namespace XisfFileManager
                 case eUiState.ENABLED:
                     TabControl.Enabled = true;
                     CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = true;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = true;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = true;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = true;
@@ -597,8 +607,8 @@ namespace XisfFileManager
                 case eUiState.RENAME:
                     TabControl.Enabled = false;
                     CheckBox_FileSelection_DirectorySelection_Masters.Enabled = false;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;

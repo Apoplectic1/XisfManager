@@ -40,8 +40,7 @@
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new System.Windows.Forms.RadioButton();
             GroupBox_FileSelection_DirectorySelection = new System.Windows.Forms.GroupBox();
             CheckBox_FileSlection_DirectorySelection_NoStatistics = new System.Windows.Forms.CheckBox();
-            TextBox_FileSelection_DirectorySelection_TotalFrames = new System.Windows.Forms.TextBox();
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm = new System.Windows.Forms.ComboBox();
+            TextBox_FileSelection_DirectorySelection_Frames = new System.Windows.Forms.TextBox();
             CheckBox_FileSelection_DirectorySelection_Masters = new System.Windows.Forms.CheckBox();
             Button_FileSelection_DirectorySelection_Rename = new System.Windows.Forms.Button();
             Button_FileSelection_DirectorySelection_Browse = new System.Windows.Forms.Button();
@@ -202,6 +201,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Green = new System.Windows.Forms.RadioButton();
             RadioButton_KeywordsTab_ImageType_Filter_O3 = new System.Windows.Forms.RadioButton();
             TabControl = new System.Windows.Forms.TabControl();
+            TextBox_FileSelection_DirectorySelection_Algo = new System.Windows.Forms.TextBox();
             GroupBox_FileSelection_SequenceNumbering.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -341,9 +341,9 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_Algo);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSlection_DirectorySelection_NoStatistics);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_TotalFrames);
-            GroupBox_FileSelection_DirectorySelection.Controls.Add(ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm);
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(TextBox_FileSelection_DirectorySelection_Frames);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_Masters);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Rename);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(Button_FileSelection_DirectorySelection_Browse);
@@ -367,26 +367,15 @@
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Text = "No Statistics";
             CheckBox_FileSlection_DirectorySelection_NoStatistics.UseVisualStyleBackColor = true;
             // 
-            // TextBox_FileSelection_DirectorySelection_TotalFrames
+            // TextBox_FileSelection_DirectorySelection_Frames
             // 
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Location = new System.Drawing.Point(116, 58);
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Name = "TextBox_FileSelection_DirectorySelection_TotalFrames";
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Size = new System.Drawing.Size(71, 23);
-            TextBox_FileSelection_DirectorySelection_TotalFrames.TabIndex = 9;
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Text = "Frames";
-            // 
-            // ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm
-            // 
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.FormattingEnabled = true;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Items.AddRange(new object[] { "MM", "PC", "SC", "WSC", "ASC", "LFC", "ESD", "RCR" });
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Location = new System.Drawing.Point(194, 58);
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Name = "ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm";
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Size = new System.Drawing.Size(76, 23);
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.TabIndex = 8;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text = "Rejection";
+            TextBox_FileSelection_DirectorySelection_Frames.Enabled = false;
+            TextBox_FileSelection_DirectorySelection_Frames.Location = new System.Drawing.Point(115, 58);
+            TextBox_FileSelection_DirectorySelection_Frames.Name = "TextBox_FileSelection_DirectorySelection_Frames";
+            TextBox_FileSelection_DirectorySelection_Frames.Size = new System.Drawing.Size(59, 23);
+            TextBox_FileSelection_DirectorySelection_Frames.TabIndex = 9;
+            TextBox_FileSelection_DirectorySelection_Frames.Text = "Frames";
+            TextBox_FileSelection_DirectorySelection_Frames.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // CheckBox_FileSelection_DirectorySelection_Masters
             // 
@@ -2206,6 +2195,15 @@
             TabControl.Size = new System.Drawing.Size(1147, 535);
             TabControl.TabIndex = 23;
             // 
+            // TextBox_FileSelection_DirectorySelection_Algo
+            // 
+            TextBox_FileSelection_DirectorySelection_Algo.Location = new System.Drawing.Point(197, 58);
+            TextBox_FileSelection_DirectorySelection_Algo.Name = "TextBox_FileSelection_DirectorySelection_Algo";
+            TextBox_FileSelection_DirectorySelection_Algo.Size = new System.Drawing.Size(59, 23);
+            TextBox_FileSelection_DirectorySelection_Algo.TabIndex = 23;
+            TextBox_FileSelection_DirectorySelection_Algo.Text = "Algo";
+            TextBox_FileSelection_DirectorySelection_Algo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -2273,7 +2271,6 @@
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_IndexWeight;
         private System.Windows.Forms.RadioButton RadioButton_FileSelection_SequenceNumbering_WeightIndex;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection;
-        private System.Windows.Forms.ComboBox ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Masters;
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_Browse;
         private System.Windows.Forms.CheckBox CheckBox_FileSelection_DirectorySelection_Recurse;
@@ -2432,12 +2429,13 @@
         private System.Windows.Forms.CheckBox CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest;
         private System.Windows.Forms.RadioButton RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect;
         private System.Windows.Forms.ComboBox ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile;
-        private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_TotalFrames;
+        private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_Frames;
         private System.Windows.Forms.Panel Panel_TargetScheduler;
         private System.Windows.Forms.Label Label_CalibrationTab_Pedestal;
         private System.Windows.Forms.NumericUpDown NumericUpDown_CalibrationTab_MinBackground;
         private System.Windows.Forms.Button Button_CalibrationTab_FindPedestal;
         private System.Windows.Forms.Label Label_CalibrationTab_Minimum;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox TextBox_FileSelection_DirectorySelection_Algo;
     }
 }

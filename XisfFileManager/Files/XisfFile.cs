@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -16,8 +17,7 @@ namespace XisfFileManager.Files
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
         public string XmlString { get; set; }
-
-        public bool Modified { get; set; }
+        public bool bModified { get; set; } = false;
 
         // ************************************************************************************************
         // ************************************************************************************************
@@ -51,10 +51,6 @@ namespace XisfFileManager.Files
             KeywordList.AddKeyword(keyword, value, comment);
         }
 
-        public void AddXMLKeyword(string keyword, string value, string comment = "Xisf File Manager")
-        {
-            KeywordList.AddKeyword(keyword, value, comment);
-        }
         public void RemoveKeyword(string keyword)
         {
             KeywordList.RemoveKeyword(keyword);
@@ -246,14 +242,6 @@ namespace XisfFileManager.Files
         public int TargetAttachmentWidth { get; set; }
         public int TargetAttachmentHeight { get; set; }
         public int TargetAttachmentPadding { get; set; }
-        public int TargetAttachmentRejectionHighLength { get; set; }
-        public int TargetAttachmentRejectionHighStart { get; set; }
-        public int TargetAttachmentRejectionHighNewStart { get; set; }
-        public int TargetAttachmentRejectionHighPadding { get; set; }
-        public int TargetAttachmentRejectionLowLength { get; set; }
-        public int TargetAttachmentRejectionLowStart { get; set; }
-        public int TargetAttachmentRejectionLowNewStart { get; set; }
-        public int TargetAttachmentRejectionLowPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
@@ -363,63 +351,6 @@ namespace XisfFileManager.Files
         // ************************************************************************************************
         // ************************************************************************************************
 
-        public void ImageAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("geometry");
-
-            if (attribute != null)
-            {
-                string geometry = attribute.Value;
-
-                string[] values = geometry.Split(':');
-
-                TargetAttachmentWidth = Convert.ToInt32(values[0]);
-                TargetAttachmentHeight = Convert.ToInt32(values[1]);
-            }
-
-            attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentStart = Convert.ToInt32(values[1]);
-                TargetAttachmentLength = Convert.ToInt32(values[2]);
-            }
-        }
-
-        public void ImageRejectionHighAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentRejectionHighStart = Convert.ToInt32(values[1]);
-                TargetAttachmentRejectionHighLength = Convert.ToInt32(values[2]);
-            }
-        }
-
-        public void ImageRejectionLowAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentRejectionLowStart = Convert.ToInt32(values[1]);
-                TargetAttachmentRejectionLowLength = Convert.ToInt32(values[2]);
-            }
-        }
-
         public void IccAttachment(XElement element)
         {
             XAttribute attribute = element.Attribute("location");
@@ -523,21 +454,18 @@ namespace XisfFileManager.Files
             }
         }
 
-        public void ParseProperties(XElement property)
+        public void ParseSpecificProperties(XElement property)
         {
             string propertyId = property.Attribute("id")?.Value;
             string propertyType = property.Attribute("type")?.Value;
             string propertyValue = property.Attribute("value")?.Value;
-            string value = property.Value; // specified as a floating string
+            string value = property.Value; // specified as a string
 
             // Handle the property based on its ID
             switch (propertyId)
             {
                 case "XISF:BlockAlignmentSize":
                     BlockAlignmentSize = Convert.ToInt32(propertyValue);
-                    break;
-
-                default:
                     break;
             }
         }
