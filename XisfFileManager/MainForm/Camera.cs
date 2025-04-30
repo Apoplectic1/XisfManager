@@ -683,7 +683,7 @@ namespace XisfFileManager
             // ****************************************************************
             // ****************************************************************
         }
-        
+
 
         private void Button_KeywordUpdateSubFrameKeywordsCamera_ToggleNB_Click(object sender, EventArgs e)
         {
@@ -763,14 +763,11 @@ namespace XisfFileManager
                 file.AddKeyword("BZERO", "32768", "Add value to scale to 65536 (16 bit) values");
                 file.AddKeyword("NAXIS", "2", "XISF File Manager");
 
-
                 if (CheckBox_KeywordUpdateTab_Camera_Z533.Checked)
                 {
                     file.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    file.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
-                    file.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
                     file.AddKeyword("BAYERPAT", "RGGB");
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
 
@@ -798,6 +795,18 @@ namespace XisfFileManager
                     else
                         file.Binning = file.Binning;
 
+                    if (file.Binning == 2)
+                    {
+                        file.AddKeyword("XPIXSZ", "7.52", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "7.52", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        file.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
+                    }
+
+
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
@@ -810,8 +819,6 @@ namespace XisfFileManager
                     file.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
-                    file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Text, out value);
@@ -838,6 +845,17 @@ namespace XisfFileManager
                     else
                         file.Binning = file.Binning;
 
+                    if (file.Binning == 2)
+                    {
+                        file.AddKeyword("XPIXSZ", "4.8", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "4.8", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    }
+
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
@@ -850,8 +868,6 @@ namespace XisfFileManager
                     file.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
-                    file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
                     file.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Text, out value);
@@ -878,6 +894,17 @@ namespace XisfFileManager
                     else
                         file.Binning = file.Binning;
 
+                    if (file.Binning == 2)
+                    {
+                        file.AddKeyword("XPIXSZ", "4.8", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "4.8", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        file.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    }
+                    
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Text, out value);
                     if (bStatus)
                     {
@@ -896,8 +923,6 @@ namespace XisfFileManager
                     file.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    file.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
-                    file.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
                     file.AddKeyword("BAYERPAT", "RGGB");
                     file.AddKeyword("COLORSPC", "Color", "Color Image");
                     file.AddKeyword("GAIN", "0.37", "Fixed");
@@ -915,6 +940,17 @@ namespace XisfFileManager
                     else
                         file.Binning = file.Binning;
 
+                    if (file.Binning == 2)
+                    {
+                        file.AddKeyword("XPIXSZ", "12.9", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "12.9", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        file.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
+                        file.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
+                    }
+
                     bStatus = double.TryParse(ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Text, out value);
                     if (bStatus)
                         file.SensorTemperature = value;
@@ -929,15 +965,12 @@ namespace XisfFileManager
         private void Button_KeywordCamera_SetByFile_Click(object sender, EventArgs e)
         {
             bool status;
-
-
             bool globalTemperature = false;
             string globalTemperatureText = string.Empty;
             bool globalSeconds = false;
             string globalSecondsText = string.Empty;
             bool globalGain = false;
             int globalGainValue = -1;
-
             bool globalOffset = false;
             int globalOffsetValue = -1;
 
@@ -951,7 +984,6 @@ namespace XisfFileManager
             {
                 xFile.RemoveKeyword("NAXIS3");
                 xFile.RemoveKeyword("EXPOSURE");
-
                 xFile.AddKeyword("BITPIX", "16", "Bits Per Pixel");
                 xFile.AddKeyword("BSCALE", "1", "Multiply Raw Values by BSCALE");
                 xFile.AddKeyword("BZERO", "32768", "Add value to scale to 65536 (16 bit) values");
@@ -992,7 +1024,6 @@ namespace XisfFileManager
                 double temperature;
                 status = double.TryParse(temperatureText, out temperature);
                 xFile.AddKeyword("CCD-TEMP", temperature.ToString(), "Actual Sensor Temperature");
-
                 xFile.AddKeyword("NAXIS", "2", "XISF File Manager");
                 xFile.Binning = Int32.Parse(ComboBox_KeywordUpdateTab_Camera_Z533Binning.Text);
                 string secondsTextUI = ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Text;
@@ -1033,9 +1064,6 @@ namespace XisfFileManager
                 status = double.TryParse(secondsText, out seconds);
                 xFile.AddKeyword("EXPTIME", seconds.ToString(), "Exposure Time in Seconds");
 
-
-
-
                 int gainValue;
                 int gainValueUI;
                 int offsetValue;
@@ -1045,8 +1073,16 @@ namespace XisfFileManager
                     xFile.AddKeyword("INSTRUME", "Z533", "ZWO ASI533MC Pro Camera (2021)");
                     xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentWidth.ToString(), "Vertical Pixel Height");
-                    xFile.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
-                    xFile.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
+                    if (xFile.Binning == 2)
+                    {
+                        xFile.AddKeyword("XPIXSZ", "7.52", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "7.52", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        xFile.AddKeyword("XPIXSZ", "3.76", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "3.76", "Vertical Pixel Size in Microns");
+                    }
                     xFile.AddKeyword("BAYERPAT", "RGGB");
 
                     status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z533Gain.Text, out gainValueUI);
@@ -1128,8 +1164,16 @@ namespace XisfFileManager
                     xFile.AddKeyword("INSTRUME", "Z183", "ZWO ASI183MM Pro Camera (2019)");
                     xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
-                    xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    if (xFile.Binning == 2)
+                    {
+                        xFile.AddKeyword("XPIXSZ", "4.8", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "4.8", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    }
                     xFile.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Z183Gain.Text, out gainValueUI);
@@ -1206,16 +1250,21 @@ namespace XisfFileManager
                     xFile.AddKeyword("OFFSET", offsetValue.ToString(), "Camera Offset");
                 }
 
-
-
-
                 if (CheckBox_KeywordUpdateTab_Camera_Q178.Checked)
                 {
                     xFile.AddKeyword("INSTRUME", "Q178", "QHYCCD QHY5III178M Camera (2018)");
                     xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
-                    xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    if (xFile.Binning == 2)
+                    {
+                        xFile.AddKeyword("XPIXSZ", "4.8", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "4.8", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        xFile.AddKeyword("XPIXSZ", "2.4", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "2.4", "Vertical Pixel Size in Microns");
+                    }
                     xFile.AddKeyword("COLORSPC", "Grayscale", "Monochrome Image");
 
                     status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Gain.Text, out gainValueUI);
@@ -1253,7 +1302,6 @@ namespace XisfFileManager
                     }
 
                     xFile.Gain = gainValue;
-
 
                     status = int.TryParse(ComboBox_KeywordUpdateTab_Camera_Q178Offset.Text, out offsetValueUI);
                     offsetValueUI = status ? offsetValueUI : -1;
@@ -1297,8 +1345,16 @@ namespace XisfFileManager
                     xFile.AddKeyword("INSTRUME", "A144", "Atik Infinity Camera (2018)");
                     xFile.AddKeyword("NAXIS1", xFile.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
                     xFile.AddKeyword("NAXIS2", xFile.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
-                    xFile.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
-                    xFile.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
+                    if (xFile.Binning == 2)
+                    {
+                        xFile.AddKeyword("XPIXSZ", "12.9", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "12.9", "Vertical Pixel Size in Microns");
+                    }
+                    else
+                    {
+                        xFile.AddKeyword("XPIXSZ", "6.45", "Horizonal Pixel Size in Microns");
+                        xFile.AddKeyword("YPIXSZ", "6.45", "Vertical Pixel Size in Microns");
+                    }
                     xFile.AddKeyword("BAYERPAT", "RGGB");
                     xFile.RemoveKeyword("GAIN");
                     xFile.RemoveKeyword("OFFSET");
