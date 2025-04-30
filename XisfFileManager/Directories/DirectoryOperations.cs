@@ -25,32 +25,44 @@ namespace XisfFileManager.Files
         /// </summary>
         public static DialogResult FindTargetFiles(string defaultFolderPath, List<string> mXisfExclude)
         {
+            // reset the results list
             FileInfoList = new List<System.IO.FileInfo>();
 
-            using (FolderBrowserDialog folderDialog = new())
+            using var folderDialog = new FolderBrowserDialog
             {
-                folderDialog.Description = "Select Xisf Folder Tree";
-                folderDialog.ShowNewFolderButton = false;
+                Description = "Select Xisf Folder Tree",
+                ShowNewFolderButton = false,
 
-                // Set the initial directory to display
-                if (!string.IsNullOrEmpty(defaultFolderPath) && Directory.Exists(defaultFolderPath))
-                {
-                    folderDialog.SelectedPath = @"E:\Photography\Astro Photography\Processing\";
-                }
+                // this will expand the tree and highlight your last pick...
+                RootFolder = Environment.SpecialFolder.MyComputer,
+                SelectedPath = !string.IsNullOrEmpty(defaultFolderPath)
+                   && Directory.Exists(defaultFolderPath)
+                   ? defaultFolderPath
+                   : @"E:\Photography\Astro Photography\Processing\"
+            };
 
-                // Show the folder dialog
-                if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(folderDialog.SelectedPath))
-                {
-                    SelectedFolder = folderDialog.SelectedPath;
+            // Show it
+            var result = folderDialog.ShowDialog();
 
-                    // Search for Xisf files in the selected directory
-                    SearchXisfFilesInDirectory(SelectedFolder, mXisfExclude, !Recurse);
-                }
+            // Only if they picked OK and a real folder…
+            if (result == DialogResult.OK
+             && !string.IsNullOrEmpty(folderDialog.SelectedPath))
+            {
+                // store for the caller (and for next time)
+                SelectedFolder = folderDialog.SelectedPath;
 
-                // Return OK or Cancel based on the user's selection
-                return string.IsNullOrEmpty(SelectedFolder) ? DialogResult.Cancel : DialogResult.OK;
+                // do your search
+                SearchXisfFilesInDirectory(
+                    SelectedFolder,
+                    mXisfExclude,
+                    !Recurse
+                );
             }
+
+            // return exactly what the dialog returned
+            return result;
         }
+
 
 
         /// <summary>

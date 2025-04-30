@@ -131,13 +131,6 @@ namespace XisfFileManager
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
-
-            /*
-            if (!mFolderBrowseState.Contains(@"E:\Photography\Astro Photography\Processing"))
-            {
-                mFolderBrowseState = @"E:\Photography\Astro Photography\Processing\";
-            }
-            */
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -201,7 +194,6 @@ namespace XisfFileManager
                 mExcludeList.Remove("Master");
                 mExcludeList.Remove("Calibration");
             }
-
 
             // Recurese into subdirectories?
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
