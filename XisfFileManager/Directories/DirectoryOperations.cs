@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,47 +24,28 @@ namespace XisfFileManager.Files
         /// <summary>
         /// Prompts the user to select a folder and searches for .xisf files within the selected folder and its subdirectories.
         /// </summary>
-        public static DialogResult FindTargetFiles(string defaultFolderPath, List<string> mXisfExclude)
+        public static DialogResult FindTargetFiles(string defaultFolder, List<string> exclude)
         {
-            // reset the results list
-            FileInfoList = new List<System.IO.FileInfo>();
+            FileInfoList = new List<FileInfo>();
 
-            using var folderDialog = new FolderBrowserDialog
+            var dlg = new CommonOpenFileDialog
             {
-                Description = "Select Xisf Folder Tree",
-                ShowNewFolderButton = false,
-
-                // this will expand the tree and highlight your last pick...
-                RootFolder = Environment.SpecialFolder.MyComputer,
-                SelectedPath = !string.IsNullOrEmpty(defaultFolderPath)
-                   && Directory.Exists(defaultFolderPath)
-                   ? defaultFolderPath
-                   : @"E:\Photography\Astro Photography\Processing\"
+                Title = "Select Xisf Folder Tree",
+                IsFolderPicker = true,
+                InitialDirectory = Directory.Exists(defaultFolder)
+                                   ? defaultFolder
+                                   : @"E:\Photography\Astro Photography\Processing\"
             };
 
-            // Show it
-            var result = folderDialog.ShowDialog();
-
-            // Only if they picked OK and a real folder…
-            if (result == DialogResult.OK
-             && !string.IsNullOrEmpty(folderDialog.SelectedPath))
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                // store for the caller (and for next time)
-                SelectedFolder = folderDialog.SelectedPath;
-
-                // do your search
-                SearchXisfFilesInDirectory(
-                    SelectedFolder,
-                    mXisfExclude,
-                    !Recurse
-                );
+                SelectedFolder = dlg.FileName;
+                SearchXisfFilesInDirectory(SelectedFolder, exclude, !Recurse);
+                return DialogResult.OK;
             }
 
-            // return exactly what the dialog returned
-            return result;
+            return DialogResult.Cancel;
         }
-
-
 
         /// <summary>
         /// Finds calibration files (.xisf) in the specified folder and its subdirectories.

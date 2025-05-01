@@ -136,11 +136,11 @@ namespace XisfFileManager.Files
 
                     // This should not be needed once all xisf files have been passed throught this application
                     (xmlString, modified) = Xml.FixXisfXml(xmlString);
-                    //xFile.bModified |= modified;
+                    xFile.bModified |= modified;
 
                     // This should not be needed once all xisf files have been passed throught this application
                     (xmlString, modified) = Xml.ValidateXisfXml(xmlString);
-                    //xFile.bModified |= modified;
+                    xFile.bModified |= modified;
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -168,7 +168,7 @@ namespace XisfFileManager.Files
                     xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
 
                     
-                    //RemoveUnwantedAttachments(xmlDoc);
+                    RemoveUnwantedAttachments(xmlDoc);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -329,29 +329,6 @@ namespace XisfFileManager.Files
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
-
-            
-            // List of id values you want to remove.
-            List<string> idsToRemove = new List<string> { "rejection_high", "rejection_low" };
-
-            // Build an XPath predicate that matches any node with an id equal to one of the remove values.
-            // This produces a predicate like: "@id='integration' or @id='integration1' or @id='otherId'"
-            string predicate = string.Join(" or ", idsToRemove.Select(id => $"@id='{id}'"));
-
-            // Construct the full XPath expression.
-            string xpath = $"//ns:Image[{predicate}]";
-
-            // Select the nodes to remove.
-            var imageNodesToRemove = document.SelectNodes(xpath, nsManager)
-                                             .Cast<XmlNode>()
-                                             .ToList();
-
-            // Remove each selected node from its parent.
-            imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
-
-
-            //var imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager).Cast<XmlNode>().ToList();
-            //imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
 
             // Remove <Thumbnail> element if it exists
             var thumbnailNode = document.SelectSingleNode("//ns:Thumbnail", nsManager);

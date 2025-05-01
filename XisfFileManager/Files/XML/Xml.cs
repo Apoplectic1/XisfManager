@@ -111,7 +111,7 @@ namespace XisfFileManager.Files.XML
             step = xmlString.Replace("'", "");
             if (!string.Equals(step, xmlString, StringComparison.Ordinal))
             {
-                modified = true;
+                //modified = true;
             }
             xmlString = step;
             
