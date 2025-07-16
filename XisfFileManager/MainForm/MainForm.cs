@@ -178,28 +178,24 @@ namespace XisfFileManager
 
             List<string> mExcludeList = new List<string>()
                 {
-                    "Calibrated",
                     "Calibration",
-                    "Cosmetized",
                     "Duplicates",
                     "Master",
-                    "PreProcessing",
-                    "Project",
-                    "Registered"
+                    "Project"
                 };
 
             // remove "Master" from the exclude list if the Masters checkbox is checked
-            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 mExcludeList.Remove("Master");
                 mExcludeList.Remove("Calibration");
             }
 
-            // Recurese into subdirectories?
+            // Recurese into subdirectories
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             // Open a dialog to select a folder
-            DialogResult result = Files.DirectoryOperations.FindTargetFiles(mFolderBrowseState, mExcludeList);
+            DialogResult result = Files.DirectoryOperations.FindTargetFilesDialog(mFolderBrowseState, mExcludeList, ExcludeType.None);
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
@@ -239,23 +235,23 @@ namespace XisfFileManager
 
             mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
 
-            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
-                TextBox_FileSelection_DirectorySelection_Frames.Text = mFileList[0].MSTRFRMS.ToString();
-                TextBox_FileSelection_DirectorySelection_Algo.Text = mFileList[0].MSTRALG;
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = mFileList[0].MSTRFRMS.ToString();
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = mFileList[0].MSTRALG;
             }
             else
             {
-                TextBox_FileSelection_DirectorySelection_Frames.Text = "Frames";
-                TextBox_FileSelection_DirectorySelection_Algo.Text = "Algo";
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = "Frames";
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = "Algo";
             }
 
-                // **********************************************************************
-                // Get TargetName and and Weights to populate ComboBoxes
+            // **********************************************************************
+            // Get TargetName and and Weights to populate ComboBoxes
 
-                // First get a list of all the target names found in the source files, then find unique names and sort.
-                // Place culled list in the target name combobox
-                List<string> targetNameList = new();
+            // First get a list of all the target names found in the source files, then find unique names and sort.
+            // Place culled list in the target name combobox
+            List<string> targetNameList = new();
             List<string> weightKeywordList = new();
 
             foreach (XisfFile file in mFileList)
@@ -458,7 +454,7 @@ namespace XisfFileManager
 
         }
 
-        private void Button_SubFrameKeyword_UpdateXisfFiles_Click(object sender, EventArgs e)
+        private void Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click(object sender, EventArgs e)
         {
             if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 return;
@@ -503,11 +499,6 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-
-                // if (xFile.FilePath.Contains("reject", StringComparison.OrdinalIgnoreCase))
-                // {
-                //     xFile.AddKeyword("CREJECT", "Included", "NSG or Other Rejected Frame");
-                // }
 
                 bStatus = mXisfFileUpdate.UpdateFile(xFile, xFile.FilePath);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
@@ -572,9 +563,9 @@ namespace XisfFileManager
             {
                 case eUiState.DISABLED:
                     TabControl.Enabled = false;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = false;
-                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
@@ -587,9 +578,9 @@ namespace XisfFileManager
 
                 case eUiState.ENABLED:
                     TabControl.Enabled = true;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = true;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = true;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = true;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = true;
@@ -598,9 +589,9 @@ namespace XisfFileManager
 
                 case eUiState.RENAME:
                     TabControl.Enabled = false;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = false;
-                    TextBox_FileSelection_DirectorySelection_Frames.Enabled = false;
-                    TextBox_FileSelection_DirectorySelection_Algo.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
@@ -608,6 +599,37 @@ namespace XisfFileManager
                     Label_FileSelection_BrowseFileName.Text = "No Files Selected";
                     break;
             }
+        }
+
+        bool noStaticsState;
+        private void CheckBox_FileSelection_DirectorySelection_EnableFluxDensity_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+            {
+                noStaticsState = CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked;
+                Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+
+                Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = true;
+                CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
+
+            }
+            else
+            {
+                Button_FileSelection_DirectorySelection_Rename.Enabled = true;
+
+                Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = false;
+                CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = noStaticsState;
+            }
+        }
+
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Placeholder for future use
+        }
+
+        private void Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click(object sender, EventArgs e)
+        {
+            SetupFluxDensity();
         }
 
         // ##########################################################################################################################

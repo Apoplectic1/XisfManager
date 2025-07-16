@@ -17,7 +17,7 @@ namespace XisfFileManager.Files
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
         public string XmlString { get; set; }
-        public bool bModified { get; set; } = false;
+        public bool bModified { get; set; }
 
         // ************************************************************************************************
         // ************************************************************************************************

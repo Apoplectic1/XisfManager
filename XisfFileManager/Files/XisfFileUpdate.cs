@@ -94,8 +94,8 @@ namespace XisfFileManager.Files
             }
 
             // Return if KeywordList and the original XML are identical 
-            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
-                return false;
+            //if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
+            //    return false;
 
             if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW && KeywordsMatchXml(xFile))
                 return true;

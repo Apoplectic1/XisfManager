@@ -2,6 +2,7 @@
 using System.Drawing;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
+using System.IO;
 
 namespace XisfFileManager
 {
@@ -484,12 +485,12 @@ namespace XisfFileManager
             {
                 if ((masterCount != mFileList.Count) && (masterCount > 0))
                 {
-                    CheckBox_FileSelection_DirectorySelection_Masters.ForeColor = Color.Red;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.ForeColor = Color.Red;
                     Button_KeywordsTab_ImageType_Frame_SetMaster.ForeColor = Color.Red;
                 }
                 else
                 {
-                    CheckBox_FileSelection_DirectorySelection_Masters.Checked = true;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
                 }
             }
@@ -511,7 +512,7 @@ namespace XisfFileManager
 
             if ((masterCount != mFileList.Count) && (masterCount != 0))
             {
-                CheckBox_FileSelection_DirectorySelection_Masters.ForeColor = Color.Red;
+                CheckBox_FileSelection_DirectorySelection_Masters_Enable.ForeColor = Color.Red;
                 Button_KeywordsTab_ImageType_SetByFile.ForeColor = Color.Red;
             }
 
@@ -587,7 +588,7 @@ namespace XisfFileManager
             {
                 if (RadioButton_KeywordsTab_ImageType_Frame_Light.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Light", "Integration Master");
                     }
@@ -599,7 +600,7 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Dark", "Integration Master");
                     }
@@ -611,7 +612,7 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Flat", "Integration Master");
                     }
@@ -623,7 +624,7 @@ namespace XisfFileManager
 
                 if (RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked)
                 {
-                    if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+                    if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
                     {
                         file.AddKeyword("IMAGETYP", "Bias", "Integration Master");
                     }
@@ -634,17 +635,67 @@ namespace XisfFileManager
 
                 }
 
-                if (RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked)
-                    file.AddKeyword("FILTER", "L", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
+                if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+                {
+                    if (Path.GetFileNameWithoutExtension(file.FilePath).EndsWith("_L"))
+                    {
+                        file.AddKeyword("FILTER", "L", "Sony ASI533 RGB Filters");
+                        file.AddKeyword("COLORSPC", "Grayscale", "Forced Mono");
+                        file.RemoveKeyword("BAYERPAT");
+                    }
+                }
+                else
+                {
+                    if (RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked)
+                        file.AddKeyword("FILTER", "L", "Astrodon Luma 1.25 via Starlight Xpress USB 7 Position Wheel");
+                }
 
-                if (RadioButton_KeywordsTab_ImageType_Filter_Red.Checked)
-                    file.AddKeyword("FILTER", "R", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
+                if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+                {
+                    if (Path.GetFileNameWithoutExtension(file.FilePath).EndsWith("_R"))
+                    {
+                        file.AddKeyword("FILTER", "R", "Sony ASI533 RGB Filters");
+                        file.AddKeyword("COLORSPC", "Grayscale", "Forced Mono");
+                        file.RemoveKeyword("BAYERPAT");
+                    }
+                }
+                else
+                {
+                    if (RadioButton_KeywordsTab_ImageType_Filter_Red.Checked)
+                        file.AddKeyword("FILTER", "R", "Astrodon Red 1.25 via Starlight Xpress USB 7 Position Wheel");
+                }
 
-                if (RadioButton_KeywordsTab_ImageType_Filter_Green.Checked)
-                    file.AddKeyword("FILTER", "G", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
 
-                if (RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked)
-                    file.AddKeyword("FILTER", "B", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
+                if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+                {
+                    if (Path.GetFileNameWithoutExtension(file.FilePath).EndsWith("_G"))
+                    {
+                        file.AddKeyword("FILTER", "G", "Sony ASI533 RGB Filters");
+                        file.AddKeyword("COLORSPC", "Grayscale", "Forced Mono");
+                        file.RemoveKeyword("BAYERPAT");
+                    }
+                }
+                else
+                {
+                    if (RadioButton_KeywordsTab_ImageType_Filter_Green.Checked)
+                        file.AddKeyword("FILTER", "G", "Astrodon Green 1.25 via Starlight Xpress USB 7 Position Wheel");
+                }
+
+
+                if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+                {
+                    if (Path.GetFileNameWithoutExtension(file.FilePath).EndsWith("_B"))
+                    {
+                        file.AddKeyword("FILTER", "B", "Sony ASI533 RGB Filters");
+                        file.AddKeyword("COLORSPC", "Grayscale", "Forced Mono");
+                        file.RemoveKeyword("BAYERPAT");
+                    }
+                }
+                else
+                {
+                    if (RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked)
+                        file.AddKeyword("FILTER", "B", "Astrodon Blue 1.25 via Starlight Xpress USB 7 Position Wheel");
+                }
 
                 if (RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked)
                     file.AddKeyword("FILTER", "H", "Astrodon Ha E-Series 1.25 via Starlight Xpress USB 7 Position Wheel");
@@ -667,18 +718,18 @@ namespace XisfFileManager
         {
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text = "Master";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = true;
-            CheckBox_FileSelection_DirectorySelection_Masters.Checked = true;
+            CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked = true;
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
 
-            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
-                TextBox_FileSelection_DirectorySelection_Frames.Text = mFileList[0].MSTRFRMS.ToString();
-                TextBox_FileSelection_DirectorySelection_Algo.Text = mFileList[0].MSTRALG;
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = mFileList[0].MSTRFRMS.ToString();
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = mFileList[0].MSTRALG;
             }
             else
             {
-                TextBox_FileSelection_DirectorySelection_Frames.Text = "Frames";
-                TextBox_FileSelection_DirectorySelection_Algo.Text = "Algo";
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = "Frames";
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = "Algo";
             }
         }
 

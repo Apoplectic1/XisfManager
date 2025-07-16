@@ -325,7 +325,7 @@ namespace XisfFileManager
                         "H" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
                         "O" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
                         "S" => "Astrodon E-Series 1.25 via Starlight Xpress USB 7 Position Wheel",
-                  "Shutter" => "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel",
+                        "Shutter" => "Opaque 1.25 via Starlight Xpress USB 7 Position Wheel",
                         _ => string.Empty
                     };
 
