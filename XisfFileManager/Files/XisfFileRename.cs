@@ -152,7 +152,7 @@ namespace XisfFileManager.Files
                                 newName += $"  ({mFile.MSTRALG}  {mFile.CaptureTime:yyyy-MM-dd}";
                             else
                                 newName += $"  ({mFile.CaptureTime:yyyy-MM-dd}";
-                            newName += $"  {mFile.CaptureSoftware})";
+                                newName += $"  {mFile.CaptureSoftware})";
                             break;
 
                         case eFrame.DARK:

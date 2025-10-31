@@ -151,7 +151,7 @@ namespace XisfFileManager.Files
             {
                 case ExcludeType.Exact:
                     // If excludeType is Exact, return true (exclude the file) if any directories in the directory path
-                    // matche any of the items from the exclusion list exactly.
+                    // matches any of the items from the exclusion list exactly.
                     var equalsSet = new HashSet<string>(excludeList, StringComparer.Ordinal);
                     return directoryPath.Split(Path.DirectorySeparatorChar).Any(dir => equalsSet.Contains(dir));
                 case ExcludeType.Contains:

@@ -175,16 +175,15 @@ namespace XisfFileManager
             // Exclude List
             // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
             // that contains the string below the selected folder.
-
             List<string> mExcludeList = new List<string>()
-                {
+            {
                     "Calibration",
                     "Duplicates",
                     "Master",
                     "Project"
-                };
+            };
 
-            // remove "Master" from the exclude list if the Masters checkbox is checked
+            // remove "Master" from the exclude list if the Masters checkbox is checkedc because we are processing masters
             if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 mExcludeList.Remove("Master");
@@ -195,7 +194,7 @@ namespace XisfFileManager
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             // Open a dialog to select a folder
-            DialogResult result = Files.DirectoryOperations.FindTargetFilesDialog(mFolderBrowseState, mExcludeList, ExcludeType.None);
+            DialogResult result = Files.DirectoryOperations.FindTargetFilesDialog(mFolderBrowseState, mExcludeList, ExcludeType.Contains);
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {

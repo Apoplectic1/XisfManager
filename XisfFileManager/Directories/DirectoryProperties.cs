@@ -121,25 +121,6 @@ namespace XisfFileManager.Files
                             // Add the computed statistics to the DirectoryStatistics dictionary
                             DirectoryStatistics[group.Key] = statistics;
                         }
-                        else
-                        {
-                            // We are here beacuse the grouName does not contain the camera identifier, meaning we are in a
-                            // non standard directory structure (Key: no camera ID). an non-standard naming conventions are being used.
-                            // Since there is no camera identifier, we cannot compute camera specific statistics for this group.
-
-                            // Although it will probably not be used, we can still compute the total exposure time for all files in this group.
-                            // We do know directory information and file count. This will enable us to use rename by Filter.
-                            // Renaming by Time will not use group statistics and should work. 
-
-                            // Calculate the total exposure time for all files in this group(convert seconds to hours)
-                            double totalExposureTime = group.Sum(file => file.ExposureSeconds) / 3600.0;
-
-                            // So, construct a bogus statistics string in the form "[camera] - [directory] - [file count], [total exposure time]"
-                            string statistics = $"None - {Path.GetFileName(groupName)} - {group.Count()}, {totalExposureTime:F1}";
-
-                            // Add the bogus statistics to the DirectoryStatistics dictionary
-                            DirectoryStatistics[group.Key] = statistics;
-                        }
                     });
             }
         }
