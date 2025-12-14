@@ -1721,7 +1721,7 @@
             ComboBox_KeywordUpdateTab_Camera_A144Binning.Location = new System.Drawing.Point(330, 133);
             ComboBox_KeywordUpdateTab_Camera_A144Binning.Name = "ComboBox_KeywordUpdateTab_Camera_A144Binning";
             ComboBox_KeywordUpdateTab_Camera_A144Binning.Size = new System.Drawing.Size(44, 23);
-            ComboBox_KeywordUpdateTab_Camera_A144Binning.TabIndex = 58;
+            ComboBox_KeywordUpdateTab_Camera_A144Binning.TabIndex = 21;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Q178Binning
             // 
@@ -1729,7 +1729,7 @@
             ComboBox_KeywordUpdateTab_Camera_Q178Binning.Location = new System.Drawing.Point(330, 103);
             ComboBox_KeywordUpdateTab_Camera_Q178Binning.Name = "ComboBox_KeywordUpdateTab_Camera_Q178Binning";
             ComboBox_KeywordUpdateTab_Camera_Q178Binning.Size = new System.Drawing.Size(44, 23);
-            ComboBox_KeywordUpdateTab_Camera_Q178Binning.TabIndex = 57;
+            ComboBox_KeywordUpdateTab_Camera_Q178Binning.TabIndex = 17;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z183Binning
             // 
@@ -1737,7 +1737,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z183Binning.Location = new System.Drawing.Point(330, 73);
             ComboBox_KeywordUpdateTab_Camera_Z183Binning.Name = "ComboBox_KeywordUpdateTab_Camera_Z183Binning";
             ComboBox_KeywordUpdateTab_Camera_Z183Binning.Size = new System.Drawing.Size(44, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z183Binning.TabIndex = 56;
+            ComboBox_KeywordUpdateTab_Camera_Z183Binning.TabIndex = 11;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z533Binning
             // 
@@ -1745,7 +1745,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z533Binning.Location = new System.Drawing.Point(330, 43);
             ComboBox_KeywordUpdateTab_Camera_Z533Binning.Name = "ComboBox_KeywordUpdateTab_Camera_Z533Binning";
             ComboBox_KeywordUpdateTab_Camera_Z533Binning.Size = new System.Drawing.Size(44, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z533Binning.TabIndex = 55;
+            ComboBox_KeywordUpdateTab_Camera_Z533Binning.TabIndex = 5;
             // 
             // ComboBox_KeywordUpdateTab_Camera_A144SensorTemp
             // 
@@ -1753,7 +1753,7 @@
             ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Location = new System.Drawing.Point(265, 133);
             ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Name = "ComboBox_KeywordUpdateTab_Camera_A144SensorTemp";
             ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.TabIndex = 54;
+            ComboBox_KeywordUpdateTab_Camera_A144SensorTemp.TabIndex = 20;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp
             // 
@@ -1761,7 +1761,7 @@
             ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Location = new System.Drawing.Point(265, 103);
             ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Name = "ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp";
             ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.TabIndex = 53;
+            ComboBox_KeywordUpdateTab_Camera_Q178SensorTemp.TabIndex = 16;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp
             // 
@@ -1769,7 +1769,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Location = new System.Drawing.Point(265, 73);
             ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Name = "ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp";
             ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.TabIndex = 52;
+            ComboBox_KeywordUpdateTab_Camera_Z183SensorTemp.TabIndex = 10;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp
             // 
@@ -1777,7 +1777,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Location = new System.Drawing.Point(265, 43);
             ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Name = "ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp";
             ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.TabIndex = 51;
+            ComboBox_KeywordUpdateTab_Camera_Z533SensorTemp.TabIndex = 4;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Q178Offset
             // 
@@ -1785,7 +1785,7 @@
             ComboBox_KeywordUpdateTab_Camera_Q178Offset.Location = new System.Drawing.Point(204, 103);
             ComboBox_KeywordUpdateTab_Camera_Q178Offset.Name = "ComboBox_KeywordUpdateTab_Camera_Q178Offset";
             ComboBox_KeywordUpdateTab_Camera_Q178Offset.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Q178Offset.TabIndex = 50;
+            ComboBox_KeywordUpdateTab_Camera_Q178Offset.TabIndex = 15;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z183Offset
             // 
@@ -1793,7 +1793,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z183Offset.Location = new System.Drawing.Point(204, 73);
             ComboBox_KeywordUpdateTab_Camera_Z183Offset.Name = "ComboBox_KeywordUpdateTab_Camera_Z183Offset";
             ComboBox_KeywordUpdateTab_Camera_Z183Offset.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z183Offset.TabIndex = 49;
+            ComboBox_KeywordUpdateTab_Camera_Z183Offset.TabIndex = 9;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z533Offset
             // 
@@ -1801,7 +1801,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z533Offset.Location = new System.Drawing.Point(204, 43);
             ComboBox_KeywordUpdateTab_Camera_Z533Offset.Name = "ComboBox_KeywordUpdateTab_Camera_Z533Offset";
             ComboBox_KeywordUpdateTab_Camera_Z533Offset.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z533Offset.TabIndex = 48;
+            ComboBox_KeywordUpdateTab_Camera_Z533Offset.TabIndex = 3;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Q178Gain
             // 
@@ -1809,7 +1809,7 @@
             ComboBox_KeywordUpdateTab_Camera_Q178Gain.Location = new System.Drawing.Point(144, 103);
             ComboBox_KeywordUpdateTab_Camera_Q178Gain.Name = "ComboBox_KeywordUpdateTab_Camera_Q178Gain";
             ComboBox_KeywordUpdateTab_Camera_Q178Gain.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Q178Gain.TabIndex = 47;
+            ComboBox_KeywordUpdateTab_Camera_Q178Gain.TabIndex = 14;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z183Gain
             // 
@@ -1817,7 +1817,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z183Gain.Location = new System.Drawing.Point(144, 73);
             ComboBox_KeywordUpdateTab_Camera_Z183Gain.Name = "ComboBox_KeywordUpdateTab_Camera_Z183Gain";
             ComboBox_KeywordUpdateTab_Camera_Z183Gain.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z183Gain.TabIndex = 46;
+            ComboBox_KeywordUpdateTab_Camera_Z183Gain.TabIndex = 8;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z533Gain
             // 
@@ -1825,7 +1825,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z533Gain.Location = new System.Drawing.Point(144, 43);
             ComboBox_KeywordUpdateTab_Camera_Z533Gain.Name = "ComboBox_KeywordUpdateTab_Camera_Z533Gain";
             ComboBox_KeywordUpdateTab_Camera_Z533Gain.Size = new System.Drawing.Size(51, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z533Gain.TabIndex = 45;
+            ComboBox_KeywordUpdateTab_Camera_Z533Gain.TabIndex = 2;
             // 
             // ComboBox_KeywordUpdateTab_Camera_A144Seconds
             // 
@@ -1833,7 +1833,7 @@
             ComboBox_KeywordUpdateTab_Camera_A144Seconds.Location = new System.Drawing.Point(78, 133);
             ComboBox_KeywordUpdateTab_Camera_A144Seconds.Name = "ComboBox_KeywordUpdateTab_Camera_A144Seconds";
             ComboBox_KeywordUpdateTab_Camera_A144Seconds.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_A144Seconds.TabIndex = 44;
+            ComboBox_KeywordUpdateTab_Camera_A144Seconds.TabIndex = 19;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Q178Seconds
             // 
@@ -1841,7 +1841,7 @@
             ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Location = new System.Drawing.Point(78, 103);
             ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Name = "ComboBox_KeywordUpdateTab_Camera_Q178Seconds";
             ComboBox_KeywordUpdateTab_Camera_Q178Seconds.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Q178Seconds.TabIndex = 43;
+            ComboBox_KeywordUpdateTab_Camera_Q178Seconds.TabIndex = 13;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z533Seconds
             // 
@@ -1849,7 +1849,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Location = new System.Drawing.Point(78, 43);
             ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Name = "ComboBox_KeywordUpdateTab_Camera_Z533Seconds";
             ComboBox_KeywordUpdateTab_Camera_Z533Seconds.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z533Seconds.TabIndex = 42;
+            ComboBox_KeywordUpdateTab_Camera_Z533Seconds.TabIndex = 1;
             // 
             // ComboBox_KeywordUpdateTab_Camera_Z183Seconds
             // 
@@ -1857,7 +1857,7 @@
             ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Location = new System.Drawing.Point(78, 73);
             ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Name = "ComboBox_KeywordUpdateTab_Camera_Z183Seconds";
             ComboBox_KeywordUpdateTab_Camera_Z183Seconds.Size = new System.Drawing.Size(55, 23);
-            ComboBox_KeywordUpdateTab_Camera_Z183Seconds.TabIndex = 41;
+            ComboBox_KeywordUpdateTab_Camera_Z183Seconds.TabIndex = 7;
             // 
             // Label_KeywordUpdateTab_Camera_ToggleNBPreset
             // 
@@ -1897,7 +1897,7 @@
             CheckBox_KeywordUpdateTab_Camera_A144.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_Camera_A144.Name = "CheckBox_KeywordUpdateTab_Camera_A144";
             CheckBox_KeywordUpdateTab_Camera_A144.Size = new System.Drawing.Size(52, 19);
-            CheckBox_KeywordUpdateTab_Camera_A144.TabIndex = 31;
+            CheckBox_KeywordUpdateTab_Camera_A144.TabIndex = 18;
             CheckBox_KeywordUpdateTab_Camera_A144.Text = "A144";
             CheckBox_KeywordUpdateTab_Camera_A144.UseVisualStyleBackColor = true;
             // 
@@ -1908,7 +1908,7 @@
             CheckBox_KeywordUpdateTab_Camera_Q178.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_Camera_Q178.Name = "CheckBox_KeywordUpdateTab_Camera_Q178";
             CheckBox_KeywordUpdateTab_Camera_Q178.Size = new System.Drawing.Size(53, 19);
-            CheckBox_KeywordUpdateTab_Camera_Q178.TabIndex = 30;
+            CheckBox_KeywordUpdateTab_Camera_Q178.TabIndex = 12;
             CheckBox_KeywordUpdateTab_Camera_Q178.Text = "Q178";
             CheckBox_KeywordUpdateTab_Camera_Q178.UseVisualStyleBackColor = true;
             // 
@@ -1919,7 +1919,7 @@
             CheckBox_KeywordUpdateTab_Camera_Z183.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_Camera_Z183.Name = "CheckBox_KeywordUpdateTab_Camera_Z183";
             CheckBox_KeywordUpdateTab_Camera_Z183.Size = new System.Drawing.Size(51, 19);
-            CheckBox_KeywordUpdateTab_Camera_Z183.TabIndex = 29;
+            CheckBox_KeywordUpdateTab_Camera_Z183.TabIndex = 6;
             CheckBox_KeywordUpdateTab_Camera_Z183.Text = "Z183";
             CheckBox_KeywordUpdateTab_Camera_Z183.UseVisualStyleBackColor = true;
             // 
@@ -1930,7 +1930,7 @@
             CheckBox_KeywordUpdateTab_Camera_Z533.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_Camera_Z533.Name = "CheckBox_KeywordUpdateTab_Camera_Z533";
             CheckBox_KeywordUpdateTab_Camera_Z533.Size = new System.Drawing.Size(51, 19);
-            CheckBox_KeywordUpdateTab_Camera_Z533.TabIndex = 28;
+            CheckBox_KeywordUpdateTab_Camera_Z533.TabIndex = 0;
             CheckBox_KeywordUpdateTab_Camera_Z533.Text = "Z533";
             CheckBox_KeywordUpdateTab_Camera_Z533.UseVisualStyleBackColor = true;
             // 
@@ -1970,7 +1970,7 @@
             Button_KeywordUpdateTab_Camera_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_Camera_SetByFile.Name = "Button_KeywordUpdateTab_Camera_SetByFile";
             Button_KeywordUpdateTab_Camera_SetByFile.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_Camera_SetByFile.TabIndex = 19;
+            Button_KeywordUpdateTab_Camera_SetByFile.TabIndex = 23;
             Button_KeywordUpdateTab_Camera_SetByFile.Text = "Set By File";
             Button_KeywordUpdateTab_Camera_SetByFile.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_Camera_SetByFile.Click += Button_KeywordCamera_SetByFile_Click;
@@ -1981,7 +1981,7 @@
             Button_KeywordUpdateTab_Camera_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_Camera_SetAll.Name = "Button_KeywordUpdateTab_Camera_SetAll";
             Button_KeywordUpdateTab_Camera_SetAll.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_Camera_SetAll.TabIndex = 19;
+            Button_KeywordUpdateTab_Camera_SetAll.TabIndex = 22;
             Button_KeywordUpdateTab_Camera_SetAll.Text = "Set All";
             Button_KeywordUpdateTab_Camera_SetAll.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_Camera_SetAll.Click += Button_KeywordCamera_SetAll_Click;
