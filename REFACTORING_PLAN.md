@@ -171,6 +171,36 @@ catch (Exception ex)
 
 ---
 
+## Phase 5C: XisfFileRename Cleanup ✅ COMPLETE
+
+**Result:** Reduced XisfFileRename.cs from 334 lines to 263 lines (21% reduction), consolidated duplicates
+
+### Files Created
+- `Helpers\FileHelpers.cs` - Shared file utilities (IsFileLocked, GetUniqueFileName)
+
+### Files Modified
+- `Files\XisfFileRename.cs` - Major cleanup and modernization
+- `Files\XisfFileUpdate.cs` - Now uses FileHelpers.IsFileLocked()
+- `MainForm\FileSelection.cs` - Updated for new tuple syntax
+
+### Changes Made
+| Change | Description |
+|--------|-------------|
+| Removed dead code | `mFileList` field (never used), instance `MoveDuplicates()` method |
+| Consolidated duplicates | `IsFileLocked()` moved to shared `FileHelpers` class |
+| Added constant | `NoTemperature = -273.0` replaces magic value |
+| Modernized syntax | `Tuple<int,string>` → `(int Status, string FileName)` value tuple |
+| Extracted helpers | 8 format helper methods for cleaner BuildFileName logic |
+
+### Helper Methods Added
+- `BuildMasterFileName()`, `BuildMasterLightName()`
+- `BuildDarkFileName()`, `BuildBiasFileName()`, `BuildFlatFileName()`, `BuildLightFileName()`
+- `FormatCommonDetails()`, `FormatCameraInfo()`, `FormatCaptureInfo()`
+- `FormatTelescopeInfo()`, `FormatFocuserInfo()`, `FormatRotation()`
+- `FormatAlgorithmSuffix()`, `FormatWeightIndex()`
+
+---
+
 ## Phase 5B: Async/Await Conversion (Pending - Higher Risk)
 
 ### Files to Modify
@@ -270,10 +300,11 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | 4 | Phase 3: UIHelpers + CaptureSoftware | Low | ✅ Complete (-69 lines) |
 | 5 | Phase 4: Generic repository | Medium | ✅ Complete (-174 lines) |
 | 6 | Phase 5A: Exception handling | Low | ✅ Complete |
-| 7 | Phase 5B: Async/DoEvents | Medium | Pending |
-| 8 | Phase 6: Constants | Low | Pending |
-| 9 | Phase 7: Nullable | Low | Pending (~90 warnings) |
-| 10 | Phase 8: FluxDensity | Low | Pending |
+| 7 | Phase 5C: XisfFileRename cleanup | Low | ✅ Complete (-71 lines) |
+| 8 | Phase 5B: Async/DoEvents | Medium | Pending |
+| 9 | Phase 6: Constants | Low | Pending |
+| 10 | Phase 7: Nullable | Low | Pending (~90 warnings) |
+| 11 | Phase 8: FluxDensity | Low | Pending |
 
 ---
 
@@ -287,6 +318,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | Phase 3 | All 5 capture software detected, UIHelpers work | ✅ Verified |
 | Phase 4 | Target Scheduler tab loads, all 8 tables read | ✅ Verified |
 | Phase 5A | File errors handled gracefully, no app crash | ✅ Verified |
+| Phase 5C | File rename works, duplicate detection works | ✅ Verified |
 | Phase 5B | UI responsive during file operations | Pending |
 | Phase 8 | Full regression test | Pending |
 
@@ -301,12 +333,14 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | `MainForm\Telescope.cs` | Refactor (-28 lines) ✅ |
 | `MainForm\CaptureSoftware.cs` | Refactor (-69 lines) ✅ |
 | `TargetScheduler\SqlLiteReader.cs` | Generic repository (-174 lines) ✅ |
-| `Files\XisfFileUpdate.cs` | Async, exception handling |
+| `Files\XisfFileRename.cs` | Cleanup, helpers, modern syntax (-71 lines) ✅ |
+| `Files\XisfFileUpdate.cs` | Exception handling ✅, uses FileHelpers ✅ |
 | `MainForm\FluxDensity.cs` | Consolidate duplicates |
 | `Globals\Globals.cs` | Add camera registry |
 
 ### New Files
 - `Helpers\UIHelpers.cs`
+- `Helpers\FileHelpers.cs`
 - `Models\CameraConfiguration.cs`
 - `Models\Cameras\Z533Camera.cs`, `Z183Camera.cs`, `Q178Camera.cs`, `A144Camera.cs`
 - `Services\CameraService.cs`
