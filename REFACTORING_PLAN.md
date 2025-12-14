@@ -49,6 +49,29 @@ Comprehensive refactoring of the XISF File Manager application: upgrade to .NET 
 
 ---
 
+## Phase 2B: Telescope Configuration Abstraction ✅ COMPLETE
+
+**Result:** Reduced Telescope.cs from 232 lines to 204 lines (12% reduction)
+
+### Files Created
+- `Models\TelescopeConfiguration.cs` - Base class with TelescopeAnalysis record
+- `Models\Telescopes\APM107Telescope.cs` - APM107 Super ED (700mm/531mm, includes aperture data)
+- `Models\Telescopes\EvoStar150Telescope.cs` - Sky-Watcher EvoStar 150ED (1000mm/750mm)
+- `Models\Telescopes\Newtonian254Telescope.cs` - 10-inch Newtonian (1100mm/825mm)
+- `Services\TelescopeService.cs` - Detection, analysis, color helpers
+
+### Files Modified
+- `MainForm\Telescope.cs` - Replaced hardcoded if/else chains with dictionary-based service calls
+
+### Key Features Implemented
+- Singleton pattern with `Instance` property (matches camera pattern)
+- `GetFocalLength(bool withReducer)` handles Riccardi 0.75x reduction
+- `ApplyKeywords()` virtual method - APM107 overrides to add aperture data
+- `TelescopeAnalysis` record for file analysis results
+- Color coding logic centralized in `TelescopeService`
+
+---
+
 ## Phase 3: UI Helper Methods
 
 ### Files to Modify
@@ -266,13 +289,14 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 |------|-------|------|--------|
 | 1 | Phase 1: .NET 9 upgrade | Low | ✅ Complete |
 | 2 | Phase 2: CameraConfiguration | Medium | ✅ Complete (-986 lines) |
-| 3 | Phase 3: UI helpers | Low | Pending |
-| 4 | Phase 5: Async/DoEvents | Medium | Pending |
-| 5 | Phase 5: Exception handling | Low | Pending |
-| 6 | Phase 4: Generic repository | Medium | Pending |
-| 7 | Phase 6: Constants | Low | Pending |
-| 8 | Phase 7: Nullable | Low | Pending (~90 warnings) |
-| 9 | Phase 8: FluxDensity | Low | Pending |
+| 3 | Phase 2B: TelescopeConfiguration | Low | ✅ Complete (-28 lines) |
+| 4 | Phase 3: UI helpers | Low | Pending |
+| 5 | Phase 5: Async/DoEvents | Medium | Pending |
+| 6 | Phase 5: Exception handling | Low | Pending |
+| 7 | Phase 4: Generic repository | Medium | Pending |
+| 8 | Phase 6: Constants | Low | Pending |
+| 9 | Phase 7: Nullable | Low | Pending (~90 warnings) |
+| 10 | Phase 8: FluxDensity | Low | Pending |
 
 ---
 
@@ -282,6 +306,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 |-------|------|--------|
 | Phase 1 | Build, launch, browse files | ✅ Verified |
 | Phase 2 | All 4 cameras detected, SetAll/SetByFile work | ✅ Verified |
+| Phase 2B | All 3 telescopes detected, Riccardi reducer works | ✅ Verified |
 | Phase 3 | UI updates correctly, colors work | Pending |
 | Phase 4 | Target Scheduler tab loads | Pending |
 | Phase 5 | UI responsive during file operations | Pending |
@@ -294,7 +319,8 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | File | Changes |
 |------|---------|
 | `XisfFileManager.csproj` | .NET 9, nullable enable |
-| `MainForm\Camera.cs` | Major refactor (-1000 lines) |
+| `MainForm\Camera.cs` | Major refactor (-986 lines) ✅ |
+| `MainForm\Telescope.cs` | Refactor (-28 lines) ✅ |
 | `TargetScheduler\SqlLiteReader.cs` | Generic repository |
 | `Files\XisfFileUpdate.cs` | Async, exception handling |
 | `MainForm\FluxDensity.cs` | Consolidate duplicates |
@@ -304,5 +330,8 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 - `Models\CameraConfiguration.cs`
 - `Models\Cameras\Z533Camera.cs`, `Z183Camera.cs`, `Q178Camera.cs`, `A144Camera.cs`
 - `Services\CameraService.cs`
-- `Data\SqliteRepository.cs`
-- `Configuration\AppPaths.cs`
+- `Models\TelescopeConfiguration.cs`
+- `Models\Telescopes\APM107Telescope.cs`, `EvoStar150Telescope.cs`, `Newtonian254Telescope.cs`
+- `Services\TelescopeService.cs`
+- `Data\SqliteRepository.cs` (planned)
+- `Configuration\AppPaths.cs` (planned)

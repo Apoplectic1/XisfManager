@@ -9,6 +9,7 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 ### Completed
 - **Phase 1:** .NET 9 upgrade with nullable reference types enabled
 - **Phase 2:** Camera configuration abstraction (reduced Camera.cs from 1367 to 381 lines)
+- **Phase 2B:** Telescope configuration abstraction (reduced Telescope.cs from 232 to 204 lines)
 - **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
 
 ### Remaining
@@ -20,6 +21,7 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - Phase 8: FluxDensity duplicate code consolidation
 
 **Cameras supported:** Z533, Z183, Q178, A144 (all active)
+**Telescopes supported:** APM107, EvoStar150, Newtonian254 (with Riccardi 0.75x reducer support)
 
 ## Build Commands
 
@@ -56,10 +58,14 @@ XisfFileManager/
 │   └── TargetScheduler.cs # Target Scheduler tab logic
 ├── Models/             # Domain models
 │   ├── CameraConfiguration.cs # Base camera config + PropertyAnalysis<T>
-│   └── Cameras/        # Camera-specific configurations
-│       ├── Z533Camera.cs, Z183Camera.cs, Q178Camera.cs, A144Camera.cs
+│   ├── TelescopeConfiguration.cs # Base telescope config + TelescopeAnalysis
+│   ├── Cameras/        # Camera-specific configurations
+│   │   └── Z533Camera.cs, Z183Camera.cs, Q178Camera.cs, A144Camera.cs
+│   └── Telescopes/     # Telescope-specific configurations
+│       └── APM107Telescope.cs, EvoStar150Telescope.cs, Newtonian254Telescope.cs
 ├── Services/           # Business logic services
-│   └── CameraService.cs # Camera detection and analysis
+│   ├── CameraService.cs # Camera detection and analysis
+│   └── TelescopeService.cs # Telescope detection and analysis
 ├── Files/              # XISF file I/O operations
 │   ├── XisfFile.cs     # Core XISF file representation
 │   ├── XisfXmlReader.cs # XML metadata parsing
@@ -127,6 +133,8 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - `KeywordList.cs`: Typed property accessors for common FITS keywords
 - `CameraConfiguration.cs`: Base class for camera configs with temperature handling
 - `CameraService.cs`: Camera detection, property analysis, and UI color helpers
+- `TelescopeConfiguration.cs`: Base class for telescope configs with reducer support
+- `TelescopeService.cs`: Telescope detection, analysis, and UI color helpers
 - `MainForm.Designer.cs`: Auto-generated UI - TabIndex values manually fixed for proper navigation
 - `Globals.cs`: All enums and constants
 
