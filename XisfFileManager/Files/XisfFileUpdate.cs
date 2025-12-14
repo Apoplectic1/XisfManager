@@ -281,12 +281,15 @@ namespace XisfFileManager.Files
                         return false;
                 }
             }
-            catch
+            catch (IOException ex)
             {
-                DialogResult status = MessageBox.Show("Update Write File Failed", xFile.FilePath, MessageBoxButtons.OKCancel);
-                if (status == DialogResult.OK)
-                    return false;
-                Environment.Exit(-1);
+                MessageBox.Show($"Update Write File Failed: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error updating file: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                return false;
             }
 
             return true;

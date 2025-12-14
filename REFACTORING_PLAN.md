@@ -138,62 +138,53 @@ _manager.mTargetList = ReadTable(connection, _targetMapper);
 
 ---
 
-## Phase 5: Async/Await & Remove Anti-patterns
+## Phase 5A: Fix Exception Handling ✅ COMPLETE
 
-### Files to Modify
-- `Files\XisfFileUpdate.cs`
-- `MainForm\FluxDensity.cs`
-- `MainForm\FileSelection.cs`
-- `Calibration\Calibration.cs`
+**Result:** Removed dangerous `Environment.Exit(-1)` and bare `catch` pattern
 
-### 5.1 Replace Thread.Sleep (XisfFileUpdate.cs:84-88)
+### Files Modified
+- `Files\XisfFileUpdate.cs` - Fixed exception handling in UpdateFile method
+
+### Changes Made
 ```csharp
-// Before
-while (IsFileLocked(path) && delay < 100) { Thread.Sleep(10); delay++; }
-
-// After
-private async Task<bool> WaitForFileUnlockAsync(string path, CancellationToken ct)
+// Before - DANGEROUS
+catch
 {
-    for (int i = 0; i < 100 && !ct.IsCancellationRequested; i++)
-    {
-        if (!IsFileLocked(path)) return true;
-        await Task.Delay(10, ct);
-    }
+    DialogResult status = MessageBox.Show("Update Write File Failed", ...);
+    if (status == DialogResult.OK)
+        return false;
+    Environment.Exit(-1);  // Kills app without cleanup!
+}
+
+// After - Safe
+catch (IOException ex)
+{
+    MessageBox.Show($"Update Write File Failed: {ex.Message}", ...);
+    return false;
+}
+catch (Exception ex)
+{
+    MessageBox.Show($"Unexpected error updating file: {ex.Message}", ...);
     return false;
 }
 ```
 
-### 5.2 Remove Application.DoEvents (14 occurrences)
-```csharp
-// Before
-foreach (var file in files) {
-    ProcessFile(file);
-    Application.DoEvents();  // BAD
-}
+---
 
-// After
-private async Task ProcessFilesAsync(IProgress<int> progress, CancellationToken ct)
-{
-    for (int i = 0; i < files.Count; i++)
-    {
-        await ProcessFileAsync(files[i], ct);
-        progress.Report(i + 1);
-    }
-}
-```
+## Phase 5B: Async/Await Conversion (Pending - Higher Risk)
 
-### 5.3 Fix Exception Handling (XisfFileUpdate.cs:284-290)
-```csharp
-// Before - DANGEROUS
-catch { Environment.Exit(-1); }
+### Files to Modify
+- `Files\XisfFileUpdate.cs` - Thread.Sleep (2 occurrences)
+- `MainForm\FluxDensity.cs` - Application.DoEvents (12 occurrences)
+- `MainForm\FileSelection.cs` - Application.DoEvents (1 occurrence)
+- `MainForm\MainForm.cs` - Application.DoEvents (2 occurrences)
+- `Calibration\Calibration.cs` - Application.DoEvents (1 occurrence)
 
-// After
-catch (IOException ex)
-{
-    _logger?.LogError(ex, "Failed to write {Path}", path);
-    throw new FileProcessingException($"Failed to write: {path}", ex);
-}
-```
+### Risk Factors
+- Requires async/await throughout call chain
+- WinForms event handlers must become `async void`
+- Potential for deadlocks if mixed incorrectly
+- FluxDensity.cs has 12 DoEvents calls - heavy refactoring needed
 
 ---
 
@@ -278,8 +269,8 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | 3 | Phase 2B: TelescopeConfiguration | Low | ✅ Complete (-28 lines) |
 | 4 | Phase 3: UIHelpers + CaptureSoftware | Low | ✅ Complete (-69 lines) |
 | 5 | Phase 4: Generic repository | Medium | ✅ Complete (-174 lines) |
-| 6 | Phase 5: Async/DoEvents | Medium | Pending |
-| 7 | Phase 5: Exception handling | Low | Pending |
+| 6 | Phase 5A: Exception handling | Low | ✅ Complete |
+| 7 | Phase 5B: Async/DoEvents | Medium | Pending |
 | 8 | Phase 6: Constants | Low | Pending |
 | 9 | Phase 7: Nullable | Low | Pending (~90 warnings) |
 | 10 | Phase 8: FluxDensity | Low | Pending |
@@ -295,7 +286,8 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | Phase 2B | All 3 telescopes detected, Riccardi reducer works | ✅ Verified |
 | Phase 3 | All 5 capture software detected, UIHelpers work | ✅ Verified |
 | Phase 4 | Target Scheduler tab loads, all 8 tables read | ✅ Verified |
-| Phase 5 | UI responsive during file operations | Pending |
+| Phase 5A | File errors handled gracefully, no app crash | ✅ Verified |
+| Phase 5B | UI responsive during file operations | Pending |
 | Phase 8 | Full regression test | Pending |
 
 ---

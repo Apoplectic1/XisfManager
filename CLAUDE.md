@@ -12,10 +12,11 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - **Phase 2B:** Telescope configuration abstraction (reduced Telescope.cs from 232 to 204 lines)
 - **Phase 3:** UI helpers + CaptureSoftware abstraction (reduced CaptureSoftware.cs from 176 to 107 lines)
 - **Phase 4:** Generic database repository pattern (reduced SqlLiteReader.cs from 251 to 77 lines)
+- **Phase 5A:** Exception handling fixes (removed Environment.Exit and bare catch)
 - **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
 
 ### Remaining
-- Phase 5: Async/await conversion (remove Application.DoEvents calls)
+- Phase 5B: Async/await conversion (remove Application.DoEvents calls)
 - Phase 6: Configuration & constants extraction
 - Phase 7: Nullable reference type annotations (warnings exist)
 - Phase 8: FluxDensity duplicate code consolidation
