@@ -265,7 +265,7 @@
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Name = "RadioButton_FileSelection_SequenceNumbering_WeightOnly";
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Size = new System.Drawing.Size(91, 19);
-            RadioButton_FileSelection_SequenceNumbering_WeightOnly.TabIndex = 3;
+            RadioButton_FileSelection_SequenceNumbering_WeightOnly.TabIndex = 2;
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.Text = "Weight Only";
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.UseVisualStyleBackColor = true;
             RadioButton_FileSelection_SequenceNumbering_WeightOnly.CheckedChanged += RadioButton_Weight_CheckedChanged;
@@ -291,7 +291,7 @@
             RadioButton_FileSelection_Index_ByFilter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_Index_ByFilter.Name = "RadioButton_FileSelection_Index_ByFilter";
             RadioButton_FileSelection_Index_ByFilter.Size = new System.Drawing.Size(67, 19);
-            RadioButton_FileSelection_Index_ByFilter.TabIndex = 6;
+            RadioButton_FileSelection_Index_ByFilter.TabIndex = 0;
             RadioButton_FileSelection_Index_ByFilter.TabStop = true;
             RadioButton_FileSelection_Index_ByFilter.Text = "By Filter";
             RadioButton_FileSelection_Index_ByFilter.UseVisualStyleBackColor = true;
@@ -303,7 +303,7 @@
             RadioButton_FileSelection_Index_ByTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_Index_ByTime.Name = "RadioButton_FileSelection_Index_ByTime";
             RadioButton_FileSelection_Index_ByTime.Size = new System.Drawing.Size(68, 19);
-            RadioButton_FileSelection_Index_ByTime.TabIndex = 5;
+            RadioButton_FileSelection_Index_ByTime.TabIndex = 1;
             RadioButton_FileSelection_Index_ByTime.Text = "By Time";
             RadioButton_FileSelection_Index_ByTime.UseVisualStyleBackColor = true;
             // 
@@ -315,7 +315,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Name = "RadioButton_FileSelection_SequenceNumbering_IndexOnly";
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Size = new System.Drawing.Size(81, 19);
-            RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabIndex = 2;
+            RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabIndex = 0;
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.TabStop = true;
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.Text = "Index Only";
             RadioButton_FileSelection_SequenceNumbering_IndexOnly.UseVisualStyleBackColor = true;
@@ -340,7 +340,7 @@
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Name = "RadioButton_FileSelection_SequenceNumbering_WeightIndex";
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Size = new System.Drawing.Size(94, 19);
-            RadioButton_FileSelection_SequenceNumbering_WeightIndex.TabIndex = 0;
+            RadioButton_FileSelection_SequenceNumbering_WeightIndex.TabIndex = 3;
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.Text = "Weight Index";
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.UseVisualStyleBackColor = true;
             RadioButton_FileSelection_SequenceNumbering_WeightIndex.CheckedChanged += RadioButton_WeightIndex_CheckedChanged;
@@ -380,7 +380,7 @@
             Button_FileSelection_DirectorySelection_FluxDensity_Run.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_FileSelection_DirectorySelection_FluxDensity_Run.Name = "Button_FileSelection_DirectorySelection_FluxDensity_Run";
             Button_FileSelection_DirectorySelection_FluxDensity_Run.Size = new System.Drawing.Size(83, 27);
-            Button_FileSelection_DirectorySelection_FluxDensity_Run.TabIndex = 34;
+            Button_FileSelection_DirectorySelection_FluxDensity_Run.TabIndex = 1;
             Button_FileSelection_DirectorySelection_FluxDensity_Run.Text = "Run";
             Button_FileSelection_DirectorySelection_FluxDensity_Run.UseVisualStyleBackColor = true;
             Button_FileSelection_DirectorySelection_FluxDensity_Run.Click += Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click;
@@ -391,7 +391,7 @@
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Location = new System.Drawing.Point(22, 33);
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Name = "CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable";
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Size = new System.Drawing.Size(61, 19);
-            CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.TabIndex = 33;
+            CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.TabIndex = 0;
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Text = "Enable";
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.UseVisualStyleBackColor = true;
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.CheckedChanged += CheckBox_FileSelection_DirectorySelection_EnableFluxDensity_CheckedChanged;
@@ -413,7 +413,7 @@
             TextBox_FileSelection_DirectorySelection_Masters_Rejection.Location = new System.Drawing.Point(182, 20);
             TextBox_FileSelection_DirectorySelection_Masters_Rejection.Name = "TextBox_FileSelection_DirectorySelection_Masters_Rejection";
             TextBox_FileSelection_DirectorySelection_Masters_Rejection.Size = new System.Drawing.Size(59, 23);
-            TextBox_FileSelection_DirectorySelection_Masters_Rejection.TabIndex = 23;
+            TextBox_FileSelection_DirectorySelection_Masters_Rejection.TabIndex = 2;
             TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = "WSC";
             TextBox_FileSelection_DirectorySelection_Masters_Rejection.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -425,7 +425,7 @@
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.Name = "CheckBox_FileSelection_DirectorySelection_Masters_Enable";
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.Size = new System.Drawing.Size(61, 19);
-            CheckBox_FileSelection_DirectorySelection_Masters_Enable.TabIndex = 3;
+            CheckBox_FileSelection_DirectorySelection_Masters_Enable.TabIndex = 0;
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.Text = "Enable";
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.UseVisualStyleBackColor = true;
             CheckBox_FileSelection_DirectorySelection_Masters_Enable.CheckedChanged += CheckBox_FileSelection_DirectorySelection_Masters_Enable_CheckedChanged;
@@ -436,7 +436,7 @@
             TextBox_FileSelection_DirectorySelection_Masters_Frames.Location = new System.Drawing.Point(100, 20);
             TextBox_FileSelection_DirectorySelection_Masters_Frames.Name = "TextBox_FileSelection_DirectorySelection_Masters_Frames";
             TextBox_FileSelection_DirectorySelection_Masters_Frames.Size = new System.Drawing.Size(59, 23);
-            TextBox_FileSelection_DirectorySelection_Masters_Frames.TabIndex = 9;
+            TextBox_FileSelection_DirectorySelection_Masters_Frames.TabIndex = 1;
             TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = "Frames";
             TextBox_FileSelection_DirectorySelection_Masters_Frames.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -446,7 +446,7 @@
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Location = new System.Drawing.Point(173, 132);
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Name = "CheckBox_FileSlection_DirectorySelection_NoStatistics";
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Size = new System.Drawing.Size(91, 19);
-            CheckBox_FileSlection_DirectorySelection_NoStatistics.TabIndex = 22;
+            CheckBox_FileSlection_DirectorySelection_NoStatistics.TabIndex = 3;
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Text = "No Statistics";
             CheckBox_FileSlection_DirectorySelection_NoStatistics.UseVisualStyleBackColor = true;
             // 
@@ -456,7 +456,7 @@
             Button_FileSelection_DirectorySelection_Rename.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_FileSelection_DirectorySelection_Rename.Name = "Button_FileSelection_DirectorySelection_Rename";
             Button_FileSelection_DirectorySelection_Rename.Size = new System.Drawing.Size(145, 27);
-            Button_FileSelection_DirectorySelection_Rename.TabIndex = 4;
+            Button_FileSelection_DirectorySelection_Rename.TabIndex = 2;
             Button_FileSelection_DirectorySelection_Rename.Text = "Rename XISF Files";
             Button_FileSelection_DirectorySelection_Rename.UseVisualStyleBackColor = true;
             Button_FileSelection_DirectorySelection_Rename.Click += Button_FileSelection_DirectorySelection_Rename_Click;
@@ -481,7 +481,7 @@
             CheckBox_FileSelection_DirectorySelection_Recurse.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_FileSelection_DirectorySelection_Recurse.Name = "CheckBox_FileSelection_DirectorySelection_Recurse";
             CheckBox_FileSelection_DirectorySelection_Recurse.Size = new System.Drawing.Size(126, 19);
-            CheckBox_FileSelection_DirectorySelection_Recurse.TabIndex = 2;
+            CheckBox_FileSelection_DirectorySelection_Recurse.TabIndex = 1;
             CheckBox_FileSelection_DirectorySelection_Recurse.Text = "Recurse Directories";
             CheckBox_FileSelection_DirectorySelection_Recurse.UseVisualStyleBackColor = true;
             // 
@@ -749,7 +749,7 @@
             Button_CalibrationTab_FindPedestal.Location = new System.Drawing.Point(187, 25);
             Button_CalibrationTab_FindPedestal.Name = "Button_CalibrationTab_FindPedestal";
             Button_CalibrationTab_FindPedestal.Size = new System.Drawing.Size(75, 23);
-            Button_CalibrationTab_FindPedestal.TabIndex = 12;
+            Button_CalibrationTab_FindPedestal.TabIndex = 1;
             Button_CalibrationTab_FindPedestal.Text = "Find Pedestal";
             Button_CalibrationTab_FindPedestal.UseVisualStyleBackColor = true;
             Button_CalibrationTab_FindPedestal.Click += Button_CalibrationTab_FindPedestal_Click;
@@ -770,7 +770,7 @@
             NumericUpDown_CalibrationTab_MinBackground.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             NumericUpDown_CalibrationTab_MinBackground.Name = "NumericUpDown_CalibrationTab_MinBackground";
             NumericUpDown_CalibrationTab_MinBackground.Size = new System.Drawing.Size(70, 23);
-            NumericUpDown_CalibrationTab_MinBackground.TabIndex = 13;
+            NumericUpDown_CalibrationTab_MinBackground.TabIndex = 0;
             NumericUpDown_CalibrationTab_MinBackground.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             NumericUpDown_CalibrationTab_MinBackground.ThousandsSeparator = true;
             // 
@@ -839,7 +839,7 @@
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Location = new System.Drawing.Point(219, 138);
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest";
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Size = new System.Drawing.Size(66, 19);
-            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.TabIndex = 16;
+            CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.TabIndex = 7;
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.Text = "Nearest";
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.UseVisualStyleBackColor = true;
             CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_TemperatureNearest_CheckedChanged;
@@ -850,7 +850,7 @@
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Location = new System.Drawing.Point(219, 109);
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest";
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Size = new System.Drawing.Size(66, 19);
-            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.TabIndex = 15;
+            CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.TabIndex = 5;
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.Text = "Nearest";
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.UseVisualStyleBackColor = true;
             CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_OffsetNearest_CheckedChanged;
@@ -861,7 +861,7 @@
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Location = new System.Drawing.Point(219, 81);
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_GainNearest";
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Size = new System.Drawing.Size(66, 19);
-            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.TabIndex = 14;
+            CheckBox_CalibrationTab_MatchingTolerance_GainNearest.TabIndex = 3;
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.Text = "Nearest";
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.UseVisualStyleBackColor = true;
             CheckBox_CalibrationTab_MatchingTolerance_GainNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_GainNearest_CheckedChanged;
@@ -872,7 +872,7 @@
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Location = new System.Drawing.Point(219, 52);
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Name = "CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest";
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Size = new System.Drawing.Size(66, 19);
-            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.TabIndex = 13;
+            CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.TabIndex = 1;
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.Text = "Nearest";
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.UseVisualStyleBackColor = true;
             CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest.CheckedChanged += CheckBox_CalibrationTab_MatchingTolerance_ExposureNearest_CheckedChanged;
@@ -933,7 +933,7 @@
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Name = "TextBox_CalibrationTab_MatchingTolerance_Temperature";
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Size = new System.Drawing.Size(48, 23);
-            TextBox_CalibrationTab_MatchingTolerance_Temperature.TabIndex = 7;
+            TextBox_CalibrationTab_MatchingTolerance_Temperature.TabIndex = 6;
             TextBox_CalibrationTab_MatchingTolerance_Temperature.Text = "5";
             TextBox_CalibrationTab_MatchingTolerance_Temperature.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Temperature.TextChanged += TextBox_CalibrationTab_TemperatureTolerance_TextChanged;
@@ -944,7 +944,7 @@
             TextBox_CalibrationTab_MatchingTolerance_Offset.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Offset.Name = "TextBox_CalibrationTab_MatchingTolerance_Offset";
             TextBox_CalibrationTab_MatchingTolerance_Offset.Size = new System.Drawing.Size(48, 23);
-            TextBox_CalibrationTab_MatchingTolerance_Offset.TabIndex = 6;
+            TextBox_CalibrationTab_MatchingTolerance_Offset.TabIndex = 4;
             TextBox_CalibrationTab_MatchingTolerance_Offset.Text = "0";
             TextBox_CalibrationTab_MatchingTolerance_Offset.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Offset.TextChanged += TextBox_CalibrationTab_OffsetTolerance_TextChanged;
@@ -955,7 +955,7 @@
             TextBox_CalibrationTab_MatchingTolerance_Gain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             TextBox_CalibrationTab_MatchingTolerance_Gain.Name = "TextBox_CalibrationTab_MatchingTolerance_Gain";
             TextBox_CalibrationTab_MatchingTolerance_Gain.Size = new System.Drawing.Size(48, 23);
-            TextBox_CalibrationTab_MatchingTolerance_Gain.TabIndex = 5;
+            TextBox_CalibrationTab_MatchingTolerance_Gain.TabIndex = 2;
             TextBox_CalibrationTab_MatchingTolerance_Gain.Text = "0";
             TextBox_CalibrationTab_MatchingTolerance_Gain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TextBox_CalibrationTab_MatchingTolerance_Gain.TextChanged += TextBox_CalibrationTab_GainTolerance_TextChanged;
@@ -1146,7 +1146,7 @@
             RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_NINA";
             RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Size = new System.Drawing.Size(54, 19);
-            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.TabIndex = 6;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.TabIndex = 1;
             RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.Text = "NINA";
             RadioButton_KeywordUpdateTab_CaptureSoftware_NINA.UseVisualStyleBackColor = true;
             // 
@@ -1156,7 +1156,7 @@
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Name = "Button_KeywordUpdateTab_CaptureSoftware_SetByFile";
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_CaptureSoftware_SetByFile.TabIndex = 5;
+            Button_KeywordUpdateTab_CaptureSoftware_SetByFile.TabIndex = 6;
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Text = "Set By File";
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_CaptureSoftware_SetByFile.Click += Button_CaptureSoftware_SetByFile_Click;
@@ -1167,7 +1167,7 @@
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.Name = "Button_KeywordUpdateTab_CaptureSoftware_SetAll";
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_CaptureSoftware_SetAll.TabIndex = 4;
+            Button_KeywordUpdateTab_CaptureSoftware_SetAll.TabIndex = 5;
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.Text = "Set All";
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_CaptureSoftware_SetAll.Click += Button_CaptureSoftware_SetAll_Click;
@@ -1190,7 +1190,7 @@
             RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap";
             RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Size = new System.Drawing.Size(76, 19);
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.TabIndex = 2;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.TabIndex = 4;
             RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.Text = "SharpCap";
             RadioButton_KeywordUpdateTab_CaptureSoftware_SharpCap.UseVisualStyleBackColor = true;
             // 
@@ -1201,7 +1201,7 @@
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Name = "RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro";
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Size = new System.Drawing.Size(57, 19);
-            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.TabIndex = 1;
+            RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.TabIndex = 2;
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.Text = "SGPro";
             RadioButton_KeywordUpdateTab_CaptureSoftware_SGPro.UseVisualStyleBackColor = true;
             // 
@@ -1241,7 +1241,7 @@
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Location = new System.Drawing.Point(39, 139);
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Name = "TextBox_KeywordUpdateTab_Telescope_FocalLength";
             TextBox_KeywordUpdateTab_Telescope_FocalLength.Size = new System.Drawing.Size(67, 23);
-            TextBox_KeywordUpdateTab_Telescope_FocalLength.TabIndex = 19;
+            TextBox_KeywordUpdateTab_Telescope_FocalLength.TabIndex = 4;
             // 
             // Label_KeywordUpdateTab_Telescope_FocalLength
             // 
@@ -1259,7 +1259,7 @@
             Button_KeywordUpdateTab_Telescope_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_Telescope_SetByFile.Name = "Button_KeywordUpdateTab_Telescope_SetByFile";
             Button_KeywordUpdateTab_Telescope_SetByFile.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_Telescope_SetByFile.TabIndex = 17;
+            Button_KeywordUpdateTab_Telescope_SetByFile.TabIndex = 6;
             Button_KeywordUpdateTab_Telescope_SetByFile.Text = "Set By File";
             Button_KeywordUpdateTab_Telescope_SetByFile.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_Telescope_SetByFile.Click += Button_Telescope_SetByFile_Click;
@@ -1270,7 +1270,7 @@
             Button_KeywordUpdateTab_Telescope_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_Telescope_SetAll.Name = "Button_KeywordUpdateTab_Telescope_SetAll";
             Button_KeywordUpdateTab_Telescope_SetAll.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_Telescope_SetAll.TabIndex = 16;
+            Button_KeywordUpdateTab_Telescope_SetAll.TabIndex = 5;
             Button_KeywordUpdateTab_Telescope_SetAll.Text = "Set All";
             Button_KeywordUpdateTab_Telescope_SetAll.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_Telescope_SetAll.Click += Button_Telescope_SetAll_Click;
@@ -1359,7 +1359,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Size = new System.Drawing.Size(252, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.TabIndex = 32;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.TabIndex = 7;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordFile.Text = "File";
             // 
             // CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName
@@ -1369,7 +1369,7 @@
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Size = new System.Drawing.Size(151, 19);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.TabIndex = 31;
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.TabIndex = 2;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Text = "Do Not Update CPANEL";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.UseVisualStyleBackColor = true;
             // 
@@ -1380,7 +1380,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Size = new System.Drawing.Size(97, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.TabIndex = 30;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.TabIndex = 12;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.Text = "Specific Value";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_SpecificValue.UseVisualStyleBackColor = true;
             // 
@@ -1392,7 +1392,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Size = new System.Drawing.Size(75, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.TabIndex = 29;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.TabIndex = 11;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.Text = "All Values";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_AllValues.UseVisualStyleBackColor = true;
@@ -1405,7 +1405,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Size = new System.Drawing.Size(252, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.TabIndex = 28;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.TabIndex = 10;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordComment.Text = "Comment";
             // 
             // ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue
@@ -1416,7 +1416,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Size = new System.Drawing.Size(252, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TabIndex = 27;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.TabIndex = 9;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Text = "Value";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.SelectedValueChanged += ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue_SelectedValueChanged;
             // 
@@ -1428,7 +1428,7 @@
             GroupBox_SubFrameKeywords_CalibrationFiles.Name = "GroupBox_SubFrameKeywords_CalibrationFiles";
             GroupBox_SubFrameKeywords_CalibrationFiles.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_SubFrameKeywords_CalibrationFiles.Size = new System.Drawing.Size(252, 53);
-            GroupBox_SubFrameKeywords_CalibrationFiles.TabIndex = 25;
+            GroupBox_SubFrameKeywords_CalibrationFiles.TabIndex = 6;
             GroupBox_SubFrameKeywords_CalibrationFiles.TabStop = false;
             GroupBox_SubFrameKeywords_CalibrationFiles.Text = "Calibration Files and Keywords";
             // 
@@ -1453,7 +1453,7 @@
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection";
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Size = new System.Drawing.Size(252, 48);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabIndex = 24;
+            GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabIndex = 5;
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.TabStop = false;
             GroupBox_KeywordUpdateTab_SubFrameKeywords_KeywordProtection.Text = "Keyword Protection";
             // 
@@ -1464,7 +1464,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Size = new System.Drawing.Size(63, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 25;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.TabIndex = 0;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Text = "Protect";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.UseVisualStyleBackColor = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect_CheckedChanged;
@@ -1477,7 +1477,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Size = new System.Drawing.Size(90, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabIndex = 24;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabIndex = 1;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.Text = "Update New";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_UpdateNew.UseVisualStyleBackColor = true;
@@ -1490,7 +1490,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Size = new System.Drawing.Size(54, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.TabIndex = 23;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.TabIndex = 2;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.Text = "Force";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.UseVisualStyleBackColor = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force.CheckedChanged += RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Force_CheckedChanged;
@@ -1504,7 +1504,7 @@
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Size = new System.Drawing.Size(142, 19);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.TabIndex = 23;
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.TabIndex = 4;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.Text = "Alphabetize Keywords";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_AlphabetizeKeywords.UseVisualStyleBackColor = true;
             // 
@@ -1521,7 +1521,7 @@
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Name = "GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights";
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Size = new System.Drawing.Size(279, 134);
-            GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabIndex = 7;
+            GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabIndex = 15;
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.TabStop = false;
             GroupBox_KeywordUpdateTab_SubFrameKeywords_Weights.Text = "Weights";
             // 
@@ -1532,7 +1532,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Size = new System.Drawing.Size(83, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabIndex = 21;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabIndex = 2;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.Text = "Calibration";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Calibration.UseVisualStyleBackColor = true;
@@ -1543,7 +1543,7 @@
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove";
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.TabIndex = 20;
+            Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.TabIndex = 4;
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Text = "Remove";
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_SubFrameKeywords_Weights_Remove.Click += Button_KeywordSubFrameWeight_Remove_Click;
@@ -1555,7 +1555,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Size = new System.Drawing.Size(69, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabIndex = 9;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabIndex = 3;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.Text = "Selected";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_Selected.UseVisualStyleBackColor = true;
@@ -1567,7 +1567,7 @@
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Name = "RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Size = new System.Drawing.Size(39, 19);
-            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.TabIndex = 8;
+            RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.TabIndex = 1;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.TabStop = true;
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.Text = "All";
             RadioButton_KeywordUpdateTab_SubFrameKeywords_Weights_All.UseVisualStyleBackColor = true;
@@ -1590,7 +1590,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Size = new System.Drawing.Size(140, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 5;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_Weights_WeightKeywords.TabIndex = 0;
             // 
             // Button_KeywordUpdateTab_SubFrameKeywords_Delete
             // 
@@ -1598,7 +1598,7 @@
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Name = "Button_KeywordUpdateTab_SubFrameKeywords_Delete";
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Size = new System.Drawing.Size(108, 27);
-            Button_KeywordUpdateTab_SubFrameKeywords_Delete.TabIndex = 21;
+            Button_KeywordUpdateTab_SubFrameKeywords_Delete.TabIndex = 14;
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Text = "Delete";
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_SubFrameKeywords_Delete.Click += Button_KeywordUpdateTab_SubFrameKeywords_Delete_Click;
@@ -1609,7 +1609,7 @@
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Name = "Button_KeywordUpdateTab_SubFrameKeywords_AddReplace";
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Size = new System.Drawing.Size(126, 27);
-            Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.TabIndex = 20;
+            Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.TabIndex = 13;
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Text = "Add/Replace";
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_SubFrameKeywords_AddReplace.Click += Button_KeywordUpdateTab_SubFrameKeywords_AddReplace_Click;
@@ -1622,7 +1622,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Size = new System.Drawing.Size(252, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.TabIndex = 18;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.TabIndex = 8;
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Keyword";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.SelectedIndexChanged += ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName_SelectedIndexChanged;
             // 
@@ -1633,7 +1633,7 @@
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Name = "CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Size = new System.Drawing.Size(236, 19);
-            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.TabIndex = 17;
+            CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.TabIndex = 1;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Text = "Update Target Name (and include Stars)";
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.UseVisualStyleBackColor = true;
             // 
@@ -1643,7 +1643,7 @@
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.Name = "Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords";
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.Size = new System.Drawing.Size(111, 27);
-            Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.TabIndex = 4;
+            Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.TabIndex = 3;
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.Text = "Update Keywords";
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.UseVisualStyleBackColor = true;
             Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords.Click += Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click;
@@ -1657,7 +1657,7 @@
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Name = "ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Size = new System.Drawing.Size(194, 23);
             ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Sorted = true;
-            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.TabIndex = 5;
+            ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.TabIndex = 0;
             // 
             // Label_KeywordUpdateTab_SubFrameKeywords_TagetName
             // 
@@ -2037,7 +2037,7 @@
             Button_KeywordsTab_ImageType_SetByFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordsTab_ImageType_SetByFile.Name = "Button_KeywordsTab_ImageType_SetByFile";
             Button_KeywordsTab_ImageType_SetByFile.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordsTab_ImageType_SetByFile.TabIndex = 18;
+            Button_KeywordsTab_ImageType_SetByFile.TabIndex = 3;
             Button_KeywordsTab_ImageType_SetByFile.Text = "Set By File";
             Button_KeywordsTab_ImageType_SetByFile.UseVisualStyleBackColor = true;
             Button_KeywordsTab_ImageType_SetByFile.Click += Button_KeywordImageTypeFrame_SetByFile_Click;
@@ -2048,7 +2048,7 @@
             Button_KeywordsTab_ImageType_SetAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Button_KeywordsTab_ImageType_SetAll.Name = "Button_KeywordsTab_ImageType_SetAll";
             Button_KeywordsTab_ImageType_SetAll.Size = new System.Drawing.Size(88, 27);
-            Button_KeywordsTab_ImageType_SetAll.TabIndex = 18;
+            Button_KeywordsTab_ImageType_SetAll.TabIndex = 2;
             Button_KeywordsTab_ImageType_SetAll.Text = "Set All";
             Button_KeywordsTab_ImageType_SetAll.UseVisualStyleBackColor = true;
             Button_KeywordsTab_ImageType_SetAll.Click += Button_KeywordImageTypeFrame_SetAll_Click;
@@ -2065,7 +2065,7 @@
             GroupBox_KeywordUpdateTab_ImageType_Frame.Name = "GroupBox_KeywordUpdateTab_ImageType_Frame";
             GroupBox_KeywordUpdateTab_ImageType_Frame.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_ImageType_Frame.Size = new System.Drawing.Size(299, 75);
-            GroupBox_KeywordUpdateTab_ImageType_Frame.TabIndex = 11;
+            GroupBox_KeywordUpdateTab_ImageType_Frame.TabIndex = 1;
             GroupBox_KeywordUpdateTab_ImageType_Frame.TabStop = false;
             GroupBox_KeywordUpdateTab_ImageType_Frame.Text = "Frame";
             // 
@@ -2143,7 +2143,7 @@
             GroupBox_KeywordUpdateTab_ImageType_Filter.Name = "GroupBox_KeywordUpdateTab_ImageType_Filter";
             GroupBox_KeywordUpdateTab_ImageType_Filter.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
             GroupBox_KeywordUpdateTab_ImageType_Filter.Size = new System.Drawing.Size(299, 81);
-            GroupBox_KeywordUpdateTab_ImageType_Filter.TabIndex = 10;
+            GroupBox_KeywordUpdateTab_ImageType_Filter.TabIndex = 0;
             GroupBox_KeywordUpdateTab_ImageType_Filter.TabStop = false;
             GroupBox_KeywordUpdateTab_ImageType_Filter.Text = "Filter";
             // 
@@ -2166,7 +2166,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.Name = "RadioButton_KeywordsTab_ImageType_Filter_Shutter";
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.Size = new System.Drawing.Size(63, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_Shutter.TabIndex = 8;
+            RadioButton_KeywordsTab_ImageType_Filter_Shutter.TabIndex = 7;
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.Text = "Shutter";
             RadioButton_KeywordsTab_ImageType_Filter_Shutter.UseVisualStyleBackColor = true;
@@ -2178,7 +2178,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Red.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_Red.Name = "RadioButton_KeywordsTab_ImageType_Filter_Red";
             RadioButton_KeywordsTab_ImageType_Filter_Red.Size = new System.Drawing.Size(45, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_Red.TabIndex = 1;
+            RadioButton_KeywordsTab_ImageType_Filter_Red.TabIndex = 4;
             RadioButton_KeywordsTab_ImageType_Filter_Red.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_Red.Text = "Red";
             RadioButton_KeywordsTab_ImageType_Filter_Red.UseVisualStyleBackColor = true;
@@ -2190,7 +2190,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_S2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_S2.Name = "RadioButton_KeywordsTab_ImageType_Filter_S2";
             RadioButton_KeywordsTab_ImageType_Filter_S2.Size = new System.Drawing.Size(40, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_S2.TabIndex = 6;
+            RadioButton_KeywordsTab_ImageType_Filter_S2.TabIndex = 3;
             RadioButton_KeywordsTab_ImageType_Filter_S2.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_S2.Text = "S II";
             RadioButton_KeywordsTab_ImageType_Filter_S2.UseVisualStyleBackColor = true;
@@ -2202,7 +2202,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Ha.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_Ha.Name = "RadioButton_KeywordsTab_ImageType_Filter_Ha";
             RadioButton_KeywordsTab_ImageType_Filter_Ha.Size = new System.Drawing.Size(40, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_Ha.TabIndex = 2;
+            RadioButton_KeywordsTab_ImageType_Filter_Ha.TabIndex = 1;
             RadioButton_KeywordsTab_ImageType_Filter_Ha.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_Ha.Text = "Ha";
             RadioButton_KeywordsTab_ImageType_Filter_Ha.UseVisualStyleBackColor = true;
@@ -2214,7 +2214,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Blue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_Blue.Name = "RadioButton_KeywordsTab_ImageType_Filter_Blue";
             RadioButton_KeywordsTab_ImageType_Filter_Blue.Size = new System.Drawing.Size(48, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_Blue.TabIndex = 5;
+            RadioButton_KeywordsTab_ImageType_Filter_Blue.TabIndex = 6;
             RadioButton_KeywordsTab_ImageType_Filter_Blue.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_Blue.Text = "Blue";
             RadioButton_KeywordsTab_ImageType_Filter_Blue.UseVisualStyleBackColor = true;
@@ -2226,7 +2226,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Green.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_Green.Name = "RadioButton_KeywordsTab_ImageType_Filter_Green";
             RadioButton_KeywordsTab_ImageType_Filter_Green.Size = new System.Drawing.Size(56, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_Green.TabIndex = 3;
+            RadioButton_KeywordsTab_ImageType_Filter_Green.TabIndex = 5;
             RadioButton_KeywordsTab_ImageType_Filter_Green.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_Green.Text = "Green";
             RadioButton_KeywordsTab_ImageType_Filter_Green.UseVisualStyleBackColor = true;
@@ -2238,7 +2238,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_O3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             RadioButton_KeywordsTab_ImageType_Filter_O3.Name = "RadioButton_KeywordsTab_ImageType_Filter_O3";
             RadioButton_KeywordsTab_ImageType_Filter_O3.Size = new System.Drawing.Size(46, 19);
-            RadioButton_KeywordsTab_ImageType_Filter_O3.TabIndex = 4;
+            RadioButton_KeywordsTab_ImageType_Filter_O3.TabIndex = 2;
             RadioButton_KeywordsTab_ImageType_Filter_O3.TabStop = true;
             RadioButton_KeywordsTab_ImageType_Filter_O3.Text = "O III";
             RadioButton_KeywordsTab_ImageType_Filter_O3.UseVisualStyleBackColor = true;

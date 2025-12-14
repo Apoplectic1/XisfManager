@@ -5,95 +5,47 @@ Comprehensive refactoring of the XISF File Manager application: upgrade to .NET 
 
 ---
 
-## Phase 1: .NET 9 Upgrade & Project Configuration
+## Phase 1: .NET 9 Upgrade & Project Configuration ✅ COMPLETE
 
-### Files to Modify
+### Files Modified
 - `XisfFileManager\XisfFileManager.csproj`
 
-### Changes
+### Changes Applied
 ```xml
-<!-- Update TargetFramework -->
 <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
 <LangVersion>latest</LangVersion>
 <Nullable>enable</Nullable>
 <ImplicitUsings>enable</ImplicitUsings>
-
-<!-- Update package -->
-<PackageReference Include="Microsoft.CSharp" Version="4.8.0" />
 ```
 
-### Verification
-- Build succeeds
+**Note:** Microsoft.CSharp stayed at 4.7.0 (4.8.0 doesn't exist)
+
+### Verification ✅
+- Build succeeds (with nullable warnings)
 - Application launches and basic file browsing works
 
 ---
 
-## Phase 2: Camera Configuration Abstraction (Highest Priority)
+## Phase 2: Camera Configuration Abstraction ✅ COMPLETE
 
-**Goal:** Reduce Camera.cs from 1367 lines to ~350 lines
+**Result:** Reduced Camera.cs from 1367 lines to 381 lines (72% reduction)
 
-### New Files to Create
+### Files Created
+- `Models\CameraConfiguration.cs` - Base class with PropertyAnalysis<T>
+- `Models\Cameras\Z533Camera.cs` - ZWO ASI533MC Pro (cooled color)
+- `Models\Cameras\Z183Camera.cs` - ZWO ASI183MM Pro (cooled mono)
+- `Models\Cameras\Q178Camera.cs` - QHYCCD QHY5III178M (guide camera)
+- `Models\Cameras\A144Camera.cs` - Atik Infinity (fixed gain color)
+- `Services\CameraService.cs` - Detection, analysis, color helpers
 
-#### `Models\CameraConfiguration.cs`
-```csharp
-public abstract class CameraConfiguration
-{
-    public abstract string Identifier { get; }      // "533", "183", "178", "144"
-    public abstract string Name { get; }            // "Z533", "Z183", etc.
-    public abstract string Description { get; }
-    public abstract double PixelSize { get; }
-    public abstract double PixelSizeBinned { get; }
-    public abstract bool IsColor { get; }
-    public abstract string? BayerPattern { get; }
-    public abstract bool UsesFocuserTemperature { get; }
-    public abstract (int Gain, int Offset) NarrowbandPreset { get; }
-    public abstract (int Gain, int Offset) BroadbandPreset { get; }
+### Files Modified
+- `MainForm\Camera.cs` - Replaced 1000+ lines with dictionary-based service calls
 
-    public bool MatchesCamera(string cameraName) =>
-        cameraName.Contains(Identifier, StringComparison.OrdinalIgnoreCase);
-}
-```
-
-#### `Models\Cameras\` - One file per camera
-- `Z533Camera.cs`
-- `Z183Camera.cs`
-- `Q178Camera.cs`
-- `A144Camera.cs`
-
-#### `Services\CameraService.cs`
-```csharp
-public class CameraService
-{
-    private static readonly CameraConfiguration[] AllCameras = { ... };
-
-    public CameraPropertyAnalysis<T> AnalyzeProperty<T>(
-        IEnumerable<XisfFile> files,
-        CameraConfiguration camera,
-        Func<XisfFile, T> selector);
-
-    public void ApplySettings(XisfFile file, CameraConfiguration camera, CameraSettings settings);
-}
-```
-
-### Files to Modify
-- `MainForm\Camera.cs` - Replace 1000+ lines of duplicate code with service calls
-
-### Refactoring Pattern
-**Before (repeated 4x per property, per camera):**
-```csharp
-List<double> SecondsListZ533 = mFileList
-    .Where(i => i.ExposureSeconds >= 0 && i.Camera.Contains("533"))
-    .Select(i => i.ExposureSeconds).ToList();
-bNoSecondsZ533 = SecondsListZ533.Count == 0;
-// ... 15 more lines
-```
-
-**After (once, generic):**
-```csharp
-var analysis = _cameraService.AnalyzeProperty(mFileList, camera, f => f.ExposureSeconds);
-BindComboBox(GetSecondsComboBox(camera), analysis.DistinctValues);
-UpdatePropertyLabel(Label_Seconds, analysis);
-```
+### Key Features Implemented
+- Generic `PropertyAnalysis<T>` for analyzing file properties
+- Camera-specific temperature handling (sensor vs focuser)
+- Proper binning pixel size calculation
+- NB/BB preset support per camera
 
 ---
 
@@ -310,30 +262,30 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 
 ## Implementation Order
 
-| Step | Phase | Risk | Est. Lines Changed |
-|------|-------|------|-------------------|
-| 1 | Phase 1: .NET 9 upgrade | Low | ~20 |
-| 2 | Phase 2: CameraConfiguration | Medium | +400 new, -1000 removed |
-| 3 | Phase 3: UI helpers | Low | -200 |
-| 4 | Phase 5: Async/DoEvents | Medium | ~100 |
-| 5 | Phase 5: Exception handling | Low | ~50 |
-| 6 | Phase 4: Generic repository | Medium | +150 new, -300 removed |
-| 7 | Phase 6: Constants | Low | +50 new |
-| 8 | Phase 7: Nullable | Low | ~100 annotations |
-| 9 | Phase 8: FluxDensity | Low | -100 |
+| Step | Phase | Risk | Status |
+|------|-------|------|--------|
+| 1 | Phase 1: .NET 9 upgrade | Low | ✅ Complete |
+| 2 | Phase 2: CameraConfiguration | Medium | ✅ Complete (-986 lines) |
+| 3 | Phase 3: UI helpers | Low | Pending |
+| 4 | Phase 5: Async/DoEvents | Medium | Pending |
+| 5 | Phase 5: Exception handling | Low | Pending |
+| 6 | Phase 4: Generic repository | Medium | Pending |
+| 7 | Phase 6: Constants | Low | Pending |
+| 8 | Phase 7: Nullable | Low | Pending (~90 warnings) |
+| 9 | Phase 8: FluxDensity | Low | Pending |
 
 ---
 
 ## Testing Checkpoints
 
-| After | Test |
-|-------|------|
-| Phase 1 | Build, launch, browse files |
-| Phase 2 | All 4 cameras detected, SetAll/SetByFile work |
-| Phase 3 | UI updates correctly, colors work |
-| Phase 4 | Target Scheduler tab loads |
-| Phase 5 | UI responsive during file operations |
-| Phase 8 | Full regression test |
+| After | Test | Status |
+|-------|------|--------|
+| Phase 1 | Build, launch, browse files | ✅ Verified |
+| Phase 2 | All 4 cameras detected, SetAll/SetByFile work | ✅ Verified |
+| Phase 3 | UI updates correctly, colors work | Pending |
+| Phase 4 | Target Scheduler tab loads | Pending |
+| Phase 5 | UI responsive during file operations | Pending |
+| Phase 8 | Full regression test | Pending |
 
 ---
 
