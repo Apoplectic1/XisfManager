@@ -10,10 +10,10 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - **Phase 1:** .NET 9 upgrade with nullable reference types enabled
 - **Phase 2:** Camera configuration abstraction (reduced Camera.cs from 1367 to 381 lines)
 - **Phase 2B:** Telescope configuration abstraction (reduced Telescope.cs from 232 to 204 lines)
+- **Phase 3:** UI helpers + CaptureSoftware abstraction (reduced CaptureSoftware.cs from 176 to 107 lines)
 - **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
 
 ### Remaining
-- Phase 3: UI helper methods
 - Phase 4: Generic database repository pattern
 - Phase 5: Async/await conversion (remove Application.DoEvents calls)
 - Phase 6: Configuration & constants extraction
@@ -22,6 +22,7 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 
 **Cameras supported:** Z533, Z183, Q178, A144 (all active)
 **Telescopes supported:** APM107, EvoStar150, Newtonian254 (with Riccardi 0.75x reducer support)
+**Capture Software supported:** NINA, TheSkyX, SGPro, Voyager, SharpCap
 
 ## Build Commands
 
@@ -59,13 +60,19 @@ XisfFileManager/
 ├── Models/             # Domain models
 │   ├── CameraConfiguration.cs # Base camera config + PropertyAnalysis<T>
 │   ├── TelescopeConfiguration.cs # Base telescope config + TelescopeAnalysis
+│   ├── CaptureSoftwareConfiguration.cs # Base capture software config
 │   ├── Cameras/        # Camera-specific configurations
 │   │   └── Z533Camera.cs, Z183Camera.cs, Q178Camera.cs, A144Camera.cs
-│   └── Telescopes/     # Telescope-specific configurations
-│       └── APM107Telescope.cs, EvoStar150Telescope.cs, Newtonian254Telescope.cs
+│   ├── Telescopes/     # Telescope-specific configurations
+│   │   └── APM107Telescope.cs, EvoStar150Telescope.cs, Newtonian254Telescope.cs
+│   └── CaptureSoftware/ # Capture software configurations
+│       └── NinaSoftware.cs, TheSkyXSoftware.cs, etc.
 ├── Services/           # Business logic services
 │   ├── CameraService.cs # Camera detection and analysis
-│   └── TelescopeService.cs # Telescope detection and analysis
+│   ├── TelescopeService.cs # Telescope detection and analysis
+│   └── CaptureSoftwareService.cs # Software detection and analysis
+├── Helpers/            # UI and utility helpers
+│   └── UIHelpers.cs    # Common control manipulation methods
 ├── Files/              # XISF file I/O operations
 │   ├── XisfFile.cs     # Core XISF file representation
 │   ├── XisfXmlReader.cs # XML metadata parsing
@@ -135,6 +142,9 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - `CameraService.cs`: Camera detection, property analysis, and UI color helpers
 - `TelescopeConfiguration.cs`: Base class for telescope configs with reducer support
 - `TelescopeService.cs`: Telescope detection, analysis, and UI color helpers
+- `CaptureSoftwareConfiguration.cs`: Base class for capture software configs
+- `CaptureSoftwareService.cs`: Software detection and analysis
+- `UIHelpers.cs`: Common UI control manipulation (ClearComboBox, ResetRadioButton, etc.)
 - `MainForm.Designer.cs`: Auto-generated UI - TabIndex values manually fixed for proper navigation
 - `Globals.cs`: All enums and constants
 

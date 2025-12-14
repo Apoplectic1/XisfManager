@@ -72,41 +72,30 @@ Comprehensive refactoring of the XISF File Manager application: upgrade to .NET 
 
 ---
 
-## Phase 3: UI Helper Methods
+## Phase 3: UI Helpers + CaptureSoftware Abstraction ✅ COMPLETE
 
-### Files to Modify
-- `MainForm\Camera.cs`
+**Result:** Reduced CaptureSoftware.cs from 176 lines to 107 lines (39% reduction)
 
-### Extract Common Patterns
+### Files Created
+- `Helpers\UIHelpers.cs` - Common UI control manipulation methods
+- `Models\CaptureSoftwareConfiguration.cs` - Base class with CaptureSoftwareAnalysis record
+- `Models\CaptureSoftware\NinaSoftware.cs` - N.I.N.A. configuration
+- `Models\CaptureSoftware\TheSkyXSoftware.cs` - TheSkyX configuration
+- `Models\CaptureSoftware\SequenceGeneratorProSoftware.cs` - SGPro configuration
+- `Models\CaptureSoftware\VoyagerSoftware.cs` - Voyager configuration
+- `Models\CaptureSoftware\SharpCapSoftware.cs` - SharpCap configuration
+- `Services\CaptureSoftwareService.cs` - Detection, analysis, color helpers
 
-#### ComboBox Clearing (lines 30-86 repeated 16x)
-```csharp
-private static void ClearComboBox(ComboBox cb)
-{
-    cb.DataSource = null;
-    cb.Text = string.Empty;
-    cb.Items.Clear();
-}
+### Files Modified
+- `MainForm\CaptureSoftware.cs` - Replaced hardcoded if/else chains with dictionary-based service calls
 
-private void ClearAllCameraComboBoxes()
-{
-    foreach (var cb in _allCameraComboBoxes)
-        ClearComboBox(cb);
-}
-```
-
-#### Color Update Pattern (repeated 50+ times)
-```csharp
-private static void UpdateLabelColor(Label label, PropertyAnalysis analysis)
-{
-    label.ForeColor = analysis switch
-    {
-        { NoValues: true } or { MissingValues: true } => Color.Red,
-        { DifferentValues: true } => Color.Green,
-        _ => Color.Black
-    };
-}
-```
+### Key Features Implemented
+- `UIHelpers.ClearComboBox()` - Consolidated combobox clearing
+- `UIHelpers.ResetRadioButton/ResetCheckBox()` - Common control reset patterns
+- `UIHelpers.ResetControlColors/SetControlColors()` - Batch color operations
+- Singleton pattern with `Instance` property (matches Camera/Telescope pattern)
+- `CaptureSoftwareAnalysis` record for file analysis results
+- Color coding logic centralized in `CaptureSoftwareService`
 
 ---
 
@@ -290,7 +279,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | 1 | Phase 1: .NET 9 upgrade | Low | ✅ Complete |
 | 2 | Phase 2: CameraConfiguration | Medium | ✅ Complete (-986 lines) |
 | 3 | Phase 2B: TelescopeConfiguration | Low | ✅ Complete (-28 lines) |
-| 4 | Phase 3: UI helpers | Low | Pending |
+| 4 | Phase 3: UIHelpers + CaptureSoftware | Low | ✅ Complete (-69 lines) |
 | 5 | Phase 5: Async/DoEvents | Medium | Pending |
 | 6 | Phase 5: Exception handling | Low | Pending |
 | 7 | Phase 4: Generic repository | Medium | Pending |
@@ -307,7 +296,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | Phase 1 | Build, launch, browse files | ✅ Verified |
 | Phase 2 | All 4 cameras detected, SetAll/SetByFile work | ✅ Verified |
 | Phase 2B | All 3 telescopes detected, Riccardi reducer works | ✅ Verified |
-| Phase 3 | UI updates correctly, colors work | Pending |
+| Phase 3 | All 5 capture software detected, UIHelpers work | ✅ Verified |
 | Phase 4 | Target Scheduler tab loads | Pending |
 | Phase 5 | UI responsive during file operations | Pending |
 | Phase 8 | Full regression test | Pending |
@@ -321,17 +310,22 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | `XisfFileManager.csproj` | .NET 9, nullable enable |
 | `MainForm\Camera.cs` | Major refactor (-986 lines) ✅ |
 | `MainForm\Telescope.cs` | Refactor (-28 lines) ✅ |
+| `MainForm\CaptureSoftware.cs` | Refactor (-69 lines) ✅ |
 | `TargetScheduler\SqlLiteReader.cs` | Generic repository |
 | `Files\XisfFileUpdate.cs` | Async, exception handling |
 | `MainForm\FluxDensity.cs` | Consolidate duplicates |
 | `Globals\Globals.cs` | Add camera registry |
 
 ### New Files
+- `Helpers\UIHelpers.cs`
 - `Models\CameraConfiguration.cs`
 - `Models\Cameras\Z533Camera.cs`, `Z183Camera.cs`, `Q178Camera.cs`, `A144Camera.cs`
 - `Services\CameraService.cs`
 - `Models\TelescopeConfiguration.cs`
 - `Models\Telescopes\APM107Telescope.cs`, `EvoStar150Telescope.cs`, `Newtonian254Telescope.cs`
 - `Services\TelescopeService.cs`
+- `Models\CaptureSoftwareConfiguration.cs`
+- `Models\CaptureSoftware\NinaSoftware.cs`, `TheSkyXSoftware.cs`, `SequenceGeneratorProSoftware.cs`, `VoyagerSoftware.cs`, `SharpCapSoftware.cs`
+- `Services\CaptureSoftwareService.cs`
 - `Data\SqliteRepository.cs` (planned)
 - `Configuration\AppPaths.cs` (planned)
