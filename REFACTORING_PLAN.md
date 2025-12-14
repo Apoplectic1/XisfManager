@@ -99,44 +99,41 @@ Comprehensive refactoring of the XISF File Manager application: upgrade to .NET 
 
 ---
 
-## Phase 4: Generic Database Repository
+## Phase 4: Generic Database Repository ✅ COMPLETE
 
-### Files to Modify
-- `TargetScheduler\SqlLiteReader.cs`
+**Result:** Reduced SqlLiteReader.cs from 251 lines to 77 lines (69% reduction)
 
-### New Files to Create
-- `Data\IEntityMapper.cs`
-- `Data\SqliteRepository.cs`
-- `Data\Mappers\ProjectMapper.cs`, `TargetMapper.cs`, etc.
+### Files Created
+- `Data\ITableMapper.cs` - Generic mapper interface
+- `Data\SqliteReaderExtensions.cs` - Extension methods for null-safe column reading
+- `Data\TableMappers.cs` - 8 mapper implementations for all Target Scheduler tables
 
-### Pattern
-**Before (repeated 8x for each table):**
+### Files Modified
+- `TargetScheduler\SqlLiteReader.cs` - Replaced 8 repeated table reading blocks with generic ReadTable<T> method
+
+### Key Features Implemented
+- `ITableMapper<T>` interface with TableName and Map() method
+- Extension methods: GetInt32, GetString, GetDouble, GetStringOrEmpty, GetBytes
+- Generic `ReadTable<T>` method that works with any mapper
+- Singleton mapper instances for performance
+
+### Pattern Applied
 ```csharp
-using (SqliteCommand command = new SqliteCommand("SELECT * FROM project", connection))
+// Generic method reads any table
+private static List<T> ReadTable<T>(SqliteConnection connection, ITableMapper<T> mapper) where T : new()
 {
-    using (SqliteDataReader reader = command.ExecuteReader())
-    {
-        while (reader.Read())
-        {
-            Project row = new Project { Id = reader.GetInt32(...), ... };
-            mSqlManager.mProjectList.Add(row);
-        }
-    }
-}
-```
-
-**After (generic, once):**
-```csharp
-public async Task<List<T>> ReadAllAsync<T>(IEntityMapper<T> mapper) where T : new()
-{
-    await using var cmd = new SqliteCommand($"SELECT * FROM {mapper.TableName}", _connection);
-    await using var reader = await cmd.ExecuteReaderAsync();
-    return await mapper.MapAllAsync(reader);
+    var results = new List<T>();
+    using var command = new SqliteCommand($"SELECT * FROM {mapper.TableName}", connection);
+    using var reader = command.ExecuteReader();
+    while (reader.Read())
+        results.Add(mapper.Map(reader));
+    return results;
 }
 
-// Usage
-var projects = await _repo.ReadAllAsync(new ProjectMapper());
-var targets = await _repo.ReadAllAsync(new TargetMapper());
+// Usage - 8 tables in 8 lines
+_manager.mProjectList = ReadTable(connection, _projectMapper);
+_manager.mTargetList = ReadTable(connection, _targetMapper);
+// ... etc
 ```
 
 ---
@@ -280,9 +277,9 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | 2 | Phase 2: CameraConfiguration | Medium | ✅ Complete (-986 lines) |
 | 3 | Phase 2B: TelescopeConfiguration | Low | ✅ Complete (-28 lines) |
 | 4 | Phase 3: UIHelpers + CaptureSoftware | Low | ✅ Complete (-69 lines) |
-| 5 | Phase 5: Async/DoEvents | Medium | Pending |
-| 6 | Phase 5: Exception handling | Low | Pending |
-| 7 | Phase 4: Generic repository | Medium | Pending |
+| 5 | Phase 4: Generic repository | Medium | ✅ Complete (-174 lines) |
+| 6 | Phase 5: Async/DoEvents | Medium | Pending |
+| 7 | Phase 5: Exception handling | Low | Pending |
 | 8 | Phase 6: Constants | Low | Pending |
 | 9 | Phase 7: Nullable | Low | Pending (~90 warnings) |
 | 10 | Phase 8: FluxDensity | Low | Pending |
@@ -297,7 +294,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | Phase 2 | All 4 cameras detected, SetAll/SetByFile work | ✅ Verified |
 | Phase 2B | All 3 telescopes detected, Riccardi reducer works | ✅ Verified |
 | Phase 3 | All 5 capture software detected, UIHelpers work | ✅ Verified |
-| Phase 4 | Target Scheduler tab loads | Pending |
+| Phase 4 | Target Scheduler tab loads, all 8 tables read | ✅ Verified |
 | Phase 5 | UI responsive during file operations | Pending |
 | Phase 8 | Full regression test | Pending |
 
@@ -311,7 +308,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | `MainForm\Camera.cs` | Major refactor (-986 lines) ✅ |
 | `MainForm\Telescope.cs` | Refactor (-28 lines) ✅ |
 | `MainForm\CaptureSoftware.cs` | Refactor (-69 lines) ✅ |
-| `TargetScheduler\SqlLiteReader.cs` | Generic repository |
+| `TargetScheduler\SqlLiteReader.cs` | Generic repository (-174 lines) ✅ |
 | `Files\XisfFileUpdate.cs` | Async, exception handling |
 | `MainForm\FluxDensity.cs` | Consolidate duplicates |
 | `Globals\Globals.cs` | Add camera registry |
@@ -327,5 +324,5 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 - `Models\CaptureSoftwareConfiguration.cs`
 - `Models\CaptureSoftware\NinaSoftware.cs`, `TheSkyXSoftware.cs`, `SequenceGeneratorProSoftware.cs`, `VoyagerSoftware.cs`, `SharpCapSoftware.cs`
 - `Services\CaptureSoftwareService.cs`
-- `Data\SqliteRepository.cs` (planned)
+- `Data\ITableMapper.cs`, `SqliteReaderExtensions.cs`, `TableMappers.cs`
 - `Configuration\AppPaths.cs` (planned)

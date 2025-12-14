@@ -11,10 +11,10 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - **Phase 2:** Camera configuration abstraction (reduced Camera.cs from 1367 to 381 lines)
 - **Phase 2B:** Telescope configuration abstraction (reduced Telescope.cs from 232 to 204 lines)
 - **Phase 3:** UI helpers + CaptureSoftware abstraction (reduced CaptureSoftware.cs from 176 to 107 lines)
+- **Phase 4:** Generic database repository pattern (reduced SqlLiteReader.cs from 251 to 77 lines)
 - **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
 
 ### Remaining
-- Phase 4: Generic database repository pattern
 - Phase 5: Async/await conversion (remove Application.DoEvents calls)
 - Phase 6: Configuration & constants extraction
 - Phase 7: Nullable reference type annotations (warnings exist)
@@ -73,6 +73,10 @@ XisfFileManager/
 │   └── CaptureSoftwareService.cs # Software detection and analysis
 ├── Helpers/            # UI and utility helpers
 │   └── UIHelpers.cs    # Common control manipulation methods
+├── Data/               # Database infrastructure
+│   ├── ITableMapper.cs # Generic mapper interface
+│   ├── SqliteReaderExtensions.cs # Null-safe reading helpers
+│   └── TableMappers.cs # Mappers for all 8 Target Scheduler tables
 ├── Files/              # XISF file I/O operations
 │   ├── XisfFile.cs     # Core XISF file representation
 │   ├── XisfXmlReader.cs # XML metadata parsing
