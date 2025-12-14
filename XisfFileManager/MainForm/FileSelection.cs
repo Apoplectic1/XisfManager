@@ -98,9 +98,9 @@ namespace XisfFileManager
 
                     Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(item.xFile.FilePath) + "\n" + Path.GetFileName(item.xFile.FilePath);
 
-                    Tuple<int, string> renameTuple = mRenameFile.RenameFile(item.xFile);
+                    var renameTuple = mRenameFile.RenameFile(item.xFile);
 
-                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
+                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.FileName) + "\n" + Path.GetFileName(renameTuple.FileName);
 
                     System.Windows.Forms.Application.DoEvents(); // Update UI
                 });

@@ -1,334 +1,263 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
 using XisfFileManager.Globals;
+using XisfFileManager.Helpers;
 
-namespace XisfFileManager.Files
+namespace XisfFileManager.Files;
+
+public class XisfFileRename
 {
-    public class XisfFileRename
+    private const double NoTemperature = -273.0;
+
+    public eOrder RenameOrder;
+
+    /// <summary>
+    /// Renames the specified XISF file based on its properties and the given index.
+    /// </summary>
+    /// <param name="xFile">The XISF file to rename.</param>
+    /// <returns>A tuple containing the status code (1 for success, -1 for failure) and the new file name.</returns>
+    public (int Status, string FileName) RenameFile(XisfFile xFile)
     {
-        private List<XisfFile> mFileList;
-
-        public eOrder RenameOrder;
-
-        /// <summary>
-        /// Recursively modifies the xFile name by appending "-Dup" until a unique name is found.
-        /// </summary>
-        /// <param name="dupFileName">The initial duplicate xFile name.</param>
-        /// <returns>A unique xFile name that does not already exist.</returns>
-        private static string RecurseDupFileName(string dupFileName)
+        try
         {
-            while (File.Exists(dupFileName))
+            string sourceFileDirectory = Path.GetDirectoryName(xFile.FilePath) ?? "";
+            string newFileName = BuildFileName(xFile.FileNameNumberIndex, xFile) + ".xisf";
+
+            if (sourceFileDirectory.Contains("reject", StringComparison.OrdinalIgnoreCase))
             {
-                int lastParen = dupFileName.LastIndexOf(')');
-                dupFileName = dupFileName.Insert(lastParen + 1, "-Dup");
+                newFileName = "REJECT  " + newFileName;
             }
-            return dupFileName;
+
+            string newFilePath = Path.Combine(sourceFileDirectory, newFileName);
+
+            // Rename the file if its name actually changed and the new file name does not already exist
+            if (xFile.FilePath != newFilePath && !File.Exists(newFilePath))
+            {
+                File.Move(xFile.FilePath, newFilePath);
+            }
+
+            return (1, newFileName);
         }
-
-
-        /// <summary>
-        /// Renames the specified XISF xFile based on its properties and the given index.
-        /// </summary>
-        /// <param name="xFile">The XISF xFile to rename.</param>
-        /// <returns>A tuple containing the status code (1 for success, -1 for failure) and the new xFile name.</returns>
-        public Tuple<int, string> RenameFile(XisfFile xFile)
+        catch (Exception ex)
         {
-            try
-            {
-                string sourceFileDirectory = Path.GetDirectoryName(xFile.FilePath);
-                string newFileName = BuildFileName(xFile.FileNameNumberIndex, xFile) + ".xisf";
-                if (sourceFileDirectory.Contains("reject", StringComparison.OrdinalIgnoreCase))
-                {
-                    newFileName = "REJECT  " + newFileName;
-                }
-                string newFilePath = Path.Combine(sourceFileDirectory, newFileName);
-
-                // Rename the xFile if its name actually changed and the new xFile name does not already exist
-                if (xFile.FilePath != newFilePath && !File.Exists(newFilePath))
-                {
-                    File.Move(xFile.FilePath, newFilePath);
-                }
-
-                return new Tuple<int, string>(1, newFileName);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "RenameFile(XisfFile xFile)");
-                return new Tuple<int, string>(-1, "");
-            }
+            MessageBox.Show(ex.ToString(), "RenameFile(XisfFile xFile)");
+            return (-1, "");
         }
-
-
-        /// <summary>
-        /// Moves duplicate files in the given list to a 'Duplicates' directory.
-        /// A duplicate is defined as a xFile with identical properties to another xFile in the list.
-        /// </summary>
-        /// <param name="fileList">The list of XisfFile objects to check for duplicates.</param>
-        /// <returns>The count of files that were moved as duplicates.</returns>
-        public static int MoveDuplicates(List<XisfFile> fileList)
-        {
-            // Group files by their properties to identify duplicates
-            var groupedDuplicates = fileList.GroupBy(item => new
-            {
-                item.Camera,
-                item.FrameType,
-                item.Binning,
-                item.FilterName,
-                item.ExposureSeconds,
-                item.Gain,
-                item.Offset,
-                item.CaptureTime
-            })
-            .Where(group => group.Skip(1).Any()) // Only keep groups with more than one item
-            .ToList();
-
-            // List to keep track of files that have been moved
-            List<XisfFile> movedFiles = [];
-
-            // Process each group of duplicates
-            groupedDuplicates.ForEach(group =>
-            {
-                var items = group.ToList();
-                for (int i = 1; i < items.Count; i++) // Skip the first item to keep it in place
-                {
-                    var item = items[i];
-                    string sourceFilePath = Path.GetDirectoryName(item.FilePath);
-                    string duplicatesPath = Path.Combine(sourceFilePath, "Duplicates");
-
-                    // Ensure the 'Duplicates' directory exists
-                    if (!Directory.Exists(duplicatesPath))
-                        Directory.CreateDirectory(duplicatesPath);
-
-                    string destinationFilePath = Path.Combine(duplicatesPath, Path.GetFileName(item.FilePath));
-
-                    // Move the xFile to the 'Duplicates' directory
-                    File.Move(item.FilePath, destinationFilePath, true); // Overwrite if the xFile already exists
-
-                    // Add the xFile to the movedFiles list
-                    movedFiles.Add(item);
-                }
-            });
-
-            // Remove the moved files from the original fileList
-            fileList.RemoveAll(file => movedFiles.Contains(file));
-
-            // Return the count of files that were moved as duplicates
-            return movedFiles.Count;
-        }
-
-
-
-        /// <summary>
-        /// Builds a new xFile name for the given XISF xFile based on its properties and the specified index.
-        /// </summary>
-        /// <param name="index">The index of the xFile.</param>
-        /// <param name="mFile">The XISF xFile for which to build the new name.</param>
-        /// <returns>The newly built xFile name.</returns>
-        private string BuildFileName(int index, XisfFile mFile)
-        {
-            if (mFile.TargetName.Contains("Master"))
-            {
-                string newName = "Master ";
-                string targetName = mFile.TargetName;
-                eFrame frameType = mFile.FrameType;
-
-                if (targetName.Equals("Master"))
-                {
-                    string frameInfo = mFile.MSTRFRMS != -1
-                        ? $"{mFile.ExposureSeconds.FormatExposureTime()}x{mFile.Binning}x{mFile.MSTRFRMS}"
-                        : $"{mFile.ExposureSeconds.FormatExposureTime()}x{mFile.Binning}";
-
-                    string commonInfo = $"{mFile.Camera}G{mFile.Gain:D3}O{mFile.Offset}@{mFile.SensorTemperature.FormatTemperature()}C";
-
-                    switch (frameType)
-                    {
-                        case eFrame.LIGHT:
-                            newName += $"Integration  L-{mFile.FilterName}  {frameInfo}  {commonInfo}";
-                            if (!string.IsNullOrEmpty(mFile.MSTRALG))
-                                newName += $"  ({mFile.MSTRALG}  {mFile.CaptureTime:yyyy-MM-dd}";
-                            else
-                                newName += $"  ({mFile.CaptureTime:yyyy-MM-dd}";
-                                newName += $"  {mFile.CaptureSoftware})";
-                            break;
-
-                        case eFrame.DARK:
-                            newName += $"Dark  {mFile.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}";
-                            break;
-
-                        case eFrame.BIAS:
-                            newName += $"Bias  {mFile.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}";
-                            break;
-
-                        case eFrame.FLAT:
-                            newName += $"Flat {mFile.FilterName}  {mFile.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}  {mFile.Telescope}@{mFile.FocalLength:F0}";
-                            break;
-                    }
-
-                    if (!string.IsNullOrEmpty(mFile.MSTRALG))
-                    {
-                        newName += $"  ({mFile.MSTRALG}";
-                        if (!string.IsNullOrEmpty(mFile.CaptureSoftware))
-                            newName += $" {mFile.CaptureSoftware})";
-                        else
-                            newName += ")";
-                    }
-                    else if (!string.IsNullOrEmpty(mFile.CaptureSoftware))
-                    {
-                        newName += $"  ({mFile.CaptureSoftware})";
-                    }
-
-                    return newName;
-                }
-            }
-
-            string newNameWithIndex = index.ToString("D3");
-            string commonDetails = $"{mFile.ExposureSeconds.FormatExposureTime()}x{mFile.Binning}  {mFile.Camera}G{mFile.Gain:D3}O{mFile.Offset}@{mFile.SensorTemperature.FormatTemperature()}C";
-
-            switch (mFile.FrameType)
-            {
-                case eFrame.DARK:
-                    newNameWithIndex += $"  Dark  {commonDetails}  ({mFile.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {mFile.CaptureSoftware})";
-                    break;
-
-                case eFrame.BIAS:
-                    newNameWithIndex += $"  Bias  {commonDetails}  ({mFile.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {mFile.CaptureSoftware})";
-                    break;
-
-                case eFrame.FLAT:
-                    newNameWithIndex += $"  F-{mFile.FilterName}  {commonDetails}  {mFile.Telescope}@{mFile.FocalLength:F0}";
-
-                    if (mFile.AmbientTemperature != -273)
-                        newNameWithIndex += $" {mFile.AmbientTemperature.FormatTemperature()}C";
-                    else
-                        newNameWithIndex += "  ";
-
-                    if (mFile.FocuserPosition != int.MinValue && mFile.FocuserTemperature != -273.0)
-                        newNameWithIndex += $" F{mFile.FocuserPosition:D5}@{mFile.FocuserTemperature.FormatTemperature()}C";
-
-                    if (mFile.RotationAngle.StartsWith('S'))
-                        newNameWithIndex += $"  {mFile.RotationAngle}";
-
-                    newNameWithIndex += $"  ({mFile.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {mFile.CaptureSoftware})";
-                    break;
-
-                case eFrame.LIGHT:
-                    string weightPart = string.Empty;
-                    switch (RenameOrder)
-                    {
-                        case eOrder.INDEX:
-                            weightPart = index.ToString("D3") + " ";
-                            break;
-                        case eOrder.INDEXWEIGHT:
-                            weightPart = !double.IsNaN(mFile.SSWeight) ? $"{Convert.ToInt32(mFile.SSWeight * 1000.0):D4} {index:D3}" : index.ToString("D3");
-                            break;
-                        case eOrder.WEIGHT:
-                            weightPart = !double.IsNaN(mFile.SSWeight) ? Convert.ToInt32(mFile.SSWeight * 1000.0).ToString("D4") : index.ToString("D3");
-                            break;
-                        case eOrder.WEIGHTINDEX:
-                            weightPart = !double.IsNaN(mFile.SSWeight) ? $"{Convert.ToInt32(mFile.SSWeight * 1000.0):D4} {index:D3}" : index.ToString("D3");
-                            break;
-                    }
-
-                    newNameWithIndex = $"{weightPart} {mFile.TargetName}  L-{mFile.FilterName}  {commonDetails}  {mFile.Telescope}@{mFile.FocalLength:F0}";
-
-                    if (mFile.AmbientTemperature != -273.0)
-                        newNameWithIndex += $"{mFile.AmbientTemperature.FormatTemperature()}C";
-                    else
-                        newNameWithIndex += $"{mFile.FocuserTemperature.FormatTemperature()}C";
-
-                    newNameWithIndex += $"  F{mFile.FocuserPosition:D5}@{mFile.FocuserTemperature.FormatTemperature()}C";
-
-                    if (mFile.RotationAngle.StartsWith('S'))
-                        newNameWithIndex += $"  {mFile.RotationAngle}";
-
-                    newNameWithIndex += $"  ({mFile.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {mFile.CaptureSoftware})";
-                    break;
-
-                default:
-                    newNameWithIndex = index.ToString("D3") + " Rename Failed";
-                    break;
-            }
-
-            return newNameWithIndex;
-        }
-
-
-        /// <summary>
-        /// Moves duplicate files to a 'Duplicates' directory and renames them with a duplicate index.
-        /// </summary>
-        /// <param name="currentFile">The current XISF xFile being processed.</param>
-        /// <param name="sourceFilePath">The source xFile path where the xFile is located.</param>
-        /// <param name="newFileName">The new xFile name to be used for duplicates.</param>
-        private void MoveDuplicates(XisfFile currentFile, string sourceFilePath, string newFileName)
-        {
-            int dupIndex = 1;
-
-            // Ensure the Duplicates directory exists
-            string duplicatesPath = Path.Combine(sourceFilePath, "Duplicates");
-            Directory.CreateDirectory(duplicatesPath);
-
-            // Loop through the xFile list to process duplicates
-            foreach (XisfFile entry in mFileList.ToList()) // Create a copy of the list to avoid modifying the collection while iterating
-            {
-                if (entry == currentFile) continue; // Skip the current xFile
-
-                // Increment the duplicate index
-                dupIndex++;
-
-                // Remove the index or SSWEIGHT from the xFile name (the first four characters) and postfix duplicate index
-                string duplicateFileName = newFileName.Remove(0, 4).Insert(0, dupIndex.ToString("D3") + " ");
-
-                // Construct the destination path for the duplicate xFile
-                string destinationFilePath = Path.Combine(duplicatesPath, duplicateFileName);
-
-                // Ensure a unique xFile name by appending "-Dup" if necessary
-                destinationFilePath = RecurseDupFileName(destinationFilePath);
-
-                // Move the duplicate xFile to the Duplicates directory
-                File.Move(entry.FilePath, destinationFilePath);
-
-                // Remove the entry from the xFile list
-                mFileList.Remove(entry);
-            }
-        }
-
-
-        /// <summary>
-        /// Checks if the specified xFile is locked.
-        /// </summary>
-        /// <param name="path">The path to the xFile to check.</param>
-        /// <returns>True if the xFile is locked; otherwise, false.</returns>
-        private static bool IsFileLocked(string path)
-        {
-            FileInfo file = new(path);
-            FileStream stream = null;
-
-            try
-            {
-                // Attempt to open the xFile with read/write access and exclusive lock
-                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-            }
-            catch (IOException)
-            {
-                // The xFile is unavailable because it is:
-                // still being written to,
-                // being processed by another thread,
-                // or does not exist (has already been processed)
-                return true;
-            }
-            finally
-            {
-                // Close the stream if it was successfully opened
-                stream?.Close();
-            }
-
-            // The xFile is not locked
-            return false;
-        }
-
     }
+
+    /// <summary>
+    /// Moves duplicate files in the given list to a 'Duplicates' directory.
+    /// A duplicate is defined as a file with identical properties to another file in the list.
+    /// </summary>
+    /// <param name="fileList">The list of XisfFile objects to check for duplicates.</param>
+    /// <returns>The count of files that were moved as duplicates.</returns>
+    public static int MoveDuplicates(List<XisfFile> fileList)
+    {
+        // Group files by their properties to identify duplicates
+        var groupedDuplicates = fileList.GroupBy(item => new
+        {
+            item.Camera,
+            item.FrameType,
+            item.Binning,
+            item.FilterName,
+            item.ExposureSeconds,
+            item.Gain,
+            item.Offset,
+            item.CaptureTime
+        })
+        .Where(group => group.Skip(1).Any()) // Only keep groups with more than one item
+        .ToList();
+
+        // List to keep track of files that have been moved
+        List<XisfFile> movedFiles = [];
+
+        // Process each group of duplicates
+        groupedDuplicates.ForEach(group =>
+        {
+            var items = group.ToList();
+            for (int i = 1; i < items.Count; i++) // Skip the first item to keep it in place
+            {
+                var item = items[i];
+                string sourceFilePath = Path.GetDirectoryName(item.FilePath) ?? "";
+                string duplicatesPath = Path.Combine(sourceFilePath, "Duplicates");
+
+                // Ensure the 'Duplicates' directory exists
+                if (!Directory.Exists(duplicatesPath))
+                    Directory.CreateDirectory(duplicatesPath);
+
+                string destinationFilePath = Path.Combine(duplicatesPath, Path.GetFileName(item.FilePath));
+
+                // Move the file to the 'Duplicates' directory
+                File.Move(item.FilePath, destinationFilePath, true); // Overwrite if the file already exists
+
+                // Add the file to the movedFiles list
+                movedFiles.Add(item);
+            }
+        });
+
+        // Remove the moved files from the original fileList
+        fileList.RemoveAll(file => movedFiles.Contains(file));
+
+        // Return the count of files that were moved as duplicates
+        return movedFiles.Count;
+    }
+
+    #region File Name Building
+
+    /// <summary>
+    /// Builds a new file name for the given XISF file based on its properties and the specified index.
+    /// </summary>
+    private string BuildFileName(int index, XisfFile file)
+    {
+        // Handle Master frames
+        if (file.TargetName.Contains("Master") && file.TargetName.Equals("Master"))
+        {
+            return BuildMasterFileName(file);
+        }
+
+        // Handle regular frames
+        return file.FrameType switch
+        {
+            eFrame.DARK => BuildDarkFileName(index, file),
+            eFrame.BIAS => BuildBiasFileName(index, file),
+            eFrame.FLAT => BuildFlatFileName(index, file),
+            eFrame.LIGHT => BuildLightFileName(index, file),
+            _ => $"{index:D3} Rename Failed"
+        };
+    }
+
+    private static string BuildMasterFileName(XisfFile file)
+    {
+        string frameInfo = file.MSTRFRMS != -1
+            ? $"{file.ExposureSeconds.FormatExposureTime()}x{file.Binning}x{file.MSTRFRMS}"
+            : $"{file.ExposureSeconds.FormatExposureTime()}x{file.Binning}";
+
+        string commonInfo = FormatCameraInfo(file);
+
+        string newName = file.FrameType switch
+        {
+            eFrame.LIGHT => BuildMasterLightName(file, frameInfo, commonInfo),
+            eFrame.DARK => $"Master Dark  {file.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}",
+            eFrame.BIAS => $"Master Bias  {file.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}",
+            eFrame.FLAT => $"Master Flat {file.FilterName}  {file.CaptureTime:yyyy-MM-dd}  {frameInfo}  {commonInfo}  {FormatTelescopeInfo(file)}",
+            _ => "Master Unknown"
+        };
+
+        // Add algorithm and software suffix for non-LIGHT frames
+        if (file.FrameType != eFrame.LIGHT)
+        {
+            newName += FormatAlgorithmSuffix(file);
+        }
+
+        return newName;
+    }
+
+    private static string BuildMasterLightName(XisfFile file, string frameInfo, string commonInfo)
+    {
+        string name = $"Master Integration  L-{file.FilterName}  {frameInfo}  {commonInfo}";
+
+        if (!string.IsNullOrEmpty(file.MSTRALG))
+            name += $"  ({file.MSTRALG}  {file.CaptureTime:yyyy-MM-dd}";
+        else
+            name += $"  ({file.CaptureTime:yyyy-MM-dd}";
+
+        name += $"  {file.CaptureSoftware})";
+        return name;
+    }
+
+    private static string BuildDarkFileName(int index, XisfFile file) =>
+        $"{index:D3}  Dark  {FormatCommonDetails(file)}  {FormatCaptureInfo(file)}";
+
+    private static string BuildBiasFileName(int index, XisfFile file) =>
+        $"{index:D3}  Bias  {FormatCommonDetails(file)}  {FormatCaptureInfo(file)}";
+
+    private static string BuildFlatFileName(int index, XisfFile file)
+    {
+        string name = $"{index:D3}  F-{file.FilterName}  {FormatCommonDetails(file)}  {FormatTelescopeInfo(file)}";
+
+        name += file.AmbientTemperature != NoTemperature
+            ? $" {file.AmbientTemperature.FormatTemperature()}C"
+            : "  ";
+
+        if (file.FocuserPosition != int.MinValue && file.FocuserTemperature != NoTemperature)
+            name += $" {FormatFocuserInfo(file)}";
+
+        name += FormatRotation(file);
+        name += $"  {FormatCaptureInfo(file)}";
+
+        return name;
+    }
+
+    private string BuildLightFileName(int index, XisfFile file)
+    {
+        string weightPart = FormatWeightIndex(index, file);
+        string name = $"{weightPart} {file.TargetName}  L-{file.FilterName}  {FormatCommonDetails(file)}  {FormatTelescopeInfo(file)}";
+
+        name += file.AmbientTemperature != NoTemperature
+            ? $"{file.AmbientTemperature.FormatTemperature()}C"
+            : $"{file.FocuserTemperature.FormatTemperature()}C";
+
+        name += $"  {FormatFocuserInfo(file)}";
+        name += FormatRotation(file);
+        name += $"  {FormatCaptureInfo(file)}";
+
+        return name;
+    }
+
+    #endregion
+
+    #region Format Helpers
+
+    private static string FormatCommonDetails(XisfFile file) =>
+        $"{file.ExposureSeconds.FormatExposureTime()}x{file.Binning}  {FormatCameraInfo(file)}";
+
+    private static string FormatCameraInfo(XisfFile file) =>
+        $"{file.Camera}G{file.Gain:D3}O{file.Offset}@{file.SensorTemperature.FormatTemperature()}C";
+
+    private static string FormatCaptureInfo(XisfFile file) =>
+        $"({file.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {file.CaptureSoftware})";
+
+    private static string FormatTelescopeInfo(XisfFile file) =>
+        $"{file.Telescope}@{file.FocalLength:F0}";
+
+    private static string FormatFocuserInfo(XisfFile file) =>
+        $"F{file.FocuserPosition:D5}@{file.FocuserTemperature.FormatTemperature()}C";
+
+    private static string FormatRotation(XisfFile file) =>
+        file.RotationAngle.StartsWith('S') ? $"  {file.RotationAngle}" : "";
+
+    private static string FormatAlgorithmSuffix(XisfFile file)
+    {
+        if (!string.IsNullOrEmpty(file.MSTRALG))
+        {
+            return !string.IsNullOrEmpty(file.CaptureSoftware)
+                ? $"  ({file.MSTRALG} {file.CaptureSoftware})"
+                : $"  ({file.MSTRALG})";
+        }
+
+        return !string.IsNullOrEmpty(file.CaptureSoftware)
+            ? $"  ({file.CaptureSoftware})"
+            : "";
+    }
+
+    private string FormatWeightIndex(int index, XisfFile file)
+    {
+        return RenameOrder switch
+        {
+            eOrder.INDEX => $"{index:D3} ",
+            eOrder.WEIGHT => !double.IsNaN(file.SSWeight)
+                ? $"{Convert.ToInt32(file.SSWeight * 1000.0):D4}"
+                : $"{index:D3}",
+            eOrder.INDEXWEIGHT or eOrder.WEIGHTINDEX => !double.IsNaN(file.SSWeight)
+                ? $"{Convert.ToInt32(file.SSWeight * 1000.0):D4} {index:D3}"
+                : $"{index:D3}",
+            _ => $"{index:D3} "
+        };
+    }
+
+    #endregion
 }

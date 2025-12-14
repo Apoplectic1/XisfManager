@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Xml;
 using XisfFileManager.Files.XML;
 using XisfFileManager.Globals;
+using XisfFileManager.Helpers;
 
 namespace XisfFileManager.Files
 {
@@ -81,7 +82,7 @@ namespace XisfFileManager.Files
         public bool UpdateFile(XisfFile xFile, string destinationPath)
         {
             int delay = 0;
-            while (IsFileLocked(xFile.FilePath) && delay < 100)
+            while (FileHelpers.IsFileLocked(xFile.FilePath) && delay < 100)
             {
                 delay++;
                 Thread.Sleep(10); // Sleep to prevent busy-wait loop
@@ -633,43 +634,5 @@ namespace XisfFileManager.Files
         }
 
 
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
-
-        /// <summary>
-        /// Checks if a file is locked by attempting to open it with exclusive access.
-        /// If the file cannot be opened, it is considered locked.
-        /// </summary>
-        /// <param name="file">The path of the file to check.</param>
-        /// <returns>True if the file is locked; otherwise, false.</returns>
-        private static bool IsFileLocked(string file)
-        {
-            try
-            {
-                // Try to open the file with exclusive access
-                using (FileStream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    stream.Close();
-                }
-            }
-            catch (IOException)
-            {
-                // The file is unavailable because it is:
-                // - still being written to
-                // - being processed by another thread
-                // - does not exist (has already been processed)
-
-                // Add delay for the file to be released
-                Thread.Sleep(100);
-                return true;
-            }
-
-            // The file is not locked
-            return false;
-        }
-
-
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
     }
 }
