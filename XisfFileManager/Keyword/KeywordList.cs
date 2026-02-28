@@ -28,6 +28,63 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Normalizes capture time by converting DATE-OBS (UTC) to DATE-LOC (local time).
+        /// Called during file update, not during property read.
+        /// </summary>
+        public void NormalizeCaptureTime()
+        {
+            // If DATE-LOC already exists, nothing to do
+            if (GetKeywordValue("DATE-LOC") != string.Empty)
+                return;
+
+            string value = GetKeywordValue("DATE-OBS");
+            if (value == string.Empty)
+                return;
+
+            try
+            {
+                // Convert UTC to Local Time
+                DateTime dateTimeUtc = DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                dateTimeUtc = DateTime.SpecifyKind(dateTimeUtc, DateTimeKind.Utc);
+                TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
+                DateTime dateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUtc, localTimeZone);
+
+                AddKeyword("DATE-LOC", dateTimeLocal.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time");
+            }
+            catch
+            {
+                // If parsing fails, don't add the keyword
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Normalizes exposure keyword by converting EXPTIME to EXPOSURE.
+        /// Called during file update, not during property read.
+        /// </summary>
+        public void NormalizeExposure()
+        {
+            // If EXPOSURE already exists, just remove EXPTIME if present
+            string exposureValue = GetKeywordValue("EXPOSURE");
+            if (exposureValue != string.Empty)
+            {
+                RemoveKeyword("EXPTIME");
+                return;
+            }
+
+            // Convert EXPTIME to EXPOSURE
+            string exptimeValue = GetKeywordValue("EXPTIME");
+            if (exptimeValue != string.Empty && double.TryParse(exptimeValue, out double exposure))
+            {
+                AddKeyword("EXPOSURE", exposure.ToString(), "[seconds] Imaging Camera Exposure Time");
+                RemoveKeyword("EXPTIME");
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------
+
         public static Keyword NewKeyword(string sName, string oValue, string sComment)
         {
             Keyword newKeyword = new Keyword
@@ -181,31 +238,31 @@ namespace XisfFileManager
         {
             get
             {
+                // Try DATE-LOC first (already in local time)
                 string value = GetKeywordValue("DATE-LOC");
-                if (value == string.Empty)
+                if (value != string.Empty)
                 {
-                    value = GetKeywordValue("DATE-OBS");
-                    if (value != string.Empty)
-                    {
-                        // Convert UTC to Local Time
-                        DateTime dateTimeUtc = DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
-
-                        // Ensure that the DateTime is in UTC by setting its Kind property
-                        dateTimeUtc = DateTime.SpecifyKind(dateTimeUtc, DateTimeKind.Utc);
-
-                        // Specify the target time zone
-                        TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
-
-                        // Convert UTC time to local time
-                        DateTime dateTimeLocal = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUtc, localTimeZone);
-
-                        AddKeyword("DATE-LOC", dateTimeLocal.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time");
-                        return DateTime.Parse(value);
-                    }
-                    else
-                        return DateTime.MinValue;
+                    if (DateTime.TryParse(value, out DateTime localTime))
+                        return localTime;
                 }
-                return DateTime.Parse(value);
+
+                // Fall back to DATE-OBS (UTC) and convert to local for display (read-only, no keyword modification)
+                value = GetKeywordValue("DATE-OBS");
+                if (value != string.Empty)
+                {
+                    try
+                    {
+                        DateTime dateTimeUtc = DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+                        dateTimeUtc = DateTime.SpecifyKind(dateTimeUtc, DateTimeKind.Utc);
+                        return TimeZoneInfo.ConvertTimeFromUtc(dateTimeUtc, TimeZoneInfo.Local);
+                    }
+                    catch
+                    {
+                        return DateTime.MinValue;
+                    }
+                }
+
+                return DateTime.MinValue;
             }
             set { AddKeyword("DATE-LOC", value.ToString("yyyy-MM-ddTHH:mm:ss.fff"), "Local capture time"); }
         }
@@ -264,31 +321,16 @@ namespace XisfFileManager
         {
             get
             {
-                double exposure;
-                bool bStatus;
+                // Try EXPOSURE first (read-only, no keyword modification)
                 string value = GetKeywordValue("EXPOSURE");
-                if (value != string.Empty)
-                {
-                    bStatus = double.TryParse(value, out exposure);
-                    if (bStatus)
-                    {
-                        RemoveKeyword("EXPTIME");
-                        return exposure;
-                    }
-                }
+                if (value != string.Empty && double.TryParse(value, out double exposure))
+                    return exposure;
 
+                // Fall back to EXPTIME (read-only, no keyword modification)
                 value = GetKeywordValue("EXPTIME");
-                if (value != string.Empty)
-                {
-                    bStatus = double.TryParse(value, out exposure);
-                    if (bStatus)
-                    {
-                        AddKeyword("EXPOSURE", exposure.ToString(), "[seconds] Imaging Camera Exposure Time");
-                        RemoveKeyword("EXPTIME");
-                        return exposure;
-                    }
-                }
-                AddKeyword("EXPOSURE", "0.0", "[seconds] Imaging Camera Exposure Time");
+                if (value != string.Empty && double.TryParse(value, out exposure))
+                    return exposure;
+
                 return 0.0;
             }
             set { AddKeyword("EXPOSURE", value.ToString(), "[seconds] Imaging Camera Exposure Time"); }

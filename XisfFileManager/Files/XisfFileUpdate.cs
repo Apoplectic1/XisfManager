@@ -94,7 +94,10 @@ namespace XisfFileManager.Files
                 return false;
             }
 
-            // Return if KeywordList and the original XML are identical 
+            // Normalize keywords before writing (converts CREATOR->SWCREATE, DATE-OBS->DATE-LOC, EXPTIME->EXPOSURE)
+            xFile.NormalizeKeywords();
+
+            // Return if KeywordList and the original XML are identical
             //if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
             //    return false;
 

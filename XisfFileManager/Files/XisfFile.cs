@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.DirectoryServices.ActiveDirectory;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Windows.Security.Cryptography.Core;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
@@ -43,6 +38,78 @@ namespace XisfFileManager.Files
         }
 
         public eKeywordUpdateMode KeywordUpdateMode { get; set; } = eKeywordUpdateMode.PROTECT;
+
+        /// <summary>
+        /// Normalizes keywords before file update/write operations.
+        /// This consolidates keyword standardization that was previously done in property getters.
+        /// Call this before UpdateFile() to ensure keywords are in the expected format.
+        /// </summary>
+        public void NormalizeKeywords()
+        {
+            // Normalize capture software: CREATOR -> SWCREATE with standardized values
+            NormalizeCaptureSoftware();
+
+            // Normalize capture time: DATE-OBS (UTC) -> DATE-LOC (local)
+            KeywordList.NormalizeCaptureTime();
+
+            // Normalize exposure: EXPTIME -> EXPOSURE
+            KeywordList.NormalizeExposure();
+        }
+
+        /// <summary>
+        /// Normalizes the CREATOR keyword to standardized SWCREATE values
+        /// </summary>
+        private void NormalizeCaptureSoftware()
+        {
+            string value = string.Empty;
+
+            Keyword swcreate = GetKeyword("SWCREATE");
+            if (swcreate != null)
+            {
+                value = swcreate.Value;
+                RemoveKeyword("CREATOR");
+                if (value.Equals("NINA") || value.Equals("TSX") || value.Equals("SGP") || value.Equals("VOY") || value.Equals("SCP"))
+                    return; // Already normalized
+            }
+
+            Keyword creator = GetKeyword("CREATOR");
+            if (creator != null)
+            {
+                value = creator.Value;
+                RemoveKeyword("CREATOR");
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
+                return;
+            }
+
+            if (value.Contains("N.I.N.A.") || value.Equals("NINA"))
+            {
+                AddKeyword("SWCREATE", "NINA", value);  // Value is version number
+            }
+            else if (value.Contains("SkyX") || value.Equals("TSX"))
+            {
+                AddKeyword("SWCREATE", "TSX", "Software Bisque The SkyX");
+            }
+            else if (value.Contains("Sequence") || value.Equals("SGP"))
+            {
+                AddKeyword("SWCREATE", "SGP", "Sequence Generator Pro");
+            }
+            else if (value.Contains("Voy") || value.Equals("VOY"))
+            {
+                AddKeyword("SWCREATE", "VOY", "Starkeeper Voyager");
+            }
+            else if (value.Contains("Cap") || value.Equals("SCP"))
+            {
+                AddKeyword("SWCREATE", "SCP", "SharpCap");
+            }
+            else
+            {
+                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
+            }
+        }
 
         public string XmlVersionText { get; set; } = "<?xml version=\"1.0\" encoding=\"UTF-8\">";
         public string XmlCommentText { get; set; } = "<!--\r\nExtensible Image Serialization Format - XISF version 1.0\r\nCreated with PixInsight software - http://pixinsight.com/\r\n-->";
@@ -91,51 +158,31 @@ namespace XisfFileManager.Files
         {
             get
             {
-                string value = string.Empty;
-
-                Keyword creator = GetKeyword("SWCREATE");
-                if (creator != null)
+                // Check for already-normalized SWCREATE first
+                Keyword swcreate = GetKeyword("SWCREATE");
+                if (swcreate != null)
                 {
-                    value = creator.Value;
-                    RemoveKeyword("CREATOR");
-                    if (value.Equals("NINA"))
-                        return "NINA";
+                    string swValue = swcreate.Value;
+                    if (swValue.Equals("NINA") || swValue.Equals("TSX") || swValue.Equals("SGP") || swValue.Equals("VOY") || swValue.Equals("SCP"))
+                        return swValue;
                 }
 
-                creator = GetKeyword("CREATOR");
-                if (creator != null)
-                {
-                    value = creator.Value;
-                    RemoveKeyword("CREATOR");
-                }
+                // Check CREATOR keyword for raw software name
+                Keyword creator = GetKeyword("CREATOR");
+                string value = creator?.Value ?? swcreate?.Value ?? string.Empty;
 
+                // Return standardized name based on value (read-only, no keyword modification)
                 if (value.Contains("N.I.N.A.") || value.Equals("NINA"))
-                {
-                    AddKeyword("SWCREATE", "NINA", value);  // Value is version number
                     return "NINA";
-                }
                 if (value.Contains("SkyX") || value.Equals("TSX"))
-                {
-                    AddKeyword("SWCREATE", "TSX", "Software Bisque The SkyX");
                     return "TSX";
-                }
                 if (value.Contains("Sequence") || value.Equals("SGP"))
-                {
-                    AddKeyword("SWCREATE", "SGP", "Sequence Generator Pro");
                     return "SGP";
-                }
                 if (value.Contains("Voy") || value.Equals("VOY"))
-                {
-                    AddKeyword("SWCREATE", "VOY", "Starkeeper Voyager");
                     return "VOY";
-                }
                 if (value.Contains("Cap") || value.Equals("SCP"))
-                {
-                    AddKeyword("SWCREATE", "SCP", "SharpCap");
                     return "SCP";
-                }
 
-                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
                 return string.Empty;
             }
             set

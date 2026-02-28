@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Windows.Media.Capture;
-using XisfFileManager.Files;
+﻿using System.Text.RegularExpressions;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
