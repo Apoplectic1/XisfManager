@@ -124,19 +124,19 @@
     <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.5" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="2.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.9" />
+    <PackageReference Include="System.DirectoryServices" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SystemWebAdapters" Version="2.3.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="XisfFileManager.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GeoTimeZone" Version="6.0.0" />
+    <PackageReference Include="GeoTimeZone" Version="6.1.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="TimeZoneConverter" Version="7.0.0" />
+    <PackageReference Include="TimeZoneConverter" Version="7.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
