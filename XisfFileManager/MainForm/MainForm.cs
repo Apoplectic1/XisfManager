@@ -32,6 +32,7 @@ namespace XisfFileManager
         private bool mBCancel;
         private readonly XisfFileUpdate mXisfFileUpdate;
         private eKeywordUpdateMode mKeywordUpdateProtection;
+        private eUiState mUiState;
         private readonly DirectoryProperties mDirectoryProperties;
         private readonly CustomTreeView mExposureTreeView = new();
 
@@ -76,7 +77,15 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = $"XISF File Manager - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            string buildDate = System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            string buildConfig;
+#if DEBUG
+            buildConfig = "Debug";
+#else
+            buildConfig = "Release";
+#endif
+            string gitBranch = GetGitBranch();
+            this.Text = $"XISF File Manager - {buildDate} - {buildConfig} - {gitBranch}";
 
 
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
@@ -445,8 +454,6 @@ namespace XisfFileManager
             }
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
-            TabControl.Enabled = true;
-
 
             // UI Updates
             UpdateUI(eUiState.ENABLED);
@@ -558,10 +565,11 @@ namespace XisfFileManager
         // Update UI
         private void UpdateUI(eUiState eState)
         {
+            mUiState = eState;
+
             switch (eState)
             {
                 case eUiState.DISABLED:
-                    TabControl.Enabled = false;
                     CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
@@ -576,7 +584,6 @@ namespace XisfFileManager
                     break;
 
                 case eUiState.ENABLED:
-                    TabControl.Enabled = true;
                     CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = true;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = true;
@@ -587,7 +594,6 @@ namespace XisfFileManager
                     break;
 
                 case eUiState.RENAME:
-                    TabControl.Enabled = false;
                     CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
@@ -626,6 +632,15 @@ namespace XisfFileManager
             // Placeholder for future use
         }
 
+        private void TabControl_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            // Allow the Target Scheduler tab in all states; block other tabs when no files are loaded
+            if (mUiState != eUiState.ENABLED && e.TabPage != TabPage_TargetScheduler)
+            {
+                e.Cancel = true;
+            }
+        }
+
         private void Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click(object sender, EventArgs e)
         {
             SetupFluxDensity();
@@ -633,5 +648,39 @@ namespace XisfFileManager
 
         // ##########################################################################################################################
         // ##########################################################################################################################
+
+        private static string GetGitBranch()
+        {
+            try
+            {
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string dir = baseDir;
+
+                // Walk up to find the .git directory
+                while (dir != null)
+                {
+                    string gitDir = Path.Combine(dir, ".git");
+                    if (Directory.Exists(gitDir))
+                    {
+                        string headFile = Path.Combine(gitDir, "HEAD");
+                        if (File.Exists(headFile))
+                        {
+                            string head = File.ReadAllText(headFile).Trim();
+                            if (head.StartsWith("ref: refs/heads/"))
+                                return head.Substring("ref: refs/heads/".Length);
+                            return head.Substring(0, Math.Min(8, head.Length)); // detached HEAD
+                        }
+                        break;
+                    }
+                    dir = Directory.GetParent(dir)?.FullName;
+                }
+            }
+            catch
+            {
+                // Ignore errors reading git info
+            }
+
+            return "unknown";
+        }
     }
 }
