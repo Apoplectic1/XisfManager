@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Windows.Security.Cryptography.Core;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
@@ -16,8 +12,7 @@ namespace XisfFileManager.Files
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
         public string XmlString { get; set; }
-
-        public bool Modified { get; set; }
+        public bool bModified { get; set; }
 
         // ************************************************************************************************
         // ************************************************************************************************
@@ -44,6 +39,78 @@ namespace XisfFileManager.Files
 
         public eKeywordUpdateMode KeywordUpdateMode { get; set; } = eKeywordUpdateMode.PROTECT;
 
+        /// <summary>
+        /// Normalizes keywords before file update/write operations.
+        /// This consolidates keyword standardization that was previously done in property getters.
+        /// Call this before UpdateFile() to ensure keywords are in the expected format.
+        /// </summary>
+        public void NormalizeKeywords()
+        {
+            // Normalize capture software: CREATOR -> SWCREATE with standardized values
+            NormalizeCaptureSoftware();
+
+            // Normalize capture time: DATE-OBS (UTC) -> DATE-LOC (local)
+            KeywordList.NormalizeCaptureTime();
+
+            // Normalize exposure: EXPTIME -> EXPOSURE
+            KeywordList.NormalizeExposure();
+        }
+
+        /// <summary>
+        /// Normalizes the CREATOR keyword to standardized SWCREATE values
+        /// </summary>
+        private void NormalizeCaptureSoftware()
+        {
+            string value = string.Empty;
+
+            Keyword swcreate = GetKeyword("SWCREATE");
+            if (swcreate != null)
+            {
+                value = swcreate.Value;
+                RemoveKeyword("CREATOR");
+                if (value.Equals("NINA") || value.Equals("TSX") || value.Equals("SGP") || value.Equals("VOY") || value.Equals("SCP"))
+                    return; // Already normalized
+            }
+
+            Keyword creator = GetKeyword("CREATOR");
+            if (creator != null)
+            {
+                value = creator.Value;
+                RemoveKeyword("CREATOR");
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
+                return;
+            }
+
+            if (value.Contains("N.I.N.A.") || value.Equals("NINA"))
+            {
+                AddKeyword("SWCREATE", "NINA", value);  // Value is version number
+            }
+            else if (value.Contains("SkyX") || value.Equals("TSX"))
+            {
+                AddKeyword("SWCREATE", "TSX", "Software Bisque The SkyX");
+            }
+            else if (value.Contains("Sequence") || value.Equals("SGP"))
+            {
+                AddKeyword("SWCREATE", "SGP", "Sequence Generator Pro");
+            }
+            else if (value.Contains("Voy") || value.Equals("VOY"))
+            {
+                AddKeyword("SWCREATE", "VOY", "Starkeeper Voyager");
+            }
+            else if (value.Contains("Cap") || value.Equals("SCP"))
+            {
+                AddKeyword("SWCREATE", "SCP", "SharpCap");
+            }
+            else
+            {
+                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
+            }
+        }
+
         public string XmlVersionText { get; set; } = "<?xml version=\"1.0\" encoding=\"UTF-8\">";
         public string XmlCommentText { get; set; } = "<!--\r\nExtensible Image Serialization Format - XISF version 1.0\r\nCreated with PixInsight software - http://pixinsight.com/\r\n-->";
         public void AddKeyword(string keyword, string value, string comment = "Xisf File Manager")
@@ -51,10 +118,6 @@ namespace XisfFileManager.Files
             KeywordList.AddKeyword(keyword, value, comment);
         }
 
-        public void AddXMLKeyword(string keyword, string value, string comment = "Xisf File Manager")
-        {
-            KeywordList.AddKeyword(keyword, value, comment);
-        }
         public void RemoveKeyword(string keyword)
         {
             KeywordList.RemoveKeyword(keyword);
@@ -95,51 +158,31 @@ namespace XisfFileManager.Files
         {
             get
             {
-                string value = string.Empty;
-
-                Keyword creator = GetKeyword("SWCREATE");
-                if (creator != null)
+                // Check for already-normalized SWCREATE first
+                Keyword swcreate = GetKeyword("SWCREATE");
+                if (swcreate != null)
                 {
-                    value = creator.Value;
-                    RemoveKeyword("CREATOR");
-                    if (value.Equals("NINA"))
-                        return "NINA";
+                    string swValue = swcreate.Value;
+                    if (swValue.Equals("NINA") || swValue.Equals("TSX") || swValue.Equals("SGP") || swValue.Equals("VOY") || swValue.Equals("SCP"))
+                        return swValue;
                 }
 
-                creator = GetKeyword("CREATOR");
-                if (creator != null)
-                {
-                    value = creator.Value;
-                    RemoveKeyword("CREATOR");
-                }
+                // Check CREATOR keyword for raw software name
+                Keyword creator = GetKeyword("CREATOR");
+                string value = creator?.Value ?? swcreate?.Value ?? string.Empty;
 
+                // Return standardized name based on value (read-only, no keyword modification)
                 if (value.Contains("N.I.N.A.") || value.Equals("NINA"))
-                {
-                    AddKeyword("SWCREATE", "NINA", value);  // Value is version number
                     return "NINA";
-                }
                 if (value.Contains("SkyX") || value.Equals("TSX"))
-                {
-                    AddKeyword("SWCREATE", "TSX", "Software Bisque The SkyX");
                     return "TSX";
-                }
                 if (value.Contains("Sequence") || value.Equals("SGP"))
-                {
-                    AddKeyword("SWCREATE", "SGP", "Sequence Generator Pro");
                     return "SGP";
-                }
                 if (value.Contains("Voy") || value.Equals("VOY"))
-                {
-                    AddKeyword("SWCREATE", "VOY", "Starkeeper Voyager");
                     return "VOY";
-                }
                 if (value.Contains("Cap") || value.Equals("SCP"))
-                {
-                    AddKeyword("SWCREATE", "SCP", "SharpCap");
                     return "SCP";
-                }
 
-                AddKeyword("SWCREATE", string.Empty, "Unknown Equipment Control and Automation Application");
                 return string.Empty;
             }
             set
@@ -246,14 +289,6 @@ namespace XisfFileManager.Files
         public int TargetAttachmentWidth { get; set; }
         public int TargetAttachmentHeight { get; set; }
         public int TargetAttachmentPadding { get; set; }
-        public int TargetAttachmentRejectionHighLength { get; set; }
-        public int TargetAttachmentRejectionHighStart { get; set; }
-        public int TargetAttachmentRejectionHighNewStart { get; set; }
-        public int TargetAttachmentRejectionHighPadding { get; set; }
-        public int TargetAttachmentRejectionLowLength { get; set; }
-        public int TargetAttachmentRejectionLowStart { get; set; }
-        public int TargetAttachmentRejectionLowNewStart { get; set; }
-        public int TargetAttachmentRejectionLowPadding { get; set; }
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {
@@ -363,63 +398,6 @@ namespace XisfFileManager.Files
         // ************************************************************************************************
         // ************************************************************************************************
 
-        public void ImageAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("geometry");
-
-            if (attribute != null)
-            {
-                string geometry = attribute.Value;
-
-                string[] values = geometry.Split(':');
-
-                TargetAttachmentWidth = Convert.ToInt32(values[0]);
-                TargetAttachmentHeight = Convert.ToInt32(values[1]);
-            }
-
-            attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentStart = Convert.ToInt32(values[1]);
-                TargetAttachmentLength = Convert.ToInt32(values[2]);
-            }
-        }
-
-        public void ImageRejectionHighAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentRejectionHighStart = Convert.ToInt32(values[1]);
-                TargetAttachmentRejectionHighLength = Convert.ToInt32(values[2]);
-            }
-        }
-
-        public void ImageRejectionLowAttachment(XElement element)
-        {
-            XAttribute attribute = element.Attribute("location");
-
-            if (attribute != null)
-            {
-                string attachment = attribute.Value;
-
-                string[] values = attachment.Split(':');
-
-                TargetAttachmentRejectionLowStart = Convert.ToInt32(values[1]);
-                TargetAttachmentRejectionLowLength = Convert.ToInt32(values[2]);
-            }
-        }
-
         public void IccAttachment(XElement element)
         {
             XAttribute attribute = element.Attribute("location");
@@ -523,21 +501,18 @@ namespace XisfFileManager.Files
             }
         }
 
-        public void ParseProperties(XElement property)
+        public void ParseSpecificProperties(XElement property)
         {
             string propertyId = property.Attribute("id")?.Value;
             string propertyType = property.Attribute("type")?.Value;
             string propertyValue = property.Attribute("value")?.Value;
-            string value = property.Value; // specified as a floating string
+            string value = property.Value; // specified as a string
 
             // Handle the property based on its ID
             switch (propertyId)
             {
                 case "XISF:BlockAlignmentSize":
                     BlockAlignmentSize = Convert.ToInt32(propertyValue);
-                    break;
-
-                default:
                     break;
             }
         }

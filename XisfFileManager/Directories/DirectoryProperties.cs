@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Windows.Media.Capture;
-using XisfFileManager.Files;
+﻿using System.Text.RegularExpressions;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
@@ -95,6 +89,7 @@ namespace XisfFileManager.Files
             // Clear any existing directory statistics before computing new values
             DirectoryStatistics.Clear();
 
+
             foreach (var camera in GlobalValues.Cameras)
             {
                 // Group the provided files by their directory paths
@@ -107,15 +102,18 @@ namespace XisfFileManager.Files
 
                         if (groupName.Contains(camera))
                         {
+                            // We are here because the groupName contains the camera identifier - likey beacuse we are using standard file naming conventions
+                            // where the camera identifier is part of the file path.
+                            //  ... -> Target -> Captures -> Camera -> Filter ->  FileName.xisf
+
                             // Calculate the total exposure time for all files in this group (convert seconds to hours)
                             double totalExposureTime = group.Sum(file => file.ExposureSeconds) / 3600.0;
 
-                            // Construct the statistics string in the format " - [file count], [total exposure time]"
+                            // Construct the statistics string in the format "[camera] - [directory] - [file count], [total exposure time]"
                             string statistics = $"{camera} - {Path.GetFileName(groupName)} - {group.Count()}, {totalExposureTime:F1}";
-                            //groupName += statistics;
 
                             // Add the computed statistics to the DirectoryStatistics dictionary
-                            DirectoryStatistics[group.Key] = statistics; // groupName;
+                            DirectoryStatistics[group.Key] = statistics;
                         }
                     });
             }

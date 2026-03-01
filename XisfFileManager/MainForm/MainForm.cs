@@ -5,7 +5,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Velopack;
+using Velopack.Sources;
 using XisfFileManager.Calculations;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
@@ -25,13 +28,14 @@ namespace XisfFileManager
         private XisfFile mFile;
         private readonly Calibration mCalibration;
         private readonly ImageCalculations ImageParameterLists;
-        private readonly XisfFileReader mFileReader;
+        private readonly XisfXmlReader mXmlReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState;
         private readonly XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
         private bool mBCancel;
         private readonly XisfFileUpdate mXisfFileUpdate;
         private eKeywordUpdateMode mKeywordUpdateProtection;
+        private eUiState mUiState;
         private readonly DirectoryProperties mDirectoryProperties;
         private readonly CustomTreeView mExposureTreeView = new();
 
@@ -58,7 +62,7 @@ namespace XisfFileManager
 
             mDirectoryProperties = new DirectoryProperties();
             mCalibration = new Calibration();
-            mFileReader = new XisfFileReader();
+            mXmlReader = new XisfXmlReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
             mXisfFileUpdate = new XisfFileUpdate();
             mKeywordUpdateProtection = eKeywordUpdateMode.UPDATE_NEW;
@@ -76,7 +80,15 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            this.Text = $"XISF File Manager - " + System.IO.File.GetLastWriteTime(System.Reflection.Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            string buildDate = System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
+            string buildConfig;
+#if DEBUG
+            buildConfig = "Debug";
+#else
+            buildConfig = "Release";
+#endif
+            string gitBranch = GetGitBranch();
+            this.Text = $"XISF File Manager - {buildDate} - {buildConfig} - {gitBranch}";
 
 
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
@@ -124,20 +136,43 @@ namespace XisfFileManager
             TabPage_Calibration.Update();
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
-            
-            /*
-            if (!mFolderBrowseState.Contains(@"E:\Photography\Astro Photography\Processing"))
+
+            await CheckForUpdatesAsync();
+        }
+
+        private async Task CheckForUpdatesAsync()
+        {
+            try
             {
-                mFolderBrowseState = @"E:\Photography\Astro Photography\Processing\";
+                var mgr = new UpdateManager(new GithubSource("https://github.com/Apoplectic1/XisfManager", null, false));
+                var updateInfo = await mgr.CheckForUpdatesAsync();
+
+                if (updateInfo != null)
+                {
+                    var result = MessageBox.Show(
+                        $"Version {updateInfo.TargetFullRelease.Version} is available. Update now?",
+                        "Update Available",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        await mgr.DownloadUpdatesAsync(updateInfo);
+                        mgr.ApplyUpdatesAndRestart(updateInfo);
+                    }
+                }
             }
-            */
+            catch (Exception)
+            {
+                // Silently ignore update check failures (no network, no releases yet, etc.)
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -183,32 +218,26 @@ namespace XisfFileManager
             // Exclude List
             // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
             // that contains the string below the selected folder.
-
             List<string> mExcludeList = new List<string>()
-                {
-                    "Calibrated",
+            {
                     "Calibration",
-                    "Cosmetized",
                     "Duplicates",
                     "Master",
-                    "PreProcessing",
-                    "Project",
-                    "Registered"
-                };
+                    "Project"
+            };
 
-            // remove "Master" from the list if the Masters checkbox is checked
-            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            // remove "Master" from the exclude list if the Masters checkbox is checkedc because we are processing masters
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 mExcludeList.Remove("Master");
                 mExcludeList.Remove("Calibration");
             }
 
-
-            // Recurese into subdirectories?
+            // Recurese into subdirectories
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             // Open a dialog to select a folder
-            DialogResult result = Files.DirectoryOperations.FindTargetFiles(mFolderBrowseState, mExcludeList);
+            DialogResult result = Files.DirectoryOperations.FindTargetFilesDialog(mFolderBrowseState, mExcludeList, ExcludeType.Contains);
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
@@ -228,7 +257,6 @@ namespace XisfFileManager
 
 
             // Upate the UI with data from the .xisf recursive directory search
-            ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
             System.Windows.Forms.Application.DoEvents();
 
             foreach (FileInfo xFile in Files.DirectoryOperations.FileInfoList)
@@ -242,12 +270,23 @@ namespace XisfFileManager
                     FilePath = xFile.FullName
                 };
 
-                await mFileReader.ReadXisfFileHeaderKeywords(mFile);
+                await mXmlReader.ReadXisfFileHeaderKeywords(mFile);
 
                 mFileList.Add(mFile);
             }
 
             mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
+
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
+            {
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = mFileList[0].MSTRFRMS.ToString();
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = mFileList[0].MSTRALG;
+            }
+            else
+            {
+                TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = "Frames";
+                TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text = "Algo";
+            }
 
             // **********************************************************************
             // Get TargetName and and Weights to populate ComboBoxes
@@ -449,15 +488,13 @@ namespace XisfFileManager
             }
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
-            TabControl.Enabled = true;
-
 
             // UI Updates
             UpdateUI(eUiState.ENABLED);
 
         }
 
-        private void Button_SubFrameKeyword_UpdateXisfFiles_Click(object sender, EventArgs e)
+        private void Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click(object sender, EventArgs e)
         {
             if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 return;
@@ -502,11 +539,6 @@ namespace XisfFileManager
                     xFile.TargetName = ComboBox_KeywordUpdateTab_SubFrameKeywords_TargetNames.Text;
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-
-                // if (xFile.FilePath.Contains("reject", StringComparison.OrdinalIgnoreCase))
-                // {
-                //     xFile.AddKeyword("CREJECT", "Included", "NSG or Other Rejected Frame");
-                // }
 
                 bStatus = mXisfFileUpdate.UpdateFile(xFile, xFile.FilePath);
                 Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
@@ -567,13 +599,14 @@ namespace XisfFileManager
         // Update UI
         private void UpdateUI(eUiState eState)
         {
+            mUiState = eState;
+
             switch (eState)
             {
                 case eUiState.DISABLED:
-                    TabControl.Enabled = false;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
@@ -585,10 +618,9 @@ namespace XisfFileManager
                     break;
 
                 case eUiState.ENABLED:
-                    TabControl.Enabled = true;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = true;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = true;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = true;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = true;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = true;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = true;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = true;
@@ -596,10 +628,9 @@ namespace XisfFileManager
                     break;
 
                 case eUiState.RENAME:
-                    TabControl.Enabled = false;
-                    CheckBox_FileSelection_DirectorySelection_Masters.Enabled = false;
-                    TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = false;
-                    ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_Masters_Enable.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
+                    TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
@@ -609,7 +640,81 @@ namespace XisfFileManager
             }
         }
 
+        bool noStaticsState;
+        private void CheckBox_FileSelection_DirectorySelection_EnableFluxDensity_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable.Checked)
+            {
+                noStaticsState = CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked;
+                Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+
+                Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = true;
+                CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
+
+            }
+            else
+            {
+                Button_FileSelection_DirectorySelection_Rename.Enabled = true;
+
+                Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = false;
+                CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = noStaticsState;
+            }
+        }
+
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Placeholder for future use
+        }
+
+        private void TabControl_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            // Allow the Target Scheduler tab in all states; block other tabs when no files are loaded
+            if (mUiState != eUiState.ENABLED && e.TabPage != TabPage_TargetScheduler)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click(object sender, EventArgs e)
+        {
+            SetupFluxDensity();
+        }
+
         // ##########################################################################################################################
         // ##########################################################################################################################
+
+        private static string GetGitBranch()
+        {
+            try
+            {
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string dir = baseDir;
+
+                // Walk up to find the .git directory
+                while (dir != null)
+                {
+                    string gitDir = Path.Combine(dir, ".git");
+                    if (Directory.Exists(gitDir))
+                    {
+                        string headFile = Path.Combine(gitDir, "HEAD");
+                        if (File.Exists(headFile))
+                        {
+                            string head = File.ReadAllText(headFile).Trim();
+                            if (head.StartsWith("ref: refs/heads/"))
+                                return head.Substring("ref: refs/heads/".Length);
+                            return head.Substring(0, Math.Min(8, head.Length)); // detached HEAD
+                        }
+                        break;
+                    }
+                    dir = Directory.GetParent(dir)?.FullName;
+                }
+            }
+            catch
+            {
+                // Ignore errors reading git info
+            }
+
+            return "unknown";
+        }
     }
 }

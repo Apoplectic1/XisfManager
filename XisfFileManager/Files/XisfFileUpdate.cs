@@ -8,8 +8,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using XisfFileManager.Files.XML;
 using XisfFileManager.Globals;
-using XisfFileManager.XML;
+using XisfFileManager.Helpers;
 
 namespace XisfFileManager.Files
 {
@@ -81,7 +82,7 @@ namespace XisfFileManager.Files
         public bool UpdateFile(XisfFile xFile, string destinationPath)
         {
             int delay = 0;
-            while (IsFileLocked(xFile.FilePath) && delay < 100)
+            while (FileHelpers.IsFileLocked(xFile.FilePath) && delay < 100)
             {
                 delay++;
                 Thread.Sleep(10); // Sleep to prevent busy-wait loop
@@ -93,9 +94,12 @@ namespace XisfFileManager.Files
                 return false;
             }
 
-            // Return if KeywordList and the original XML are identical 
-            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
-                return false;
+            // Normalize keywords before writing (converts CREATOR->SWCREATE, DATE-OBS->DATE-LOC, EXPTIME->EXPOSURE)
+            xFile.NormalizeKeywords();
+
+            // Return if KeywordList and the original XML are identical
+            //if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
+            //    return false;
 
             if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW && KeywordsMatchXml(xFile))
                 return true;
@@ -108,10 +112,11 @@ namespace XisfFileManager.Files
 
             try
             {
-                xFile.Modified = false;
-
+                xFile.bModified = false;
+               
                 using (Stream stream = new FileStream(xFile.FilePath, FileMode.Open))
                 {
+                    bool modified;
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
@@ -127,36 +132,52 @@ namespace XisfFileManager.Files
                     // NOTE: This value will change AFTER Keyword Replacement a few lines below
                     xisfEnd = BinaryFind(binaryFileData, "</xisf>") + "</xisf>".Length;  // returns the position immediately after '>'                
 
-                    // convert from and including <xisf to /xisf> to a string and then parse string as xml into a new doc
+                    // Convert <xisf to /xisf> to a string and then parse string as xml into a new doc
                     string xmlString = Encoding.UTF8.GetString(binaryFileData, xisfStart, xisfEnd);
 
-                    // Clean up and validate XML string
-                    var result = Xml.FixXisfXml(xmlString);
-                    xFile.Modified = result.Modified;
-                    xmlString = Xml.ValidateXisfXml(result.FixedXml);
+                    // ******************************************************************************************
+                    // Clean up and validate xmlString
 
-                    // Remove any malformed xml from xmlString
-                    xmlString = Xml.ValidateXisfXml(xmlString);
+                    // This should not be needed once all xisf files have been passed throught this application
+                    (xmlString, modified) = Xml.FixXisfXml(xmlString);
+                    xFile.bModified |= modified;
 
-                    // Create an Xml Document from the xmlString with the proper namespace
-                    XmlDocument xmlDoc = new XmlDocument();
-                    XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
-                    namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
-
-                    // The new  does not include the XmLVersion and PixInsight comment section - Add them
-                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
+                    // This should not be needed once all xisf files have been passed throught this application
+                    (xmlString, modified) = Xml.ValidateXisfXml(xmlString);
+                    xFile.bModified |= modified;
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
                     // Remove all descendants from xFile.mXDoc that contain an "attachment" attribute that do not match the criteria specified by imageNode (our main image)
 
+                    // Remove rejection image blocks
+                    (xmlString, modified) = Xml.RemoveImage_ById(xmlString, "rejection_high");
+                    xFile.bModified |= modified;
+
+                    (xmlString, modified) = Xml.RemoveImage_ById(xmlString, "rejection_low");
+                    xFile.bModified |= modified;
+
+                    (xmlString, modified) = Xml.RemoveImageProperties_ById(xmlString, "integration"); // Includes ProcessHistory
+                    xFile.bModified |= modified;
+
+                    // ******************************************************************************************
+
+                    // Create an Xml Document from the xmlString with the proper namespace
+                    XmlDocument xmlDoc = new XmlDocument();
+                    XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
+                    namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
+
+                    // The new document does not include the XmLVersion and PixInsight comment section - Add them
+                    xmlDoc.LoadXml(xFile.XmlVersionText + xFile.XmlCommentText + xmlString);
+
+                    
                     RemoveUnwantedAttachments(xmlDoc);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
-                    // A list of unsed FITSKeywords will be removed. This method should be able to be removed in the future.
+                    // A list of unsed FITSKeywords will be removed. This method call should be able to be removed in the future.
 
                     xFile.KeywordList.RemoveUnwantedKeywords();
 
@@ -264,12 +285,15 @@ namespace XisfFileManager.Files
                         return false;
                 }
             }
-            catch
+            catch (IOException ex)
             {
-                DialogResult status = MessageBox.Show("Update Write File Failed", xFile.FilePath, MessageBoxButtons.OKCancel);
-                if (status == DialogResult.OK)
-                    return false;
-                Environment.Exit(-1);
+                MessageBox.Show($"Update Write File Failed: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unexpected error updating file: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                return false;
             }
 
             return true;
@@ -312,28 +336,6 @@ namespace XisfFileManager.Files
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
             string namespaceUri = document.DocumentElement.NamespaceURI;
             nsManager.AddNamespace("ns", namespaceUri);
-
-            // List of id values you want to remove.
-            List<string> idsToRemove = new List<string> { "rejection_high", "rejection_low" };
-
-            // Build an XPath predicate that matches any node with an id equal to one of the remove values.
-            // This produces a predicate like: "@id='integration' or @id='integration1' or @id='otherId'"
-            string predicate = string.Join(" or ", idsToRemove.Select(id => $"@id='{id}'"));
-
-            // Construct the full XPath expression.
-            string xpath = $"//ns:Image[{predicate}]";
-
-            // Select the nodes to remove.
-            var imageNodesToRemove = document.SelectNodes(xpath, nsManager)
-                                             .Cast<XmlNode>()
-                                             .ToList();
-
-            // Remove each selected node from its parent.
-            imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
-
-
-            //var imageNodesToRemove = document.SelectNodes("//ns:Image[@id!='integration']", nsManager).Cast<XmlNode>().ToList();
-            //imageNodesToRemove.ForEach(imageNode => imageNode.ParentNode?.RemoveChild(imageNode));
 
             // Remove <Thumbnail> element if it exists
             var thumbnailNode = document.SelectSingleNode("//ns:Thumbnail", nsManager);
@@ -524,9 +526,6 @@ namespace XisfFileManager.Files
         /// <returns>True if the keywords match the XML FITSKeyword elements; otherwise, false.</returns>
         private static bool KeywordsMatchXml(XisfFile xFile)
         {
-            if (xFile.Modified)
-                return false;
-
             // Load the XML string into an XmlDocument
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xFile.XmlString);
@@ -638,43 +637,5 @@ namespace XisfFileManager.Files
         }
 
 
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
-
-        /// <summary>
-        /// Checks if a file is locked by attempting to open it with exclusive access.
-        /// If the file cannot be opened, it is considered locked.
-        /// </summary>
-        /// <param name="file">The path of the file to check.</param>
-        /// <returns>True if the file is locked; otherwise, false.</returns>
-        private static bool IsFileLocked(string file)
-        {
-            try
-            {
-                // Try to open the file with exclusive access
-                using (FileStream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    stream.Close();
-                }
-            }
-            catch (IOException)
-            {
-                // The file is unavailable because it is:
-                // - still being written to
-                // - being processed by another thread
-                // - does not exist (has already been processed)
-
-                // Add delay for the file to be released
-                Thread.Sleep(100);
-                return true;
-            }
-
-            // The file is not locked
-            return false;
-        }
-
-
-        // ##############################################################################################################################################
-        // ##############################################################################################################################################
     }
 }

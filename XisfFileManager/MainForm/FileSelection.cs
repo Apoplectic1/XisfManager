@@ -30,6 +30,7 @@ namespace XisfFileManager
             }
 
             // Sequentially number filter image files within each directory group
+            // Note this depends on the directory statistics being set
             foreach (var group in mDirectoryProperties.DirectoryStatistics)
             {
                 // Initialize filter indices for each filter type
@@ -75,7 +76,7 @@ namespace XisfFileManager
             int duplicates = XisfFileRename.MoveDuplicates(mFileList);
 
             // Do not consider directory statistics if we are dealing with Master frames
-            if (!CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            if (!CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 // Set or remove directory file statistics
                 mDirectoryProperties.SetDirectoryFileStatistics(mFileList, CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked);
@@ -97,9 +98,9 @@ namespace XisfFileManager
 
                     Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(item.xFile.FilePath) + "\n" + Path.GetFileName(item.xFile.FilePath);
 
-                    Tuple<int, string> renameTuple = mRenameFile.RenameFile(item.xFile);
+                    var renameTuple = mRenameFile.RenameFile(item.xFile);
 
-                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.Item2) + "\n" + Path.GetFileName(renameTuple.Item2);
+                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.FileName) + "\n" + Path.GetFileName(renameTuple.FileName);
 
                     System.Windows.Forms.Application.DoEvents(); // Update UI
                 });
@@ -188,17 +189,17 @@ namespace XisfFileManager
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void CheckBox_Master_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_FileSelection_DirectorySelection_Masters_Enable_CheckedChanged(object sender, EventArgs e)
         {
             string rejection = string.Empty;
             string comment = string.Empty;
 
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
-            TextBox_FileSelection_DirectorySelection_TotalFrames.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
-            ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Enabled = CheckBox_FileSelection_DirectorySelection_Masters.Checked;
+            TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked;
+            TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked;
 
-            if (CheckBox_FileSelection_DirectorySelection_Masters.Checked)
+            if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 // Set master frame keywords for each file in the file list
                 mFileList.ForEach(file => file.KeywordList.SetMasterFrameKeywords());
@@ -218,8 +219,8 @@ namespace XisfFileManager
             List<string> WeightKeywords = new List<string>();
 
             bool bStatus;
-            string frames = TextBox_FileSelection_DirectorySelection_TotalFrames.Text;
-            string algo = ComboBox_FileSelection_DirectorySelection_RejectionAlgorithm.Text;
+            string frames = TextBox_FileSelection_DirectorySelection_Masters_Frames.Text;
+            string algo = TextBox_FileSelection_DirectorySelection_Masters_Rejection.Text;
 
             int mTotalFrames = 0;
             bStatus = int.TryParse(frames, out mTotalFrames);
