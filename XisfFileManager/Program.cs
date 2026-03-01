@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Forms;
+using Velopack;
 
 [assembly: SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyIFormatProvider", Justification = "This code is for personal use and does not require culture-specific formatting.")]
 [assembly: SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", Justification = "This code is for personal use and does not require culture-specific formatting.")]
@@ -21,6 +22,8 @@ namespace XisfFileManager
         [STAThread]
         static void Main()
         {
+            VelopackApp.Build().Run();
+
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
 

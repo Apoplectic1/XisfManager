@@ -5,7 +5,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Velopack;
+using Velopack.Sources;
 using XisfFileManager.Calculations;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
@@ -133,13 +136,43 @@ namespace XisfFileManager
             TabPage_Calibration.Update();
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
             mFolderBrowseState = Properties.Settings.Default.Persist_FolderBrowseState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdateTargetName.Checked = Properties.Settings.Default.Persist_UpdateTargetNameState;
             CheckBox_KeywordUpdateTab_SubFrameKeywords_UpdatePanelName.Checked = Properties.Settings.Default.Persist_UpdatePanelNameState;
+
+            await CheckForUpdatesAsync();
+        }
+
+        private async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                var mgr = new UpdateManager(new GithubSource("https://github.com/Apoplectic1/XisfManager", null, false));
+                var updateInfo = await mgr.CheckForUpdatesAsync();
+
+                if (updateInfo != null)
+                {
+                    var result = MessageBox.Show(
+                        $"Version {updateInfo.TargetFullRelease.Version} is available. Update now?",
+                        "Update Available",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        await mgr.DownloadUpdatesAsync(updateInfo);
+                        mgr.ApplyUpdatesAndRestart(updateInfo);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Silently ignore update check failures (no network, no releases yet, etc.)
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
