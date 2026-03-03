@@ -39,6 +39,7 @@
             RadioButton_FileSelection_SequenceNumbering_IndexWeight = new RadioButton();
             RadioButton_FileSelection_SequenceNumbering_WeightIndex = new RadioButton();
             GroupBox_FileSelection_DirectorySelection = new GroupBox();
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds = new CheckBox();
             GroupBox_FileSelection_DirectorySelection_FluxDensity = new GroupBox();
             Button_FileSelection_DirectorySelection_FluxDensity_Run = new Button();
             CheckBox_FileSelection_DirectorySelection_FluxDensity_Enable = new CheckBox();
@@ -347,6 +348,7 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_CalibrationIds);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(GroupBox_FileSelection_DirectorySelection_FluxDensity);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(GroupBox_FileSelection_DirectorySelection_Masters);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSlection_DirectorySelection_NoStatistics);
@@ -361,6 +363,17 @@
             GroupBox_FileSelection_DirectorySelection.TabIndex = 7;
             GroupBox_FileSelection_DirectorySelection.TabStop = false;
             GroupBox_FileSelection_DirectorySelection.Text = "Directory Selection";
+            // 
+            // CheckBox_FileSelection_DirectorySelection_CalibrationIds
+            // 
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.AutoSize = true;
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.Location = new Point(173, 146);
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.Name = "CheckBox_FileSelection_DirectorySelection_CalibrationIds";
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.Size = new Size(181, 19);
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.TabIndex = 24;
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.Text = "Include Calibration Frame IDs";
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.UseVisualStyleBackColor = true;
+            CheckBox_FileSelection_DirectorySelection_CalibrationIds.CheckedChanged += CheckBox_FileSelection_DirectorySelection_CalibrationIds_CheckedChanged;
             // 
             // GroupBox_FileSelection_DirectorySelection_FluxDensity
             // 
@@ -443,7 +456,7 @@
             // CheckBox_FileSlection_DirectorySelection_NoStatistics
             // 
             CheckBox_FileSlection_DirectorySelection_NoStatistics.AutoSize = true;
-            CheckBox_FileSlection_DirectorySelection_NoStatistics.Location = new Point(173, 132);
+            CheckBox_FileSlection_DirectorySelection_NoStatistics.Location = new Point(173, 126);
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Name = "CheckBox_FileSlection_DirectorySelection_NoStatistics";
             CheckBox_FileSlection_DirectorySelection_NoStatistics.Size = new Size(91, 19);
             CheckBox_FileSlection_DirectorySelection_NoStatistics.TabIndex = 3;
@@ -452,7 +465,7 @@
             // 
             // Button_FileSelection_DirectorySelection_Rename
             // 
-            Button_FileSelection_DirectorySelection_Rename.Location = new Point(17, 126);
+            Button_FileSelection_DirectorySelection_Rename.Location = new Point(17, 130);
             Button_FileSelection_DirectorySelection_Rename.Margin = new Padding(4, 3, 4, 3);
             Button_FileSelection_DirectorySelection_Rename.Name = "Button_FileSelection_DirectorySelection_Rename";
             Button_FileSelection_DirectorySelection_Rename.Size = new Size(145, 27);
@@ -2498,5 +2511,6 @@
         private System.Windows.Forms.Button Button_FileSelection_DirectorySelection_FluxDensity_Run;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection_Masters;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection_FluxDensity;
+        private CheckBox CheckBox_FileSelection_DirectorySelection_CalibrationIds;
     }
 }

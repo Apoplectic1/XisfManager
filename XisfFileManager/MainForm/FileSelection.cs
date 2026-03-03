@@ -290,6 +290,12 @@ namespace XisfFileManager
         }
 
 
+        private void CheckBox_FileSelection_DirectorySelection_CalibrationIds_CheckedChanged(object sender, EventArgs e)
+        {
+            mRenameFile.IncludeCalibrationFrames = CheckBox_FileSelection_DirectorySelection_CalibrationIds.Checked;
+        }
+
+
         private void Button_SubFrameKeywords_CalibrationFiles_ClearAll_Click(object sender, EventArgs e)
         {
             foreach (XisfFile file in mFileList)

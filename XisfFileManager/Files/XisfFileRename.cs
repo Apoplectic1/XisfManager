@@ -14,6 +14,7 @@ public class XisfFileRename
     private const double NoTemperature = -273.0;
 
     public eOrder RenameOrder;
+    public bool IncludeCalibrationFrames;
 
     /// <summary>
     /// Renames the specified XISF file based on its properties and the given index.
@@ -141,7 +142,7 @@ public class XisfFileRename
             eFrame.LIGHT => BuildMasterLightName(file, frameInfo, cameraInfo),
             eFrame.DARK  => $"Master Dark  {captureDate}  {frameInfo}  {cameraInfo}",
             eFrame.BIAS  => $"Master Bias  {captureDate}  {frameInfo}  {cameraInfo}",
-            eFrame.FLAT  => $"Master Flat {file.FilterName}  {captureDate}  {frameInfo}  {cameraInfo}  {FormatTelescopeInfo(file)}",
+            eFrame.FLAT  => $"Master Flat {file.FilterName}  {captureDate}  {frameInfo}  {cameraInfo}  {FormatTelescope(file)}",
             _ => "Master Unknown"
         };
 
@@ -156,7 +157,7 @@ public class XisfFileRename
 
     private static string BuildMasterLightName(XisfFile file, string frameInfo, string cameraInfo)
     {
-        string name = $"Master Integration  {FormatLightFilter(file)}  {frameInfo}  {cameraInfo}";
+        string name = $"Master Integration  {FormatFilterName(file)}  {frameInfo}  {cameraInfo}";
         name += !string.IsNullOrEmpty(file.MSTRALG)
             ? $"  ({file.MSTRALG}  {FormatCaptureDate(file)}"
             : $"  ({FormatCaptureDate(file)}";
@@ -169,8 +170,8 @@ public class XisfFileRename
     {
         string name = $"{index:D3}";
         name += $"  {frameLabel}";
-        name += $"  {FormatCameraDetails(file)}";
-        name += $"  {FormatCaptureInfo(file)}";
+        name += $"  {FormatCamera(file)}";
+        name += $"  {FormatCaptureTime(file)}";
 
         return name;
     }
@@ -179,12 +180,11 @@ public class XisfFileRename
     {
         string name = $"{index:D3}";
         name += $"  {FormatFlatFilter(file)}";
-        name += $"  {FormatCameraDetails(file)}";
-        name += $"  {FormatTelescopeInfo(file)}";
+        name += $"  {FormatCamera(file)}";
+        name += $"  {FormatTelescope(file)}";
         name += FormatAmbientTemperature(file);
-        name += $"  {FormatFocuserInfo(file)}";
-        name += FormatRotation(file);
-        name += $"  {FormatCaptureInfo(file)}";
+        name += $"  {FormatFocuser(file)}";
+        name += $"  {FormatCaptureTime(file)}";
 
         return name;
     }
@@ -192,15 +192,15 @@ public class XisfFileRename
     private string BuildLightFileName(int index, XisfFile file)
     {
         string name = $"{FormatFileIndex(index, file)}";
-        name += $" {FormatTargetName(file)}";
-        name += $"  {FormatLightFilter(file)}";
-        name += FormatCalibrationFrames(file);
-        name += $"  {FormatCameraDetails(file)}";
-        name += $"  {FormatTelescopeInfo(file)}";
+        name += $" {file.TargetName}";
+        name += $"  {FormatFilterName(file)}";
+        if (IncludeCalibrationFrames)
+            name += FormatCalibrationFrames(file);
+        name += $"  {FormatCamera(file)}";
+        name += $"  {FormatTelescope(file)}";
         name += FormatAmbientTemperature(file);
-        name += $"  {FormatFocuserInfo(file)}";
-        name += FormatRotation(file);
-        name += $"  {FormatCaptureInfo(file)}";
+        name += $"  {FormatFocuser(file)}";
+        name += $"  {FormatCaptureTime(file)}";
 
         return name;
     }
@@ -224,10 +224,7 @@ public class XisfFileRename
         };
     }
 
-    private static string FormatTargetName(XisfFile file) =>
-        file.TargetName;
-
-    private static string FormatLightFilter(XisfFile file) =>
+    private static string FormatFilterName(XisfFile file) =>
         $"L-{file.FilterName}";
 
     private static string FormatFlatFilter(XisfFile file) =>
@@ -251,13 +248,13 @@ public class XisfFileRename
     private static string FormatCaptureDate(XisfFile file) =>
         $"{file.CaptureTime:yyyy-MM-dd}";
 
-    private static string FormatCameraDetails(XisfFile file) =>
-        $"{file.ExposureSeconds.FormatExposureTime()}x{file.Binning}  {file.Camera}G{file.Gain:D3}O{file.Offset}@{file.SensorTemperature.FormatTemperature()}C";
+    private static string FormatCamera(XisfFile file) =>
+        $"{file.ExposureSeconds.FormatExposureTime()}x{file.Binning}  {FormatCameraInfo(file)}";
 
     private static string FormatCameraInfo(XisfFile file) =>
         $"{file.Camera}G{file.Gain:D3}O{file.Offset}@{file.SensorTemperature.FormatTemperature()}C";
 
-    private static string FormatTelescopeInfo(XisfFile file) =>
+    private static string FormatTelescope(XisfFile file) =>
         $"{file.Telescope}@{file.FocalLength:F0}";
 
     private static string FormatAmbientTemperature(XisfFile file) =>
@@ -265,13 +262,15 @@ public class XisfFileRename
             ? $"{file.AmbientTemperature.FormatTemperature()}C"
             : $"{file.FocuserTemperature.FormatTemperature()}C";
 
-    private static string FormatFocuserInfo(XisfFile file) =>
-        $"F{file.FocuserPosition:D5}@{file.FocuserTemperature.FormatTemperature()}C";
+    private static string FormatFocuser(XisfFile file)
+    {
+        string result = $"F{file.FocuserPosition:D5}@{file.FocuserTemperature.FormatTemperature()}C";
+        if (file.RotationAngle.StartsWith('S'))
+            result += $"  {file.RotationAngle}";
+        return result;
+    }
 
-    private static string FormatRotation(XisfFile file) =>
-        file.RotationAngle.StartsWith('S') ? $"  {file.RotationAngle}" : "";
-
-    private static string FormatCaptureInfo(XisfFile file) =>
+    private static string FormatCaptureTime(XisfFile file) =>
         $"({file.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {file.CaptureSoftware})";
 
     private static string FormatAlgorithmSuffix(XisfFile file)

@@ -608,6 +608,7 @@ namespace XisfFileManager
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_CalibrationIds.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
                     GroupBox_FileSelection_Statistics.Enabled = false;
@@ -622,6 +623,7 @@ namespace XisfFileManager
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = true;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = true;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = true;
+                    CheckBox_FileSelection_DirectorySelection_CalibrationIds.Enabled = true;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = true;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = true;
                     GroupBox_FileSelection_Statistics.Enabled = true;
@@ -632,6 +634,7 @@ namespace XisfFileManager
                     TextBox_FileSelection_DirectorySelection_Masters_Frames.Enabled = false;
                     TextBox_FileSelection_DirectorySelection_Masters_Rejection.Enabled = false;
                     Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+                    CheckBox_FileSelection_DirectorySelection_CalibrationIds.Enabled = false;
                     CheckBox_FileSlection_DirectorySelection_NoStatistics.Enabled = false;
                     GroupBox_FileSelection_SequenceNumbering.Enabled = false;
                     GroupBox_FileSelection_Statistics.Enabled = true;
@@ -647,6 +650,7 @@ namespace XisfFileManager
             {
                 noStaticsState = CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked;
                 Button_FileSelection_DirectorySelection_Rename.Enabled = false;
+                CheckBox_FileSelection_DirectorySelection_CalibrationIds.Enabled = false;
 
                 Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = true;
                 CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = true;
@@ -655,6 +659,7 @@ namespace XisfFileManager
             else
             {
                 Button_FileSelection_DirectorySelection_Rename.Enabled = true;
+                CheckBox_FileSelection_DirectorySelection_CalibrationIds.Enabled = true;
 
                 Button_FileSelection_DirectorySelection_FluxDensity_Run.Enabled = false;
                 CheckBox_FileSlection_DirectorySelection_NoStatistics.Checked = noStaticsState;
@@ -716,5 +721,6 @@ namespace XisfFileManager
 
             return "unknown";
         }
+
     }
 }
