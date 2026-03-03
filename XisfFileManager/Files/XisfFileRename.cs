@@ -194,13 +194,12 @@ public class XisfFileRename
         string name = $"{FormatFileIndex(index, file)}";
         name += $" {file.TargetName}";
         name += $"  {FormatFilterName(file)}";
-        if (IncludeCalibrationFrames)
-            name += FormatCalibrationFrames(file);
         name += $"  {FormatCamera(file)}";
         name += $"  {FormatTelescope(file)}";
         name += FormatAmbientTemperature(file);
         name += $"  {FormatFocuser(file)}";
-        name += $"  {FormatCaptureTime(file)}";
+        string calibration = IncludeCalibrationFrames ? FormatCalibrationFrames(file) : "";
+        name += $"  {FormatCaptureTime(file, calibration)}";
 
         return name;
     }
@@ -270,8 +269,8 @@ public class XisfFileRename
         return result;
     }
 
-    private static string FormatCaptureTime(XisfFile file) =>
-        $"({file.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {file.CaptureSoftware})";
+    private static string FormatCaptureTime(XisfFile file, string extra = "") =>
+        $"({file.CaptureTime:yyyy-MM-dd  hh-mm-ss tt}  {file.CaptureSoftware}{extra})";
 
     private static string FormatAlgorithmSuffix(XisfFile file)
     {
