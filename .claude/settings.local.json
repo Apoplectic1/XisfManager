@@ -7,7 +7,12 @@
       "Bash(dotnet restore:*)",
       "Bash(dotnet build:*)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.velopack.io)",
+      "WebFetch(domain:www.nuget.org)",
+      "Bash(dotnet tool:*)",
+      "Bash(git config:*)"
     ]
   }
 }
