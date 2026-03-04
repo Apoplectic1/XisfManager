@@ -137,8 +137,6 @@ namespace XisfFileManager
 
             foreach (FileInfo file in Files.DirectoryOperations.FileInfoList)
             {
-                Application.DoEvents();
-
                 // Create a new xisf file instance for reads
                 XisfFile calibrationFile = new XisfFile
                 {
@@ -611,7 +609,7 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         // ******************************************************************************************************************
 
-        public bool CreateTargetCalibrationDirectory(List<XisfFile> targetFileList)
+        public async Task<bool> CreateTargetCalibrationDirectoryAsync(List<XisfFile> targetFileList)
         {
             string targetCalibrationDirectory = SetTargetCalibrationFileDirectories(targetFileList[0].FilePath);
 
@@ -633,7 +631,7 @@ namespace XisfFileManager
                 uniqueDarkCalibrationFile.KeywordUpdateMode = eKeywordUpdateMode.FORCE;
 
                 // Update the copied calibration file with uniqueDarkCalibrationFile Keywords
-                mXisfFileUpdate.UpdateFile(uniqueDarkCalibrationFile, destinationCalibrationFilePath);
+                await mXisfFileUpdate.UpdateFileAsync(uniqueDarkCalibrationFile, destinationCalibrationFilePath);
 
                 // Restore the original KeywordUpdateMode
                 uniqueDarkCalibrationFile.KeywordUpdateMode = keywordUpdateMode;
@@ -654,7 +652,7 @@ namespace XisfFileManager
                 uniqueFlatCalibrationFile.KeywordUpdateMode = eKeywordUpdateMode.FORCE;
 
                 // Update the copied calibration file with uniqueFlatCalibrationFile Keywords
-                mXisfFileUpdate.UpdateFile(uniqueFlatCalibrationFile, destinationCalibrationFilePath);
+                await mXisfFileUpdate.UpdateFileAsync(uniqueFlatCalibrationFile, destinationCalibrationFilePath);
 
                 // Restore the original KeywordUpdateMode
                 uniqueFlatCalibrationFile.KeywordUpdateMode = keywordUpdateMode;
@@ -675,7 +673,7 @@ namespace XisfFileManager
                 uniqueBiasCalibrationFile.KeywordUpdateMode = eKeywordUpdateMode.FORCE;
 
                 // Update the copied calibration file with uniqueBiasCalibrationFile Keywords
-                mXisfFileUpdate.UpdateFile(uniqueBiasCalibrationFile, destinationCalibrationFilePath);
+                await mXisfFileUpdate.UpdateFileAsync(uniqueBiasCalibrationFile, destinationCalibrationFilePath);
 
                 // Restore the original KeywordUpdateMode
                 uniqueBiasCalibrationFile.KeywordUpdateMode = keywordUpdateMode;

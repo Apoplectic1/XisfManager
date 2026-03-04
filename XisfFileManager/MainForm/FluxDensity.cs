@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Shapes;
 using XisfFileManager.Files;
@@ -9,7 +10,7 @@ namespace XisfFileManager
 {
     public partial class MainForm
     {
-        public async void SetupFluxDensity()
+        public async Task SetupFluxDensity()
         {
             string fluxDir;
             string debayerDir;
@@ -21,7 +22,7 @@ namespace XisfFileManager
                 Directory.Delete(fluxDir, true);
             }
 
-            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.         
+            // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
             mBCancel = false;
             mFileList.Clear();
             ImageParameterLists.Clear();
@@ -79,8 +80,6 @@ namespace XisfFileManager
                 ProgressBar_FileSelection_ReadProgress.Value = 0;
                 ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
 
-                System.Windows.Forms.Application.DoEvents();
-
                 foreach (FileInfo debayerFile in Files.DirectoryOperations.FileInfoList)
                 {
                     if (mBCancel)
@@ -88,7 +87,6 @@ namespace XisfFileManager
 
                     Label_FileSelection_BrowseFileName.Text = debayerFile.DirectoryName + "\n" + debayerFile.Name;
                     ProgressBar_FileSelection_ReadProgress.Value += 1;
-                    System.Windows.Forms.Application.DoEvents();
 
                     // Create a new xisf file instance
                     mFile = new XisfFile
@@ -105,7 +103,7 @@ namespace XisfFileManager
                 FindFilterFrameType();
                 FindTelescope();
                 FindCamera();
-                System.Windows.Forms.Application.DoEvents();
+                await Task.Yield();
 
                 // Force each file's keywords to be mono images with correct filter keywords
                 Button_KeywordImageTypeFrame_SetAll_Click(this, EventArgs.Empty);
@@ -146,9 +144,7 @@ namespace XisfFileManager
 
                     debayerDir += System.IO.Path.GetFileName(xFile.FilePath);
 
-                    var bStatus = mXisfFileUpdate.UpdateFile(xFile, debayerDir);
-
-                    System.Windows.Forms.Application.DoEvents();
+                    var bStatus = await mXisfFileUpdate.UpdateFileAsync(xFile, debayerDir);
 
                     if (bStatus == false)
                     {
@@ -165,12 +161,12 @@ namespace XisfFileManager
 
                 }
             }
-            
+
             // ************************************************************************************
             // PreProcessing Target files
             // ************************************************************************************
 
-            // Clear all lists 
+            // Clear all lists
             mBCancel = false;
             mFileList.Clear();
             ImageParameterLists.Clear();
@@ -189,7 +185,7 @@ namespace XisfFileManager
             ClearTelescopeGroup();
             ClearCameraGroup();
             ClearFilterFrameTypeGroup();
-            System.Windows.Forms.Application.DoEvents();
+            await Task.Yield();
 
             if (Directory.Exists(@"F:\PreProcessing\cosmetized"))
                 targetDir = @"F:\PreProcessing\cosmetized";
@@ -223,10 +219,6 @@ namespace XisfFileManager
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
                 ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
 
-
-                // Upate the UI with data from the .xisf recursive directory search
-                System.Windows.Forms.Application.DoEvents();
-
                 foreach (FileInfo targetFile in Files.DirectoryOperations.FileInfoList)
                 {
                     if (mBCancel)
@@ -234,7 +226,6 @@ namespace XisfFileManager
 
                     Label_FileSelection_BrowseFileName.Text = targetFile.DirectoryName + "\n" + targetFile.Name;
                     ProgressBar_FileSelection_ReadProgress.Value += 1;
-                    System.Windows.Forms.Application.DoEvents();
 
                     // Create a new xisf file instance
                     mFile = new XisfFile
@@ -251,7 +242,7 @@ namespace XisfFileManager
                 FindFilterFrameType();
                 FindTelescope();
                 FindCamera();
-                System.Windows.Forms.Application.DoEvents();
+                await Task.Yield();
 
                 // *************************************************************************************
                 // Write Target Files to FluxDensity Directory
@@ -269,7 +260,6 @@ namespace XisfFileManager
                         break;
 
                     ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
-                    System.Windows.Forms.Application.DoEvents();
 
                     Keyword panel = targetFile.GetKeyword("CPANEL");
                     Keyword stars = targetFile.GetKeyword("CSTARS");
@@ -301,8 +291,7 @@ namespace XisfFileManager
 
                     targetDir += System.IO.Path.GetFileName(targetFile.FilePath);
 
-                    var bStatus = mXisfFileUpdate.UpdateFile(targetFile, targetDir);
-                    System.Windows.Forms.Application.DoEvents();
+                    var bStatus = await mXisfFileUpdate.UpdateFileAsync(targetFile, targetDir);
 
                     if (bStatus == false)
                     {

@@ -256,9 +256,6 @@ namespace XisfFileManager
             ProgressBar_FileSelection_ReadProgress.Maximum = Files.DirectoryOperations.FileInfoList.Count;
 
 
-            // Upate the UI with data from the .xisf recursive directory search
-            System.Windows.Forms.Application.DoEvents();
-
             foreach (FileInfo xFile in Files.DirectoryOperations.FileInfoList)
             {
                 Label_FileSelection_BrowseFileName.Text = xFile.DirectoryName + "\n" + xFile.Name;
@@ -494,7 +491,7 @@ namespace XisfFileManager
 
         }
 
-        private void Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click(object sender, EventArgs e)
+        private async void Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click(object sender, EventArgs e)
         {
             if (RadioButton_KeywordUpdateTab_SubFrameKeywords_KeywordProtection_Protect.Checked)
                 return;
@@ -540,9 +537,8 @@ namespace XisfFileManager
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
-                bStatus = mXisfFileUpdate.UpdateFile(xFile, xFile.FilePath);
-                Label_KeywordUpdateTab_FileName.Text = Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
-                System.Windows.Forms.Application.DoEvents();
+                bStatus = await mXisfFileUpdate.UpdateFileAsync(xFile, xFile.FilePath);
+                Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
                 if (bStatus == false)
                 {
@@ -680,9 +676,9 @@ namespace XisfFileManager
             }
         }
 
-        private void Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click(object sender, EventArgs e)
+        private async void Button_KeywordUpdateTab_SubFrameKeywords_SetupFluxDensity_Click(object sender, EventArgs e)
         {
-            SetupFluxDensity();
+            await SetupFluxDensity();
         }
 
         // ##########################################################################################################################

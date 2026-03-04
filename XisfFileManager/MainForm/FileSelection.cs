@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
 
@@ -63,7 +64,7 @@ namespace XisfFileManager
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        private void Button_FileSelection_DirectorySelection_Rename_Click(object sender, EventArgs e)
+        private async void Button_FileSelection_DirectorySelection_Rename_Click(object sender, EventArgs e)
         {
             bool bFilter = RadioButton_FileSelection_Index_ByFilter.Checked;
             bool bTime = RadioButton_FileSelection_Index_ByTime.Checked;
@@ -86,24 +87,21 @@ namespace XisfFileManager
             SetFileIndex(bTime);
 
             // Rename files and update UI
-            mFileList.Select((xFile, index) => new { xFile, index })
-                .ToList()
-                .ForEach(item =>
-                {
-                    if (mBCancel) { mBCancel = false; return; }
+            for (int i = 0; i < mFileList.Count; i++)
+            {
+                if (mBCancel) { mBCancel = false; break; }
 
-                    ProgressBar_KeywordUpdateTab_WriteProgress.Value = item.index + 1;
+                var xFile = mFileList[i];
+                ProgressBar_KeywordUpdateTab_WriteProgress.Value = i + 1;
 
-                    item.xFile.FilePath = Path.GetDirectoryName(item.xFile.FilePath) + "\\" + Path.GetFileName(item.xFile.FilePath);
+                xFile.FilePath = Path.GetDirectoryName(xFile.FilePath) + "\\" + Path.GetFileName(xFile.FilePath);
 
-                    Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(item.xFile.FilePath) + "\n" + Path.GetFileName(item.xFile.FilePath);
+                Label_FileSelection_BrowseFileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
 
-                    var renameTuple = mRenameFile.RenameFile(item.xFile);
+                var renameTuple = await Task.Run(() => mRenameFile.RenameFile(xFile));
 
-                    Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.FileName) + "\n" + Path.GetFileName(renameTuple.FileName);
-
-                    System.Windows.Forms.Application.DoEvents(); // Update UI
-                });
+                Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(renameTuple.FileName) + "\n" + Path.GetFileName(renameTuple.FileName);
+            }
 
             // Update progress bar to maximum value
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = ProgressBar_KeywordUpdateTab_WriteProgress.Maximum;

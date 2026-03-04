@@ -29,7 +29,7 @@ namespace XisfFileManager
             mCalibration.MatchTargetsWithCalibrationLibraryFrames(mFileList);
         }
 
-        private void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
+        private async void CalibrationTab_CreateCalibrationDirectory_Click(object sender, EventArgs e)
         {
             if (CheckBox_CalibrationTab_CreateNew.Checked == true)
             {
@@ -41,7 +41,7 @@ namespace XisfFileManager
                 Directory.CreateDirectory(targetCalibrationDirectory);
             }
 
-            mCalibration.CreateTargetCalibrationDirectory(mFileList);
+            await mCalibration.CreateTargetCalibrationDirectoryAsync(mFileList);
         }
 
         private void TextBox_CalibrationTab_ExposureTolerance_TextChanged(object sender, EventArgs e)

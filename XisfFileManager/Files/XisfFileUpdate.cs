@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using XisfFileManager.Files.XML;
@@ -79,13 +79,13 @@ namespace XisfFileManager.Files
         /// <param name="xFile">The XISF file to update.</param>
         /// <param name="destinationPath">The destination path to write the updated file.</param>
         /// <returns>True if the file is updated successfully; otherwise, false.</returns>
-        public bool UpdateFile(XisfFile xFile, string destinationPath)
+        public async Task<bool> UpdateFileAsync(XisfFile xFile, string destinationPath)
         {
             int delay = 0;
             while (FileHelpers.IsFileLocked(xFile.FilePath) && delay < 100)
             {
                 delay++;
-                Thread.Sleep(10); // Sleep to prevent busy-wait loop
+                await Task.Delay(10);
             }
 
             if (delay == 100)
@@ -280,7 +280,7 @@ namespace XisfFileManager.Files
                     // *******************************************************************************************************************************
 
                     // Now that the mBuffer List is done, use it to write a new/updated XISF File
-                    bool bStatus = WriteBinaryFile(destinationPath);
+                    bool bStatus = await WriteBinaryFileAsync(destinationPath);
                     if (bStatus == false)
                         return false;
                 }
@@ -565,7 +565,7 @@ namespace XisfFileManager.Files
         /// </summary>
         /// <param name="fileName">The name of the file to write to.</param>
         /// <returns>True if the file is written successfully; otherwise, false.</returns>
-        private bool WriteBinaryFile(string fileName)
+        private async Task<bool> WriteBinaryFileAsync(string fileName)
         {
             byte[] zero = { 0x00 };
 
@@ -575,7 +575,7 @@ namespace XisfFileManager.Files
                 using (BinaryWriter binaryWriter = new BinaryWriter(rawStream))
                 {
                     // Write each buffer to the memory stream
-                    mBufferList.ForEach(buffer =>
+                    foreach (var buffer in mBufferList)
                     {
                         long position = rawStream.Position;
 
@@ -614,15 +614,14 @@ namespace XisfFileManager.Files
                                           .ForEach(_ => binaryWriter.Write(zero, 0, 1));
                                 break;
                         }
-                    });
+                    }
 
-                    // Write the memory stream to the file
+                    // Write the memory stream to the file asynchronously
                     byte[] binaryData = rawStream.ToArray();
-                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                    using (BinaryWriter fileWriter = new BinaryWriter(fileStream))
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                     {
-                        fileStream.Write(binaryData, 0, binaryData.Length);
-                        fileWriter.Flush();
+                        await fileStream.WriteAsync(binaryData, 0, binaryData.Length);
+                        await fileStream.FlushAsync();
                     }
                 }
                 return true;
