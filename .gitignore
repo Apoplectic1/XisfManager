@@ -84,5 +84,8 @@ ScaffoldingReadMe.txt
 .\#
 Installer/
 
+# Claude Code local settings
+.claude/settings.local.json
+
 ## End of .gitignore
 *.deploy
