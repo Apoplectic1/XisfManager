@@ -83,7 +83,6 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_OperationStatus.Text = "No Images Selected";
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
 
-            Version? version = Assembly.GetExecutingAssembly().GetName().Version;
             string buildDate = System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             string buildConfig;
 #if DEBUG
@@ -91,8 +90,8 @@ namespace XisfFileManager
 #else
             buildConfig = "Release";
 #endif
-            string gitBranch = GetGitBranch();
-            this.Text = $"XISF File Manager - {buildDate} - {buildConfig} - {gitBranch}";
+            string versionLabel = GetVersionLabel();
+            this.Text = $"XISF File Manager - {buildDate} - {buildConfig} - {versionLabel}";
 
 
             Utility.ToolTips.AddToolTip(RadioButton_FileSelection_Index_ByFilter, "Orders Files by Capture Time per Filter", "\"By Target\" orders each filter's files consecutively.\r\n\"By Night\" orders each filter's files consecutively by night.");
@@ -682,6 +681,28 @@ namespace XisfFileManager
 
         // ##########################################################################################################################
         // ##########################################################################################################################
+
+        private static string GetVersionLabel()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var infoVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+            if (!string.IsNullOrEmpty(infoVersion))
+            {
+                // SDK default is "1.0.0+commithash"; CI sets a clean semver like "1.2.3"
+                // Strip the "+hash" suffix before comparing to the assembly version
+                string baseVersion = infoVersion.Contains('+') ? infoVersion.Substring(0, infoVersion.IndexOf('+')) : infoVersion;
+                string? assemblyVersion = assembly.GetName().Version?.ToString();
+
+                // If the base version doesn't match the assembly version, CI injected it
+                if (assemblyVersion == null || !assemblyVersion.StartsWith(baseVersion))
+                {
+                    return $"v{baseVersion}";
+                }
+            }
+
+            return GetGitBranch();
+        }
 
         private static string GetGitBranch()
         {

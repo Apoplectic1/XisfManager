@@ -2,25 +2,9 @@
 
 A Windows Forms desktop application for managing XISF (Extensible Image Serialization Format) files used in astrophotography.
 
-## Refactoring Progress (All Complete)
+## Refactoring Status
 
-### Completed
-- **Phase 1:** .NET 9 upgrade with nullable reference types enabled
-- **Phase 2:** Camera configuration abstraction (reduced Camera.cs from 1367 to 381 lines)
-- **Phase 2B:** Telescope configuration abstraction (reduced Telescope.cs from 232 to 204 lines)
-- **Phase 3:** UI helpers + CaptureSoftware abstraction (reduced CaptureSoftware.cs from 176 to 107 lines)
-- **Phase 4:** Generic database repository pattern (reduced SqlLiteReader.cs from 251 to 77 lines)
-- **Phase 5A:** Exception handling fixes (removed Environment.Exit and bare catch)
-- **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
-- **Phase 5B:** Async/await conversion (replaced Application.DoEvents and Thread.Sleep)
-- **Phase 5C:** XisfFileRename cleanup (reduced from 334 to 263 lines)
-- **Phase 6:** Configuration & constants extraction (3 new files in Configuration/)
-- **Phase 8:** FluxDensity duplicate code consolidation (reduced from 310 to 161 lines)
-- **Phase 7:** Nullable reference type annotations (resolved all 107 CS8xxx warnings across 22 files)
-- **CA Cleanup:** Fixed all 8 CA code analysis warnings (CA2263, CA1860, CA1875, CA1835, CA1051, CA1822)
-
-### Remaining
-- All planned refactoring phases complete
+All planned refactoring phases complete (.NET 10 upgrade, camera/telescope/capture-software abstractions, async/await, nullable annotations, CA cleanup). Details preserved in git history.
 
 **Cameras supported:** Z533, Z183, Q178, A144 (all active)
 **Telescopes supported:** APM107, EvoStar150, Newtonian254 (with Riccardi 0.75x reducer support)
@@ -32,7 +16,7 @@ A Windows Forms desktop application for managing XISF (Extensible Image Serializ
 # Build the solution
 dotnet build XisfFileManager.sln -c Release
 
-# Build for specific platform
+# Build for specific platform (project defaults to x64)
 dotnet build XisfFileManager.sln -c Release -r win-x64
 
 # Run the application
@@ -42,7 +26,7 @@ dotnet run --project XisfFileManager/XisfFileManager.csproj
 ## Project Architecture
 
 ### Technology Stack
-- **.NET 9.0** Windows Forms application (Windows 10 SDK 22621)
+- **.NET 10.0** Windows Forms application (Windows 11 SDK 26100)
 - **Nullable reference types** enabled (0 warnings)
 - **SQLite** via Microsoft.Data.Sqlite for Target Scheduler database
 - **MathNet.Numerics** for scientific calculations
@@ -74,7 +58,8 @@ XisfFileManager/
 │   ├── TelescopeService.cs # Telescope detection and analysis
 │   └── CaptureSoftwareService.cs # Software detection and analysis
 ├── Helpers/            # UI and utility helpers
-│   └── UIHelpers.cs    # Common control manipulation methods
+│   ├── UIHelpers.cs    # Common control manipulation methods
+│   └── FileHelpers.cs  # File operation utilities
 ├── Configuration/      # Centralized constants and paths
 │   ├── AppPaths.cs     # Machine-specific drive paths
 │   ├── XisfConstants.cs # XISF format constants (signature size, buffer size)
@@ -88,7 +73,9 @@ XisfFileManager/
 │   ├── XisfXmlReader.cs # XML metadata parsing
 │   ├── XisfFileRename.cs # File renaming logic
 │   ├── XisfFileUpdate.cs # File modification/writing
-│   └── Buffer.cs       # Binary buffer operations
+│   ├── Buffer.cs       # Binary buffer operations
+│   └── XML/            # XML processing
+│       └── Xml.cs      # XML metadata utilities
 ├── Keyword/            # FITS/XISF keyword handling
 │   ├── Keyword.cs      # Single keyword (Name, Value, Comment)
 │   └── KeywordList.cs  # Keyword collection with typed accessors
@@ -100,6 +87,8 @@ XisfFileManager/
 │   └── Tables/         # Database table models
 ├── Calculations/       # Image statistics and math
 ├── Directories/        # Directory traversal and properties
+├── Utility/            # General-purpose utilities
+│   └── ToolTip.cs      # ToolTip helpers
 └── Globals/            # Enums and global constants
 ```
 
