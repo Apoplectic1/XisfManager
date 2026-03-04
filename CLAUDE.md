@@ -2,9 +2,7 @@
 
 A Windows Forms desktop application for managing XISF (Extensible Image Serialization Format) files used in astrophotography.
 
-## Refactoring Progress
-
-See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
+## Refactoring Progress (All Complete)
 
 ### Completed
 - **Phase 1:** .NET 9 upgrade with nullable reference types enabled
