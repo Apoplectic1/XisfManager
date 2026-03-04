@@ -143,7 +143,7 @@ namespace XisfFileManager.Files
             string? directoryPath = fileInfo.DirectoryName;
 
             // If the directory path is null or the exclude list is empty, don't exclude.
-            if (string.IsNullOrEmpty(directoryPath) || !excludeList.Any())
+            if (string.IsNullOrEmpty(directoryPath) || excludeList.Count == 0)
             {
                 return false;
             }

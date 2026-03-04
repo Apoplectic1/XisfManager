@@ -383,7 +383,7 @@ namespace XisfFileManager
             if (FrameTypeList.Count == 0)
             {
                 mCalibrationTabValues.MessageMode = eMessageMode.APPEND;
-                mCalibrationTabValues.MatchCalibrationMessage = calibrationFrameMatchType + " Match Failed: Target Frame Type " + Enum.GetName(typeof(eFrame), calibrationFrameMatchType) + "\r\n"
+                mCalibrationTabValues.MatchCalibrationMessage = calibrationFrameMatchType + " Match Failed: Target Frame Type " + Enum.GetName<eFrame>(calibrationFrameMatchType) + "\r\n"
                                                               + "  " + Path.GetFileName(targetFile.FilePath) + "\r\n\r\n";
                 CalibrationTabPageEvent.TransmitData(mCalibrationTabValues);
                 return null;

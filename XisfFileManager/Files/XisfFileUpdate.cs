@@ -621,7 +621,7 @@ namespace XisfFileManager.Files
                     byte[] binaryData = rawStream.ToArray();
                     using (FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                     {
-                        await fileStream.WriteAsync(binaryData, 0, binaryData.Length);
+                        await fileStream.WriteAsync(binaryData.AsMemory());
                         await fileStream.FlushAsync();
                     }
                 }

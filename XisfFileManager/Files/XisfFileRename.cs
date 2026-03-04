@@ -13,8 +13,8 @@ public class XisfFileRename
 {
     private const double NoTemperature = -273.0;
 
-    public eOrder RenameOrder;
-    public bool IncludeCalibrationFrames;
+    public eOrder RenameOrder { get; set; }
+    public bool IncludeCalibrationFrames { get; set; }
 
     /// <summary>
     /// Renames the specified XISF file based on its properties and the given index.

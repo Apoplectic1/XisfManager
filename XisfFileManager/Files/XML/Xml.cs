@@ -548,8 +548,8 @@ namespace XisfFileManager.Files.XML
 
         public static bool HasEvenPairs(string input, string openString, string closeString)
         {
-            int openCount = Regex.Matches(input, Regex.Escape(openString)).Count;
-            int closeCount = Regex.Matches(input, Regex.Escape(closeString)).Count;
+            int openCount = Regex.Count(input, Regex.Escape(openString));
+            int closeCount = Regex.Count(input, Regex.Escape(closeString));
 
             return openCount == closeCount;
         }

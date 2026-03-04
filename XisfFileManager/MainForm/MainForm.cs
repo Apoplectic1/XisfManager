@@ -151,7 +151,7 @@ namespace XisfFileManager
             await CheckForUpdatesAsync();
         }
 
-        private async Task CheckForUpdatesAsync()
+        private static async Task CheckForUpdatesAsync()
         {
             try
             {
