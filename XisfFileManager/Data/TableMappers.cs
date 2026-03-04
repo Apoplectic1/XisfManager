@@ -6,7 +6,7 @@ namespace XisfFileManager.Data;
 /// <summary>
 /// Mapper for ProfilePreference table
 /// </summary>
-internal class ProfilePreferenceMapper : ITableMapper<ProfilePreference>
+internal sealed class ProfilePreferenceMapper : ITableMapper<ProfilePreference>
 {
     public string TableName => "profilepreference";
 
@@ -30,7 +30,7 @@ internal class ProfilePreferenceMapper : ITableMapper<ProfilePreference>
 /// <summary>
 /// Mapper for Project table
 /// </summary>
-internal class ProjectMapper : ITableMapper<Project>
+internal sealed class ProjectMapper : ITableMapper<Project>
 {
     public string TableName => "project";
 
@@ -58,7 +58,7 @@ internal class ProjectMapper : ITableMapper<Project>
 /// <summary>
 /// Mapper for Target table
 /// </summary>
-internal class TargetMapper : ITableMapper<Target>
+internal sealed class TargetMapper : ITableMapper<Target>
 {
     public string TableName => "target";
 
@@ -79,7 +79,7 @@ internal class TargetMapper : ITableMapper<Target>
 /// <summary>
 /// Mapper for ExposurePlan table
 /// </summary>
-internal class ExposurePlanMapper : ITableMapper<ExposurePlan>
+internal sealed class ExposurePlanMapper : ITableMapper<ExposurePlan>
 {
     public string TableName => "exposureplan";
 
@@ -99,7 +99,7 @@ internal class ExposurePlanMapper : ITableMapper<ExposurePlan>
 /// <summary>
 /// Mapper for ExposureTemplate table
 /// </summary>
-internal class ExposureTemplateMapper : ITableMapper<ExposureTemplate>
+internal sealed class ExposureTemplateMapper : ITableMapper<ExposureTemplate>
 {
     public string TableName => "exposuretemplate";
 
@@ -125,7 +125,7 @@ internal class ExposureTemplateMapper : ITableMapper<ExposureTemplate>
 /// <summary>
 /// Mapper for AcquiredImage table
 /// </summary>
-internal class AcquiredImageMapper : ITableMapper<AcquiredImage>
+internal sealed class AcquiredImageMapper : ITableMapper<AcquiredImage>
 {
     public string TableName => "acquiredimage";
 
@@ -145,7 +145,7 @@ internal class AcquiredImageMapper : ITableMapper<AcquiredImage>
 /// <summary>
 /// Mapper for RuleWeight table
 /// </summary>
-internal class RuleWeightMapper : ITableMapper<RuleWeight>
+internal sealed class RuleWeightMapper : ITableMapper<RuleWeight>
 {
     public string TableName => "ruleweight";
 
@@ -161,7 +161,7 @@ internal class RuleWeightMapper : ITableMapper<RuleWeight>
 /// <summary>
 /// Mapper for ImageData table
 /// </summary>
-internal class ImageDataMapper : ITableMapper<ImageData>
+internal sealed class ImageDataMapper : ITableMapper<ImageData>
 {
     public string TableName => "imagedata";
 

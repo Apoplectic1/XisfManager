@@ -6,7 +6,7 @@ using XisfFileManager.TargetScheduler.Tables;
 
 namespace XisfFileManager.TargetScheduler
 {
-    internal class SqlLiteManager
+    internal sealed class SqlLiteManager
     {
         public List<AcquiredImage> mAcquiredImageList;
         public List<ExposurePlan> mExposurePlanList;

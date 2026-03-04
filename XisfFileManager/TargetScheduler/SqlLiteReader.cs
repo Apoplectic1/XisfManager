@@ -4,7 +4,7 @@ using XisfFileManager.TargetScheduler.Tables;
 
 namespace XisfFileManager.TargetScheduler;
 
-internal class SqlLiteReader
+internal sealed class SqlLiteReader
 {
     private readonly SqlLiteManager _manager;
 

@@ -3,7 +3,7 @@ using System;
 
 namespace XisfFileManager.TargetScheduler
 {
-    internal class SqlLiteWriter
+    internal sealed class SqlLiteWriter
     {
         private SqlLiteManager _manager;
 

@@ -14,12 +14,13 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - **Phase 4:** Generic database repository pattern (reduced SqlLiteReader.cs from 251 to 77 lines)
 - **Phase 5A:** Exception handling fixes (removed Environment.Exit and bare catch)
 - **UI Tab Order:** Fixed TabIndex values across all GroupBoxes for logical left-to-right, top-to-bottom navigation
+- **Phase 5B:** Async/await conversion (replaced Application.DoEvents and Thread.Sleep)
+- **Phase 5C:** XisfFileRename cleanup (reduced from 334 to 263 lines)
+- **Phase 6:** Configuration & constants extraction (3 new files in Configuration/)
+- **Phase 8:** FluxDensity duplicate code consolidation (reduced from 310 to 161 lines)
 
 ### Remaining
-- Phase 5B: Async/await conversion (remove Application.DoEvents calls)
-- Phase 6: Configuration & constants extraction
-- Phase 7: Nullable reference type annotations (warnings exist)
-- Phase 8: FluxDensity duplicate code consolidation
+- Phase 7: Nullable reference type annotations (~133 warnings)
 
 **Cameras supported:** Z533, Z183, Q178, A144 (all active)
 **Telescopes supported:** APM107, EvoStar150, Newtonian254 (with Riccardi 0.75x reducer support)
@@ -74,6 +75,10 @@ XisfFileManager/
 │   └── CaptureSoftwareService.cs # Software detection and analysis
 ├── Helpers/            # UI and utility helpers
 │   └── UIHelpers.cs    # Common control manipulation methods
+├── Configuration/      # Centralized constants and paths
+│   ├── AppPaths.cs     # Machine-specific drive paths
+│   ├── XisfConstants.cs # XISF format constants (signature size, buffer size)
+│   └── DirectoryFilters.cs # Directory exclude lists
 ├── Data/               # Database infrastructure
 │   ├── ITableMapper.cs # Generic mapper interface
 │   ├── SqliteReaderExtensions.cs # Null-safe reading helpers
@@ -152,6 +157,9 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - `UIHelpers.cs`: Common UI control manipulation (ClearComboBox, ResetRadioButton, etc.)
 - `MainForm.Designer.cs`: Auto-generated UI - TabIndex values manually fixed for proper navigation
 - `Globals.cs`: All enums and constants
+- `Configuration/AppPaths.cs`: Machine-specific paths (E:\, F:\ drives)
+- `Configuration/XisfConstants.cs`: XISF signature size and max buffer size
+- `Configuration/DirectoryFilters.cs`: Exclude lists for directory filtering
 
 ## Common Tasks
 

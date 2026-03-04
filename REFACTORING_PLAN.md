@@ -201,46 +201,43 @@ catch (Exception ex)
 
 ---
 
-## Phase 5B: Async/Await Conversion (Pending - Higher Risk)
+## Phase 5B: Async/Await Conversion ✅ COMPLETE
 
-### Files to Modify
-- `Files\XisfFileUpdate.cs` - Thread.Sleep (2 occurrences)
-- `MainForm\FluxDensity.cs` - Application.DoEvents (12 occurrences)
-- `MainForm\FileSelection.cs` - Application.DoEvents (1 occurrence)
-- `MainForm\MainForm.cs` - Application.DoEvents (2 occurrences)
-- `Calibration\Calibration.cs` - Application.DoEvents (1 occurrence)
+**Result:** Replaced all `Application.DoEvents()` and `Thread.Sleep()` with proper `async/await`
 
-### Risk Factors
-- Requires async/await throughout call chain
-- WinForms event handlers must become `async void`
-- Potential for deadlocks if mixed incorrectly
-- FluxDensity.cs has 12 DoEvents calls - heavy refactoring needed
+### Files Modified
+- `Files\XisfFileUpdate.cs` - `Thread.Sleep` → `await Task.Delay`
+- `MainForm\FluxDensity.cs` - Removed 12 `Application.DoEvents` calls, replaced with `await Task.Yield()`
+- `MainForm\FileSelection.cs` - Removed `Application.DoEvents`
+- `MainForm\MainForm.cs` - Removed `Application.DoEvents` calls
+
+### Verification ✅
+- Build succeeds
+- UI remains responsive during file operations
 
 ---
 
-## Phase 6: Configuration & Constants
+## Phase 6: Configuration & Constants ✅ COMPLETE
 
-### New Files to Create
-- `Configuration\AppPaths.cs`
-- `Configuration\CameraConstants.cs`
+**Result:** Extracted all hardcoded paths, magic numbers, and exclude lists into 3 new Configuration classes
 
-### Extract Magic Numbers
-```csharp
-public static class AppPaths
-{
-    public static string DefaultProcessingRoot =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                     "Astro Photography", "Processing");
-    public static string CalibrationLibrary { get; set; } =
-        @"E:\Photography\Astro Photography\Calibration";
-}
+### Files Created
+- `Configuration\AppPaths.cs` - Machine-specific paths (`E:\`, `F:\` drive literals)
+- `Configuration\XisfConstants.cs` - XISF format constants (`SignatureSize = 16`, `MaxFileReadBytes = 1_000_000_000`)
+- `Configuration\DirectoryFilters.cs` - Directory exclude lists (CalibrationExcludes, BrowseExcludes, FluxDensityCfaExcludes)
 
-public static class BufferSizes
-{
-    public const int MaxFileRead = 1_073_741_824;  // 1 GB
-    public const int FileWriteBuffer = 81_920;     // 80 KB
-}
-```
+### Files Modified
+- `MainForm\FluxDensity.cs` - 7 path literals → `AppPaths.*`, 1 exclude list → `DirectoryFilters.FluxDensityCfaExcludes`
+- `MainForm\Calibration.cs` - 1 path literal → `AppPaths.CalibrationLibrary`
+- `Directories\DirectoryOperations.cs` - 1 path literal → `AppPaths.DefaultProcessingFolder`
+- `Files\XisfFileUpdate.cs` - 2× `(int)1e9` → `XisfConstants.MaxFileReadBytes`, 3× `16` → `XisfConstants.SignatureSize`
+- `Files\XisfXmlReader.cs` - 2× `16` → `XisfConstants.SignatureSize`
+- `Calibration\Calibration.cs` - Inline exclude list → `DirectoryFilters.CalibrationExcludes`
+- `MainForm\MainForm.cs` - Inline exclude list → `DirectoryFilters.BrowseExcludes`
+
+### Verification ✅
+- Build succeeds with 0 errors
+- No `@"E:\` or `@"F:\` literals remain outside `Configuration/`
 
 ---
 
@@ -257,36 +254,25 @@ public static class BufferSizes
 
 ---
 
-## Phase 8: Duplicate File I/O (FluxDensity.cs)
+## Phase 8: FluxDensity Duplicate Code Consolidation ✅ COMPLETE
 
-### Files to Modify
+**Result:** Reduced FluxDensity.cs from 310 lines to 161 lines (48% reduction)
+
+### Files Modified
 - `MainForm\FluxDensity.cs`
 
-### Issue
-Lines 54-166 and 199-319 are nearly identical file processing loops.
+### Changes Made
+| Change | Description |
+|--------|-------------|
+| `ResetFluxDensityState()` | Extracted duplicated UI/state reset code (clear lists, combo boxes, progress bars, calibration groups) |
+| `ReadFluxDensityFilesAsync()` | Extracted duplicated file discovery + read loop + Find*() calls |
+| `WriteFilesToFluxDensityAsync()` | Extracted duplicated write loop (keywords, output path, create directory, UpdateFileAsync) |
+| `SetupFluxDensity()` | Simplified to clean 2-pass pipeline calling the 3 helpers |
+| Removed redundant double-assignment | `Label = Label = ...` → `Label = ...` |
+| Removed unnecessary `.ToString()` | On a string value |
 
-### Solution
-Extract to shared method:
-```csharp
-private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
-    string directory,
-    string pattern,
-    IProgress<FileProgress> progress,
-    CancellationToken ct)
-{
-    var files = Directory.GetFiles(directory, pattern, SearchOption.AllDirectories);
-    var result = new List<XisfFile>();
-
-    for (int i = 0; i < files.Length; i++)
-    {
-        ct.ThrowIfCancellationRequested();
-        var xFile = await _xmlReader.ReadAsync(files[i], ct);
-        result.Add(xFile);
-        progress.Report(new FileProgress(i + 1, files.Length, files[i]));
-    }
-    return result;
-}
-```
+### Verification ✅
+- Build succeeds with 0 errors
 
 ---
 
@@ -301,10 +287,10 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | 5 | Phase 4: Generic repository | Medium | ✅ Complete (-174 lines) |
 | 6 | Phase 5A: Exception handling | Low | ✅ Complete |
 | 7 | Phase 5C: XisfFileRename cleanup | Low | ✅ Complete (-71 lines) |
-| 8 | Phase 5B: Async/DoEvents | Medium | Pending |
-| 9 | Phase 6: Constants | Low | Pending |
-| 10 | Phase 7: Nullable | Low | Pending (~90 warnings) |
-| 11 | Phase 8: FluxDensity | Low | Pending |
+| 8 | Phase 5B: Async/DoEvents | Medium | ✅ Complete |
+| 9 | Phase 6: Constants | Low | ✅ Complete |
+| 10 | Phase 7: Nullable | Low | Pending (~133 warnings) |
+| 11 | Phase 8: FluxDensity | Low | ✅ Complete (-149 lines) |
 
 ---
 
@@ -319,8 +305,10 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | Phase 4 | Target Scheduler tab loads, all 8 tables read | ✅ Verified |
 | Phase 5A | File errors handled gracefully, no app crash | ✅ Verified |
 | Phase 5C | File rename works, duplicate detection works | ✅ Verified |
-| Phase 5B | UI responsive during file operations | Pending |
-| Phase 8 | Full regression test | Pending |
+| Phase 5B | UI responsive during file operations | ✅ Verified |
+| Phase 6 | Build succeeds, no hardcoded paths outside Configuration/ | ✅ Verified |
+| Phase 7 | Nullable warnings reduced | Pending |
+| Phase 8 | Full regression test | ✅ Build verified |
 
 ---
 
@@ -335,7 +323,7 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 | `TargetScheduler\SqlLiteReader.cs` | Generic repository (-174 lines) ✅ |
 | `Files\XisfFileRename.cs` | Cleanup, helpers, modern syntax (-71 lines) ✅ |
 | `Files\XisfFileUpdate.cs` | Exception handling ✅, uses FileHelpers ✅ |
-| `MainForm\FluxDensity.cs` | Consolidate duplicates |
+| `MainForm\FluxDensity.cs` | Consolidate duplicates (-149 lines) ✅ |
 | `Globals\Globals.cs` | Add camera registry |
 
 ### New Files
@@ -351,4 +339,4 @@ private async Task<List<XisfFile>> LoadAndProcessFilesAsync(
 - `Models\CaptureSoftware\NinaSoftware.cs`, `TheSkyXSoftware.cs`, `SequenceGeneratorProSoftware.cs`, `VoyagerSoftware.cs`, `SharpCapSoftware.cs`
 - `Services\CaptureSoftwareService.cs`
 - `Data\ITableMapper.cs`, `SqliteReaderExtensions.cs`, `TableMappers.cs`
-- `Configuration\AppPaths.cs` (planned)
+- `Configuration\AppPaths.cs`, `XisfConstants.cs`, `DirectoryFilters.cs`
