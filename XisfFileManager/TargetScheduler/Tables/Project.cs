@@ -26,9 +26,9 @@
     internal sealed class Project
     {
         public int Id { get; set; }
-        public string profileId { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        public string profileId { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
         public int state { get; set; }
         public int priority { get; set; }
         public int createdate { get; set; }

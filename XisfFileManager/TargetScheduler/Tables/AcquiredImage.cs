@@ -19,9 +19,9 @@
         public int projectId { get; set; }
         public int targetId { get; set; }
         public int acquireddate { get; set; }
-        public string filtername { get; set; }
+        public string filtername { get; set; } = string.Empty;
         public int accepted { get; set; }
-        public string metadata { get; set; }
-        public string rejectreason { get; set; }
+        public string metadata { get; set; } = string.Empty;
+        public string rejectreason { get; set; } = string.Empty;
     }
 }

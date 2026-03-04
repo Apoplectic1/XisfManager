@@ -23,7 +23,7 @@ namespace XisfFileManager.Files
 
         public static List<System.IO.FileInfo> FileInfoList { get; private set; } = new List<System.IO.FileInfo>();
         public static bool Recurse { get; set; } = true;
-        public static string SelectedFolder { get; set; }
+        public static string SelectedFolder { get; set; } = string.Empty;
 
         // ***********************************************************************************
         // Methods
@@ -140,7 +140,7 @@ namespace XisfFileManager.Files
         private static bool IsExcluded(FileInfo fileInfo, List<string> excludeList, ExcludeType excludeType = ExcludeType.Exact)
         {
             // Get the full path of the directory where the file resides.
-            string directoryPath = fileInfo.DirectoryName;
+            string? directoryPath = fileInfo.DirectoryName;
 
             // If the directory path is null or the exclude list is empty, don't exclude.
             if (string.IsNullOrEmpty(directoryPath) || !excludeList.Any())

@@ -17,8 +17,8 @@ namespace XisfFileManager
     // ******************************************************************************************************************
     public class Calibration
     {
-        private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mDarkMatchedTargetPairList;
-        private List<(XisfFile TargetFile, XisfFile CalibrationFile)> mFlatMatchedTargetPairList;
+        private List<(XisfFile TargetFile, XisfFile? CalibrationFile)> mDarkMatchedTargetPairList;
+        private List<(XisfFile TargetFile, XisfFile? CalibrationFile)> mFlatMatchedTargetPairList;
         private List<XisfFile> mBiasCalibrationFileList;
         private List<XisfFile> mDarkCalibrationFileList;
         private List<XisfFile> mFlatCalibrationFileList;
@@ -59,9 +59,9 @@ namespace XisfFileManager
             mBiasCalibrationFileList = new List<XisfFile>();
             mCalibrationTabValues = new CalibrationTabPageValues();
             mDarkCalibrationFileList = new List<XisfFile>();
-            mDarkMatchedTargetPairList = new List<(XisfFile, XisfFile)>();
+            mDarkMatchedTargetPairList = new List<(XisfFile, XisfFile?)>();
             mFlatCalibrationFileList = new List<XisfFile>();
-            mFlatMatchedTargetPairList = new List<(XisfFile, XisfFile)>();
+            mFlatMatchedTargetPairList = new List<(XisfFile, XisfFile?)>();
             mLibraryCalibrationFileList = new List<XisfFile>();
             mUniqueDarkCalibrationFileList = new List<XisfFile>();
             mUniqueFlatCalibrationFileList = new List<XisfFile>();
@@ -189,7 +189,7 @@ namespace XisfFileManager
             bool bAllDarksMatched = MatchTargetsWithDarkCalibrationFrames(mUnmatchedDarkTargetFileList);
 
             // Each calibration file can match multiple targets. We only want to keep the unique calibration files
-            mUniqueDarkCalibrationFileList = mDarkMatchedTargetPairList.Select(item => item.CalibrationFile).Distinct().ToList();
+            mUniqueDarkCalibrationFileList = mDarkMatchedTargetPairList.Select(item => item.CalibrationFile).OfType<XisfFile>().Distinct().ToList();
 
             // Keep the calibration files in a consistent order for CDARK numbering repeatability run-to-run 
             mUniqueDarkCalibrationFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
@@ -201,11 +201,11 @@ namespace XisfFileManager
             {
                 if (uniqueDarkCalibrationFile == null) continue;
 
-                foreach ((XisfFile TargetFile, XisfFile CalibrationFile) darkMatchedTargetPair in mDarkMatchedTargetPairList)
+                foreach ((XisfFile TargetFile, XisfFile? CalibrationFile) darkMatchedTargetPair in mDarkMatchedTargetPairList)
                 {
                     // For each matched dark Target/Calibration pair: When a Target .Calibration file matches  uniqueDarkCalibrationFile,
                     // assign this Target/Calibration pair and uniqueDarkCalibrationFile a unique DARK "D" number
-                    if (darkMatchedTargetPair.CalibrationFile.FilePath == uniqueDarkCalibrationFile.FilePath)
+                    if (darkMatchedTargetPair.CalibrationFile?.FilePath == uniqueDarkCalibrationFile.FilePath)
                     {
                         darkMatchedTargetPair.TargetFile.CDARK = "D" + darkIndex.ToString();
 
@@ -234,7 +234,7 @@ namespace XisfFileManager
             bool bAllFlatsMatched = MatchTargetsWithFlatCalibrationFrames(mUnmatchedFlatTargetFileList);
 
             // Each calibration file can match multiple targets. We only want to keep the unique calibration files
-            mUniqueFlatCalibrationFileList = mFlatMatchedTargetPairList.Select(item => item.CalibrationFile).Distinct().ToList();
+            mUniqueFlatCalibrationFileList = mFlatMatchedTargetPairList.Select(item => item.CalibrationFile).OfType<XisfFile>().Distinct().ToList();
 
             // Keep the calibration files in a consistent order for CFLAT numbering repeatability run-to-run 
             mUniqueFlatCalibrationFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
@@ -246,11 +246,11 @@ namespace XisfFileManager
             {
                 if (uniqueFlatCalibrationFile == null) continue;
 
-                foreach ((XisfFile TargetFile, XisfFile CalibrationFile) flatMatchedTargetPair in mFlatMatchedTargetPairList)
+                foreach ((XisfFile TargetFile, XisfFile? CalibrationFile) flatMatchedTargetPair in mFlatMatchedTargetPairList)
                 {
                     // For each matched flat Target/Calibration pair: When a Target .Calibration file matches  uniqueFlatCalibrationFile,
                     // assign this Target/Calibration pair and uniqueFlatCalibrationFile a unique FLAT "F" number
-                    if (flatMatchedTargetPair.CalibrationFile.FilePath == uniqueFlatCalibrationFile.FilePath)
+                    if (flatMatchedTargetPair.CalibrationFile?.FilePath == uniqueFlatCalibrationFile.FilePath)
                     {
                         flatMatchedTargetPair.TargetFile.CFLAT = "F" + flatIndex.ToString();
                         uniqueFlatCalibrationFile.CFLAT = "F" + flatIndex.ToString();
@@ -344,7 +344,7 @@ namespace XisfFileManager
         // ******************************************************************************************************************
         // ******************************************************************************************************************
 
-        private XisfFile FindNearestCalibrationFile(eFrame calibrationFrameMatchType, XisfFile targetFile, List<XisfFile> CalibrationLibraryFileList)
+        private XisfFile? FindNearestCalibrationFile(eFrame calibrationFrameMatchType, XisfFile targetFile, List<XisfFile> CalibrationLibraryFileList)
         {
             // This routine gets called twice for each target frame
             // The first time the this is used to build non-unique (meaning to find all) lists of target matching calibration files
@@ -583,7 +583,7 @@ namespace XisfFileManager
             }
 
             // ******************************************************************************************************************
-            XisfFile nearestFile = ExposureList.OrderBy(nearest => Math.Abs((nearest.CaptureTime - targetFile.CaptureTime).TotalSeconds)).FirstOrDefault();
+            XisfFile? nearestFile = ExposureList.OrderBy(nearest => Math.Abs((nearest.CaptureTime - targetFile.CaptureTime).TotalSeconds)).FirstOrDefault();
             Debug.WriteLine("\nFindNearestCalibrationFile: " + calibrationFrameMatchType + "\n" + Path.GetFileName(targetFile.FilePath));
             Debug.WriteLine(nearestFile != null ? Path.GetFileName(nearestFile.FilePath) : "No files found in ExposureList.");
 
@@ -683,7 +683,7 @@ namespace XisfFileManager
         {
             // Create and use a Calibration Directory for the complete project
             // For Calibration files, there is no distiction between an individual Target and a Mosaic
-            string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath);
+            string targetCalibrationDirectory = Path.GetDirectoryName(targetFilePath) ?? string.Empty;
 
             // Can we find a "Captures" directory?
             if (targetCalibrationDirectory.Contains(@"Captures\"))
@@ -703,7 +703,7 @@ namespace XisfFileManager
         {
             int pedestal = 0;
 
-            foreach ((XisfFile TargetFile, XisfFile CalibrationFile) darkMatchedTargetPair in mDarkMatchedTargetPairList)
+            foreach ((XisfFile TargetFile, XisfFile? CalibrationFile) darkMatchedTargetPair in mDarkMatchedTargetPairList)
             {
                 var target = darkMatchedTargetPair.TargetFile;
                 var dark = darkMatchedTargetPair.CalibrationFile;

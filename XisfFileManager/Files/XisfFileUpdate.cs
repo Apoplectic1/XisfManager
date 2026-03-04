@@ -17,8 +17,8 @@ namespace XisfFileManager.Files
 {
     public class XisfFileUpdate
     {
-        private Buffer mBuffer;
-        private List<Buffer> mBufferList;
+        private Buffer mBuffer = new();
+        private List<Buffer> mBufferList = new();
 
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace XisfFileManager.Files
         private static void RemoveUnwantedAttachments(XmlDocument document)
         {
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
-            string namespaceUri = document.DocumentElement.NamespaceURI;
+            string namespaceUri = document.DocumentElement?.NamespaceURI ?? string.Empty;
             nsManager.AddNamespace("ns", namespaceUri);
 
             // Remove <Thumbnail> element if it exists
@@ -404,11 +404,11 @@ namespace XisfFileManager.Files
             int newStartingAddress;
 
             XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
-            string namespaceUri = document.DocumentElement.NamespaceURI;
+            string namespaceUri = document.DocumentElement?.NamespaceURI ?? string.Empty;
             nsManager.AddNamespace("ns", namespaceUri);
 
             // Find the first (but not only for masters) (ns + "Image") descendant
-            XmlNode imageNode = document.SelectSingleNode("//ns:Image", nsManager);
+            XmlNode? imageNode = document.SelectSingleNode("//ns:Image", nsManager);
 
             if (imageNode == null)
                 return -1;
@@ -428,7 +428,7 @@ namespace XisfFileManager.Files
                 // 1. This can push the image data to a new location - new start address
                 // 2. This can change the padding - new padding
                 // If the document length changes, we need to iterate until it does not change (padding will change with each iteration)
-                XmlAttribute locationAttribute = imageNode.Attributes["location"];
+                XmlAttribute? locationAttribute = imageNode?.Attributes?["location"];
                 if (locationAttribute != null)
                 {
                     string[] locationParts = locationAttribute.Value.Split(':');
@@ -457,7 +457,7 @@ namespace XisfFileManager.Files
         {
             // Remove all existing FITSKeyword elements
             var nodeList = document.GetElementsByTagName("FITSKeyword").Cast<XmlNode>().ToList();
-            nodeList.ForEach(node => node.ParentNode.RemoveChild(node));
+            nodeList.ForEach(node => node.ParentNode?.RemoveChild(node));
 
             // Find all <Image> elements in the document
             var imageNodes = document.GetElementsByTagName("Image").Cast<XmlNode>().ToList();
@@ -470,7 +470,7 @@ namespace XisfFileManager.Files
             {
                 sortedKeywords.ForEach(keyword =>
                 {
-                    var newElement = document.CreateElement("FITSKeyword", document.DocumentElement.NamespaceURI);
+                    var newElement = document.CreateElement("FITSKeyword", document.DocumentElement?.NamespaceURI);
                     newElement.SetAttribute("name", keyword.Name);
                     newElement.SetAttribute("comment", keyword.Comment);
                     newElement.SetAttribute("value", keyword.Value.ToString());
@@ -536,7 +536,7 @@ namespace XisfFileManager.Files
             namespaceManager.AddNamespace("ns", "http://www.pixinsight.com/xisf");
 
             // Select all FITSKeyword elements using the namespace
-            var fitsKeywordNodes = xmlDoc.SelectNodes("//ns:FITSKeyword", namespaceManager).Cast<XmlNode>().ToList();
+            var fitsKeywordNodes = (xmlDoc.SelectNodes("//ns:FITSKeyword", namespaceManager) ?? throw new InvalidOperationException("No FITSKeyword nodes found")).Cast<XmlNode>().ToList();
 
             // Alphabetize the KeywordList from the XISF file
             var keywords = xFile.KeywordList.mKeywordList.OrderBy(p => p.Name).ToList();
@@ -546,9 +546,9 @@ namespace XisfFileManager.Files
                               !keywords.Where((keyword, index) =>
                               {
                                   var fitsKeywordNode = fitsKeywordNodes[index];
-                                  var nameAttribute = fitsKeywordNode.Attributes["name"]?.Value;
-                                  var valueAttribute = fitsKeywordNode.Attributes["value"]?.Value;
-                                  var commentAttribute = fitsKeywordNode.Attributes["comment"]?.Value;
+                                  var nameAttribute = fitsKeywordNode.Attributes?["name"]?.Value;
+                                  var valueAttribute = fitsKeywordNode.Attributes?["value"]?.Value;
+                                  var commentAttribute = fitsKeywordNode.Attributes?["comment"]?.Value;
 
                                   return nameAttribute != keyword.Name || valueAttribute != keyword.Value || commentAttribute != keyword.Comment;
                               }).Any();

@@ -10,8 +10,8 @@ namespace XisfFileManager.Files
     {
         private byte[] mBuffer = new byte[65536];
         private int mBytesRead;
-        private Match mXmlXisfBlockMatch;
-        private Match mXmlMetadataBlockMatch;
+        private Match mXmlXisfBlockMatch = Match.Empty;
+        private Match mXmlMetadataBlockMatch = Match.Empty;
 
         // ***********************************************************************************
         // ***********************************************************************************
@@ -118,8 +118,8 @@ namespace XisfFileManager.Files
                     }
 
                     // Extract and process various elements from the XISF file
-                    XElement root = xFile.mXDoc.Root;
-                    XNamespace ns = root.GetDefaultNamespace();
+                    XElement? root = xFile.mXDoc.Root;
+                    XNamespace ns = root?.GetDefaultNamespace() ?? XNamespace.None;
 
                     FindXisfIccProfiles(xFile, ns);
                     FindXisfThumbnails(xFile, ns);
@@ -143,7 +143,7 @@ namespace XisfFileManager.Files
 
         public static void FindXisfIccProfiles(XisfFile xFile, XNamespace ns)
         {
-            XElement iccProfileElement = xFile.mXDoc.Descendants(ns + "ICCProfile").FirstOrDefault();
+            XElement? iccProfileElement = xFile.mXDoc.Descendants(ns + "ICCProfile").FirstOrDefault();
             if (iccProfileElement != null)
             {
                 xFile.IccAttachment(iccProfileElement);
@@ -154,7 +154,7 @@ namespace XisfFileManager.Files
 
         public static void FindXisfThumbnails(XisfFile xFile, XNamespace ns)
         {
-            XElement thumbnailElement = xFile.mXDoc.Descendants(ns + "Thumbnail").FirstOrDefault();
+            XElement? thumbnailElement = xFile.mXDoc.Descendants(ns + "Thumbnail").FirstOrDefault();
             if (thumbnailElement != null)
             {
                 xFile.ThumbnailAttachment(thumbnailElement);

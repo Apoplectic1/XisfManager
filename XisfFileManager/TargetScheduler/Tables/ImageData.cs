@@ -14,8 +14,8 @@
     internal sealed class ImageData
     {
         public int Id { get; set; }
-        public string tag { get; set; }
-        public byte[] imagedata { get; set; }
+        public string tag { get; set; } = string.Empty;
+        public byte[] imagedata { get; set; } = Array.Empty<byte>();
         public int acquiredimageid { get; set; }
     }
 }

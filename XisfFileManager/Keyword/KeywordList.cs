@@ -99,9 +99,9 @@ namespace XisfFileManager
 
         // ----------------------------------------------------------------------------------------------------------
 
-        public Keyword GetKeyword(string sName)
+        public Keyword? GetKeyword(string sName)
         {
-            Keyword node = mKeywordList.Find(i => i.Name == sName);
+            Keyword? node = mKeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return null;
 
@@ -112,7 +112,7 @@ namespace XisfFileManager
 
         public string GetKeywordValue(string sName)
         {
-            Keyword node = mKeywordList.Find(i => i.Name == sName);
+            Keyword? node = mKeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return string.Empty;
 
@@ -123,7 +123,7 @@ namespace XisfFileManager
 
         public string GetKeywordComment(string sName)
         {
-            Keyword node = mKeywordList.Find(i => i.Name == sName);
+            Keyword? node = mKeywordList.Find(i => i.Name == sName);
             if (node == null)
                 return string.Empty;
 

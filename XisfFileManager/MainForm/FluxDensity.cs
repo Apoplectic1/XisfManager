@@ -103,9 +103,9 @@ namespace XisfFileManager
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
-                Keyword panel = xFile.GetKeyword("CPANEL");
-                Keyword stars = xFile.GetKeyword("CSTARS");
-                Keyword filter = xFile.GetKeyword("FILTER");
+                Keyword? panel = xFile.GetKeyword("CPANEL");
+                Keyword? stars = xFile.GetKeyword("CSTARS");
+                Keyword? filter = xFile.GetKeyword("FILTER");
 
                 string outputDir = AppPaths.FluxDensityDir + @"\";
 
@@ -113,9 +113,9 @@ namespace XisfFileManager
                     outputDir += panel.Value + @"\";
 
                 if (stars != null)
-                    outputDir += stars.Value + @"\" + filter.Value + @"\";
+                    outputDir += stars.Value + @"\" + filter?.Value + @"\";
                 else
-                    outputDir += filter.Value + @"\";
+                    outputDir += filter?.Value + @"\";
 
                 if (!Directory.Exists(outputDir))
                 {

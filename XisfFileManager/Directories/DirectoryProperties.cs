@@ -100,7 +100,7 @@ namespace XisfFileManager.Files
                         // Store the name of the current group (directory path)
                         var groupName = group.Key;
 
-                        if (groupName.Contains(camera))
+                        if (groupName != null && groupName.Contains(camera))
                         {
                             // We are here because the groupName contains the camera identifier - likey beacuse we are using standard file naming conventions
                             // where the camera identifier is part of the file path.
@@ -113,7 +113,7 @@ namespace XisfFileManager.Files
                             string statistics = $"{camera} - {Path.GetFileName(groupName)} - {group.Count()}, {totalExposureTime:F1}";
 
                             // Add the computed statistics to the DirectoryStatistics dictionary
-                            DirectoryStatistics[group.Key] = statistics;
+                            DirectoryStatistics[groupName] = statistics;
                         }
                     });
             }

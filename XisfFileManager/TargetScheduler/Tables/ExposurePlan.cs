@@ -20,7 +20,7 @@
     internal sealed class ExposurePlan
     {
         public int Id { get; set; }
-        public string profileId { get; set; }
+        public string profileId { get; set; } = string.Empty;
         public double exposure { get; set; }
         public int desired { get; set; }
         public int acquired { get; set; }

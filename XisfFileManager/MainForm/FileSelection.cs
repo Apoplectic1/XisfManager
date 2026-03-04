@@ -227,7 +227,7 @@ namespace XisfFileManager
 
             // Repopulate the list of any present weight keywords (not values). Find unique Keywords, sort and populate Weight combobox
             WeightKeywords = mFileList
-                .Select(xFile => xFile.WeightKeyword.ToString())
+                .Select(xFile => xFile.WeightKeyword.ToString() ?? string.Empty)
                 .Distinct()
                 .OrderBy(q => q)
                 .ToList();

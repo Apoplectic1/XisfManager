@@ -217,7 +217,7 @@ namespace XisfFileManager.Files.XML
             var imagesToRemove = doc
                 .Descendants()
                 .Where(e => e.Name.LocalName == "Image"
-                         && imageIds.Contains((string)e.Attribute("id")))
+                         && imageIds.Contains((string?)e.Attribute("id")))
                 .ToList();
 
             // Remove them
@@ -383,7 +383,7 @@ namespace XisfFileManager.Files.XML
                 .Descendants()
                 .FirstOrDefault(e =>
                     e.Name.LocalName == "Image" &&
-                    (string)e.Attribute("id") == imageId
+                    (string?)e.Attribute("id") == imageId
                 )
                 ?? doc
                     .Descendants()
@@ -451,7 +451,7 @@ namespace XisfFileManager.Files.XML
                 .Descendants()
                 .FirstOrDefault(e =>
                     e.Name.LocalName == "Image" &&
-                    (string)e.Attribute("id") == imageId
+                    (string?)e.Attribute("id") == imageId
                 );
 
             // 2) If none, bail out immediately
@@ -459,14 +459,14 @@ namespace XisfFileManager.Files.XML
                 return (-1, "N/A");
 
             int masterFrames = 0;
-            string masterAlgo = null;
+            string? masterAlgo = null;
 
             // 3) Locate the <Property id="PixInsight:ProcessingHistory"> under that <Image>
             var historyProps = img
                 .Elements()
                 .Where(e =>
                     e.Name.LocalName == "Property" &&
-                    (string)e.Attribute("id") == "PixInsight:ProcessingHistory"
+                    (string?)e.Attribute("id") == "PixInsight:ProcessingHistory"
                 );
 
             // 4) For each such Property, parse its inner XML to pull out <parameter> tags
@@ -484,16 +484,16 @@ namespace XisfFileManager.Files.XML
                 foreach (var param in wrapper.Descendants()
                                              .Where(x => x.Name.LocalName == "parameter"))
                 {
-                    var pid = (string)param.Attribute("id");
-                    var pval = (string)param.Attribute("value");
+                    var pid = (string?)param.Attribute("id");
+                    var pval = (string?)param.Attribute("value");
 
                     if (pid == "numberOfImages" &&
                         int.TryParse(pval, out var n))
                     {
                         masterFrames = n;
                     }
-                    
-                    if (pid == "rejection")
+
+                    if (pid == "rejection" && pval != null)
                     {
                         // apply string-based mapping
                         if (pval.Contains("Linear", StringComparison.OrdinalIgnoreCase))

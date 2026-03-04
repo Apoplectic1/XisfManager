@@ -14,7 +14,7 @@
     internal sealed class RuleWeight
     {
         public int Id { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public double weight { get; set; }
         public int projectid { get; set; }
     }

@@ -20,7 +20,7 @@
     internal sealed class Target
     {
         public int Id { get; set; }
-        public string name { get; set; }
+        public string name { get; set; } = string.Empty;
         public int active { get; set; }
         public double ra { get; set; }
         public double dec { get; set; }
@@ -28,6 +28,6 @@
         public double rotation { get; set; }
         public double roi { get; set; }
         public int projectid { get; set; }
-        public string overrideExposureOrder { get; set; }
+        public string overrideExposureOrder { get; set; } = string.Empty;
     }
 }

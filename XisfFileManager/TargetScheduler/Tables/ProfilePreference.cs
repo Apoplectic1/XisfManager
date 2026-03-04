@@ -21,7 +21,7 @@
     public class ProfilePreference
     {
         public int Id { get; set; }
-        public string profileId { get; set; }
+        public string profileId { get; set; } = string.Empty;
         public int enableGradeRMS { get; set; }
         public int enableGradeStars { get; set; }
         public int enableGradeHFR { get; set; }

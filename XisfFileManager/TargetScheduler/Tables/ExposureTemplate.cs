@@ -22,9 +22,9 @@
     internal sealed class ExposureTemplate
     {
         public int Id { get; set; }
-        public string profileId { get; set; }
-        public string name { get; set; }
-        public string filtername { get; set; }
+        public string profileId { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
+        public string filtername { get; set; } = string.Empty;
         public int gain { get; set; }
         public int offset { get; set; }
         public int bin { get; set; }

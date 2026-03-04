@@ -66,9 +66,9 @@ namespace XisfFileManager
         }
 
 
-        private string ProfilePreference(TreeNode projectNode) { return mSchedulerDB.mProfilePreferenceList.Find(profile => profile.profileId.Contains(projectNode.Parent.Text)).profileId; }
+        private string ProfilePreference(TreeNode projectNode) { return mSchedulerDB.mProfilePreferenceList.Find(profile => profile.profileId.Contains(projectNode.Parent?.Text ?? string.Empty))?.profileId ?? string.Empty; }
         private bool ProjectState(TreeNode projectNode, string sProfilePreference) { return mSchedulerDB.mProjectList.Any(project => project.name == projectNode.Text && project.profileId == sProfilePreference); }
-        private int ProjectPriority(TreeNode projectNode, string sProfilePreference) { return mSchedulerDB.mProjectList.Find(project => (project.name == projectNode.Text) && (project.profileId == sProfilePreference)).priority; }
+        private int ProjectPriority(TreeNode projectNode, string sProfilePreference) { return mSchedulerDB.mProjectList.Find(project => (project.name == projectNode.Text) && (project.profileId == sProfilePreference))?.priority ?? 0; }
 
 
         /// <summary>
@@ -166,14 +166,14 @@ namespace XisfFileManager
         /// <param name="clickedNode">The node that was clicked.</param>
         private void RefineSelectedTargetTreeView(TreeNode clickedNode)
         {
-            TreeNode profileNode = clickedNode.Parent;
+            TreeNode? profileNode = clickedNode.Parent;
 
             // Clear existing nodes
             TreeView_SchedulerTab_TargetTree.Nodes.Clear();
 
             // Retrieve the profile ID based on the profile node text
-            string projectProfileId = mSchedulerDB.mProjectList
-                .FirstOrDefault(project => project.profileId.Contains(profileNode.Text))?.profileId;
+            string? projectProfileId = mSchedulerDB.mProjectList
+                .FirstOrDefault(project => project.profileId.Contains(profileNode?.Text ?? string.Empty))?.profileId;
 
             // Retrieve the project ID based on the clicked node text and profile ID
             int projectId = mSchedulerDB.mProjectList
@@ -248,9 +248,10 @@ namespace XisfFileManager
         /// Handles the NodeMouseClick event for the ProfileTree in the Scheduler tab.
         /// Displays a message box with the text of the clicked node.
         /// </summary>
-        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeNode clickedNode = e.Node;
+            TreeNode? clickedNode = e.Node;
+            if (clickedNode == null) return;
             string clickedItem = clickedNode.Text;
             MessageBox.Show($"You clicked on: {clickedItem}");
         }
@@ -259,9 +260,10 @@ namespace XisfFileManager
         /// Handles the NodeMouseClick event for the ProjectTree in the Scheduler tab.
         /// Depending on the node clicked (Profile or Project), it refines the project tree, sets project active status, priority, and refines the target tree and exposure plans.
         /// </summary>
-        private void TreeView_SchedulerTab_ProjectTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void TreeView_SchedulerTab_ProjectTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeNode clickedNode = e.Node;
+            TreeNode? clickedNode = e.Node;
+            if (clickedNode == null) return;
 
             if (clickedNode.Parent == null)
             {
@@ -283,9 +285,9 @@ namespace XisfFileManager
         /// Handles the NodeMouseClick event for the PlanTree in the Scheduler tab.
         /// Displays a message box with the text of the clicked node.
         /// </summary>
-        private void TreeView_SchedulerTab_PlanTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void TreeView_SchedulerTab_PlanTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeNode clickedNode = e.Node;
+            TreeNode? clickedNode = e.Node;
             if (clickedNode == null)
                 return;
 
@@ -297,9 +299,9 @@ namespace XisfFileManager
         /// Handles the NodeMouseClick event for the TargetTree in the Scheduler tab.
         /// Refines the exposure plans based on the clicked node.
         /// </summary>
-        private void TreeView_SchedulerTab_TargetTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void TreeView_SchedulerTab_TargetTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
         {
-            TreeNode clickedNode = e.Node;
+            TreeNode? clickedNode = e.Node;
             if (clickedNode == null)
                 return;
 
@@ -319,12 +321,12 @@ namespace XisfFileManager
         /// Custom draw logic for nodes in the ProjectTree in the Scheduler tab.
         /// Draws nodes with different colors based on project priority (LOW, NORMAL, HIGH).
         /// </summary>
-        private void TreeView_SchedulerTab_ProjectTree_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        private void TreeView_SchedulerTab_ProjectTree_DrawNode(object? sender, DrawTreeNodeEventArgs e)
         {
             if (e == null)
                 return;
 
-            if (e.Node.Parent == null)
+            if (e.Node?.Parent == null)
             {
                 e.DrawDefault = true;
                 return;
@@ -336,13 +338,13 @@ namespace XisfFileManager
             switch (priority)
             {
                 case (int)eProjectPriority.LOW:
-                    e.Graphics.DrawString(e.Node.Text, DefaultFont, new SolidBrush(Color.SandyBrown), new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
+                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, new SolidBrush(Color.SandyBrown), new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
                     break;
                 case (int)eProjectPriority.NORMAL:
-                    e.Graphics.DrawString(e.Node.Text, DefaultFont, Brushes.Black, e.Bounds);
+                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, Brushes.Black, e.Bounds);
                     break;
                 case (int)eProjectPriority.HIGH:
-                    e.Graphics.DrawString(e.Node.Text, DefaultFont, Brushes.DarkMagenta, e.Bounds);
+                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, Brushes.DarkMagenta, e.Bounds);
                     break;
             }
         }
@@ -363,17 +365,17 @@ namespace XisfFileManager
             /// Custom draw logic for nodes in the TreeView.
             /// Draws node text and numeric up/down representations.
             /// </summary>
-            private void CustomTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
+            private void CustomTreeView_DrawNode(object? sender, DrawTreeNodeEventArgs e)
             {
                 // Prevent default drawing
                 e.DrawDefault = false;
 
                 // Draw the node text
-                e.Graphics.DrawString(e.Node.Text, this.Font, Brushes.Black, e.Bounds.Left, e.Bounds.Top);
+                e.Graphics?.DrawString(e.Node?.Text, this.Font, Brushes.Black, e.Bounds.Left, e.Bounds.Top);
 
                 // Calculate positions for numeric up/down representations
                 int spacing = 5; // Spacing between text and numeric controls
-                Size textSize = TextRenderer.MeasureText(e.Node.Text, this.Font);
+                Size textSize = TextRenderer.MeasureText(e.Node?.Text, this.Font);
                 Point numericControlStartPoint = new Point(e.Bounds.Left + textSize.Width + spacing, e.Bounds.Top);
                 Size numericControlSize = new Size(20, e.Bounds.Height);
 
@@ -385,12 +387,12 @@ namespace XisfFileManager
                 using (Brush controlBrush = new SolidBrush(Color.Black))
                 {
                     // Numeric Up Control
-                    e.Graphics.DrawRectangle(controlPen, numericUpRect);
-                    e.Graphics.DrawString("+", this.Font, controlBrush, numericUpRect.X + 5, numericUpRect.Y + 2);
+                    e.Graphics?.DrawRectangle(controlPen, numericUpRect);
+                    e.Graphics?.DrawString("+", this.Font, controlBrush, numericUpRect.X + 5, numericUpRect.Y + 2);
 
                     // Numeric Down Control
-                    e.Graphics.DrawRectangle(controlPen, numericDownRect);
-                    e.Graphics.DrawString("-", this.Font, controlBrush, numericDownRect.X + 5, numericDownRect.Y + 2);
+                    e.Graphics?.DrawRectangle(controlPen, numericDownRect);
+                    e.Graphics?.DrawString("-", this.Font, controlBrush, numericDownRect.X + 5, numericDownRect.Y + 2);
                 }
             }
 
@@ -404,7 +406,7 @@ namespace XisfFileManager
                 base.OnMouseDown(e);
 
                 // Get the node at the mouse click location
-                TreeNode nodeAtClick = this.GetNodeAt(e.X, e.Y);
+                TreeNode? nodeAtClick = this.GetNodeAt(e.X, e.Y);
                 if (nodeAtClick != null)
                 {
                     // Calculate the text size and bounds for the numeric up/down controls

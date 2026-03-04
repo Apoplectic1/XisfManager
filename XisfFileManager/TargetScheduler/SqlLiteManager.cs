@@ -128,24 +128,6 @@ namespace XisfFileManager.TargetScheduler
 
             var name = xFileList.Where(obj => obj.FilePath.Contains(mTargetList[1].name)).ToList();
             */
-            static double ConvertHoursMinutesSecondsToDegrees(string input)
-            {
-                string[] parts = input.Split(' ');
-                if (parts.Length != 3)
-                    return -360.0;
-
-                double hours = double.Parse(parts[0]);
-                double minutes = double.Parse(parts[1]);
-                double seconds = double.Parse(parts[2]);
-
-                double degrees = (((hours + minutes) / 60.0) + (seconds / 3600.0)) * 15.0;
-
-                if (hours < 0)
-                    degrees = -degrees;
-
-                return degrees;
-            }
-
             static double ConvertHoursMinutesSecondsToDecimal(string input)
             {
                 string[] parts = input.Split(' ');

@@ -26,12 +26,12 @@ namespace XisfFileManager
     public partial class MainForm : Form
     {
         private readonly List<XisfFile> mFileList;
-        private XisfFile mFile;
+        private XisfFile mFile = null!;
         private readonly Calibration mCalibration;
         private readonly ImageCalculations ImageParameterLists;
         private readonly XisfXmlReader mXmlReader;
         private readonly XisfFileRename mRenameFile;
-        private string mFolderBrowseState;
+        private string mFolderBrowseState = string.Empty;
         private readonly XisfFileManager.TargetScheduler.SqlLiteManager mSchedulerDB;
         private bool mBCancel;
         private readonly XisfFileUpdate mXisfFileUpdate;
@@ -52,12 +52,15 @@ namespace XisfFileManager
             //TreeView_SchedulerTab_PlansTree.NodeMouseClick += TreeView_SchedulerTab_PlanTree_NodeMouseClick_NodeMouseClick;
 
 
-            Panel existing = TabPage_TargetScheduler.Controls.OfType<Panel>().FirstOrDefault();
+            Panel? existing = TabPage_TargetScheduler.Controls.OfType<Panel>().FirstOrDefault();
 
             mExposureTreeView.Dock = DockStyle.Fill; // TreeView fills the panel
 
-            existing.Controls.Add(mExposureTreeView); // Add the TreeView to the panel
-            TabPage_TargetScheduler.Controls.Add(existing); // Add the panel to the tab page
+            if (existing != null)
+            {
+                existing.Controls.Add(mExposureTreeView); // Add the TreeView to the panel
+                TabPage_TargetScheduler.Controls.Add(existing); // Add the panel to the tab page
+            }
 
 
 
@@ -80,7 +83,7 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_OperationStatus.Text = "No Images Selected";
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
 
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            Version? version = Assembly.GetExecutingAssembly().GetName().Version;
             string buildDate = System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy.MM.dd - h:mm tt");
             string buildConfig;
 #if DEBUG
@@ -176,6 +179,7 @@ namespace XisfFileManager
             }
         }
 
+        [Obsolete("Overrides Form.OnClosing which is obsolete. Use OnFormClosing instead.")]
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
@@ -684,7 +688,7 @@ namespace XisfFileManager
             try
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string dir = baseDir;
+                string? dir = baseDir;
 
                 // Walk up to find the .git directory
                 while (dir != null)
@@ -702,7 +706,7 @@ namespace XisfFileManager
                         }
                         break;
                     }
-                    dir = Directory.GetParent(dir)?.FullName;
+                    dir = Directory.GetParent(dir!)?.FullName;
                 }
             }
             catch

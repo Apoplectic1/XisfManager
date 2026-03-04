@@ -11,7 +11,7 @@ namespace XisfFileManager.Files
 
         public XDocument mXDoc { get; set; }
         public KeywordList KeywordList { get; set; }
-        public string XmlString { get; set; }
+        public string XmlString { get; set; } = string.Empty;
         public bool bModified { get; set; }
 
         // ************************************************************************************************
@@ -63,7 +63,7 @@ namespace XisfFileManager.Files
         {
             string value = string.Empty;
 
-            Keyword swcreate = GetKeyword("SWCREATE");
+            Keyword? swcreate = GetKeyword("SWCREATE");
             if (swcreate != null)
             {
                 value = swcreate.Value;
@@ -72,7 +72,7 @@ namespace XisfFileManager.Files
                     return; // Already normalized
             }
 
-            Keyword creator = GetKeyword("CREATOR");
+            Keyword? creator = GetKeyword("CREATOR");
             if (creator != null)
             {
                 value = creator.Value;
@@ -126,7 +126,7 @@ namespace XisfFileManager.Files
         {
             KeywordList.RemoveKeyword(keyword, oValue);
         }
-        public Keyword GetKeyword(string keyword)
+        public Keyword? GetKeyword(string keyword)
         {
             return KeywordList.GetKeyword(keyword);
         }
@@ -159,7 +159,7 @@ namespace XisfFileManager.Files
             get
             {
                 // Check for already-normalized SWCREATE first
-                Keyword swcreate = GetKeyword("SWCREATE");
+                Keyword? swcreate = GetKeyword("SWCREATE");
                 if (swcreate != null)
                 {
                     string swValue = swcreate.Value;
@@ -168,7 +168,7 @@ namespace XisfFileManager.Files
                 }
 
                 // Check CREATOR keyword for raw software name
-                Keyword creator = GetKeyword("CREATOR");
+                Keyword? creator = GetKeyword("CREATOR");
                 string value = creator?.Value ?? swcreate?.Value ?? string.Empty;
 
                 // Return standardized name based on value (read-only, no keyword modification)
@@ -353,7 +353,7 @@ namespace XisfFileManager.Files
                 targetName = Regex.Replace(targetName, @"\s+", " "); // Replace multiple spaces with a single space
 
                 // First match Stars
-                if (Path.GetDirectoryName(FilePath).Contains("Stars "))
+                if ((Path.GetDirectoryName(FilePath) ?? string.Empty).Contains("Stars "))
                 {
                     KeywordList.CSTARS = "Stars " + KeywordList.FilterName;
                     // Make sure files in "Stars" directories are properly named: "Target Stars"
@@ -400,7 +400,7 @@ namespace XisfFileManager.Files
 
         public void IccAttachment(XElement element)
         {
-            XAttribute attribute = element.Attribute("location");
+            XAttribute? attribute = element.Attribute("location");
 
             if (attribute != null)
             {
@@ -422,7 +422,7 @@ namespace XisfFileManager.Files
 
         public void ThumbnailAttachment(XElement element)
         {
-            XAttribute attribute = element.Attribute("location");
+            XAttribute? attribute = element.Attribute("location");
 
             if (attribute != null)
             {
@@ -482,9 +482,9 @@ namespace XisfFileManager.Files
             try
             {
                 // Split the XML Keyword triple into elementName, elementValue, elementComment
-                elementName = element.Attribute("name").Value.Trim();
-                elementValue = element.Attribute("value").Value.Trim();
-                elementComment = element.Attribute("comment").Value.Trim();
+                elementName = element.Attribute("name")?.Value.Trim() ?? string.Empty;
+                elementValue = element.Attribute("value")?.Value.Trim() ?? string.Empty;
+                elementComment = element.Attribute("comment")?.Value.Trim() ?? string.Empty;
 
                 // Get rid of an extra decimal point at the end of what should be integers
                 elementValue = elementValue.TrimEnd('.');
@@ -503,9 +503,9 @@ namespace XisfFileManager.Files
 
         public void ParseSpecificProperties(XElement property)
         {
-            string propertyId = property.Attribute("id")?.Value;
-            string propertyType = property.Attribute("type")?.Value;
-            string propertyValue = property.Attribute("value")?.Value;
+            string? propertyId = property.Attribute("id")?.Value;
+            string? propertyType = property.Attribute("type")?.Value;
+            string? propertyValue = property.Attribute("value")?.Value;
             string value = property.Value; // specified as a string
 
             // Handle the property based on its ID
