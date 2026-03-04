@@ -19,6 +19,7 @@ See **`REFACTORING_PLAN.md`** for the comprehensive modernization plan.
 - **Phase 6:** Configuration & constants extraction (3 new files in Configuration/)
 - **Phase 8:** FluxDensity duplicate code consolidation (reduced from 310 to 161 lines)
 - **Phase 7:** Nullable reference type annotations (resolved all 107 CS8xxx warnings across 22 files)
+- **CA Cleanup:** Fixed all 8 CA code analysis warnings (CA2263, CA1860, CA1875, CA1835, CA1051, CA1822)
 
 ### Remaining
 - All planned refactoring phases complete
@@ -44,7 +45,7 @@ dotnet run --project XisfFileManager/XisfFileManager.csproj
 
 ### Technology Stack
 - **.NET 9.0** Windows Forms application (Windows 10 SDK 22621)
-- **Nullable reference types** enabled (some warnings remain)
+- **Nullable reference types** enabled (0 warnings)
 - **SQLite** via Microsoft.Data.Sqlite for Target Scheduler database
 - **MathNet.Numerics** for scientific calculations
 - **GeoTimeZone/TimeZoneConverter** for timezone handling
