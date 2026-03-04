@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Velopack;
 using Velopack.Sources;
 using XisfFileManager.Calculations;
+using XisfFileManager.Configuration;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
 
@@ -218,13 +219,7 @@ namespace XisfFileManager
             // Exclude List
             // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
             // that contains the string below the selected folder.
-            List<string> mExcludeList = new List<string>()
-            {
-                    "Calibration",
-                    "Duplicates",
-                    "Master",
-                    "Project"
-            };
+            List<string> mExcludeList = DirectoryFilters.BrowseExcludes;
 
             // remove "Master" from the exclude list if the Masters checkbox is checkedc because we are processing masters
             if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)

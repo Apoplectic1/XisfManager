@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using XisfFileManager.Configuration;
 using XisfFileManager.Files.XML;
 using XisfFileManager.Globals;
 using XisfFileManager.Helpers;
@@ -107,7 +108,7 @@ namespace XisfFileManager.Files
             int xisfStart;
             int xisfEnd;
 
-            byte[] binaryFileData = new byte[(int)1e9];
+            byte[] binaryFileData = new byte[XisfConstants.MaxFileReadBytes];
             mBufferList = new List<Buffer>();
 
             try
@@ -122,7 +123,7 @@ namespace XisfFileManager.Files
 
                     // Read entire XISF file (up to 1 GB) into rawFileData and create an xml document
                     BinaryReader br = new BinaryReader(stream);
-                    binaryFileData = br.ReadBytes((int)1e9);
+                    binaryFileData = br.ReadBytes(XisfConstants.MaxFileReadBytes);
                     br.Close();
 
                     // *******************************************************************************************************************************
@@ -206,8 +207,8 @@ namespace XisfFileManager.Files
 
                     // "XISF0100" is the XISF Signature. The length of the xml section is stored in the 8th and 9th bytes of the signature
                     // Assumes that xmlLength is less than 65536 bytes
-                    //                                    X     I     S     F     0     1     0     0     0     0     0     0     0     0     0     0
-                    byte[] xisfSignature = new byte[16] { 0x58, 0x49, 0x53, 0x46, 0x30, 0x31, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                    //                                                                X     I     S     F     0     1     0     0     0     0     0     0     0     0     0     0
+                    byte[] xisfSignature = new byte[XisfConstants.SignatureSize] { 0x58, 0x49, 0x53, 0x46, 0x30, 0x31, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
                     // Set the new length of the new <xisf to /xisf> section
                     int xmlLength = xmlDoc.OuterXml.Length;
@@ -230,7 +231,7 @@ namespace XisfFileManager.Files
                     {
                         Type = eBufferData.BINARY,
                         BinaryDataStart = 0,
-                        BinaryByteLength = 16,
+                        BinaryByteLength = XisfConstants.SignatureSize,
                         BinaryData = xisfSignature
                     };
                     mBufferList.Add(mBuffer);
@@ -417,11 +418,11 @@ namespace XisfFileManager.Files
             {
                 documentLengthBeforeNewStartingAddress = document.OuterXml.Length;
 
-                // Include the 16 byte XISF Signature. No comment section in the padding calculation
-                newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + 16, xFile.BlockAlignmentSize);
+                // Include the XISF Signature. No comment section in the padding calculation
+                newPadding = GetNewPadding(documentLengthBeforeNewStartingAddress + XisfConstants.SignatureSize, xFile.BlockAlignmentSize);
 
                 // The starting address is the address in the new file (including XISF Signature); (not just in the XML document section)
-                newStartingAddress = documentLengthBeforeNewStartingAddress + 16 + newPadding;
+                newStartingAddress = documentLengthBeforeNewStartingAddress + XisfConstants.SignatureSize + newPadding;
 
                 // Update imageNode with the new starting address and can change the size of the XML document
                 // 1. This can push the image data to a new location - new start address

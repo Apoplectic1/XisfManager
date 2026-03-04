@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using XisfFileManager.Configuration;
 using XisfFileManager.Files.XML;
 
 namespace XisfFileManager.Files
@@ -36,12 +37,12 @@ namespace XisfFileManager.Files
                     mXmlXisfBlockMatch = Match.Empty;
 
                     mBytesRead = 0;
-                    int nXisfSignatureBlockSize = 16;
+                    int nXisfSignatureBlockSize = XisfConstants.SignatureSize;
                     string xmlString;
 
                     // Read the first 16 bytes of the file - XISF Signature
                     mBytesRead = xFileStream.Read(mBuffer, 0, nXisfSignatureBlockSize);
-                    if (mBytesRead != 16)
+                    if (mBytesRead != XisfConstants.SignatureSize)
                         return;
 
                     // Find the size of the <xisf>...</xisf> section

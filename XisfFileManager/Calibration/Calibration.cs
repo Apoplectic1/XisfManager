@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using XisfFileManager.Configuration;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
 using static System.Net.WebRequestMethods;
@@ -115,14 +116,7 @@ namespace XisfFileManager
 
             DirectoryInfo diDirectoryTree = new DirectoryInfo(sCalibrationFrameDirectory);
 
-            List<string> mXisfExclude = new List<string>()
-                {
-                    "PreProcessing",
-                    "Duplicates",
-                    "Registered",
-                    "Calibrated",
-                    "Project"
-                };
+            List<string> mXisfExclude = DirectoryFilters.CalibrationExcludes;
 
             bool bStatus = Files.DirectoryOperations.FindCalibrationFiles(sCalibrationFrameDirectory, mXisfExclude, true);
 

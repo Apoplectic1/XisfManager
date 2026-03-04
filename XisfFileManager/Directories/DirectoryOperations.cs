@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using XisfFileManager.Configuration;
 
 namespace XisfFileManager.Files
 {
@@ -41,7 +42,7 @@ namespace XisfFileManager.Files
                 IsFolderPicker = true,
                 InitialDirectory = Directory.Exists(defaultFolder)
                                    ? defaultFolder
-                                   : @"E:\Photography\Astro Photography\Processing\"
+                                   : AppPaths.DefaultProcessingFolder
             };
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)

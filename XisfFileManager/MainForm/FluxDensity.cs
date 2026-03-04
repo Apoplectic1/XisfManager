@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Shapes;
+using XisfFileManager.Configuration;
 using XisfFileManager.Files;
 
 namespace XisfFileManager
@@ -16,7 +17,7 @@ namespace XisfFileManager
             string debayerDir;
             string targetDir;
 
-            fluxDir = @"F:\PreProcessing\FluxDensity";
+            fluxDir = AppPaths.FluxDensityDir;
             if (Directory.Exists(fluxDir))
             {
                 Directory.Delete(fluxDir, true);
@@ -60,7 +61,7 @@ namespace XisfFileManager
             Files.DirectoryOperations.Recurse = CheckBox_FileSelection_DirectorySelection_Recurse.Checked;
 
             // Find xisf files from the F:\PreProcessing\debayered folder
-            DialogResult result = Files.DirectoryOperations.FindTargetFilesString(@"F:\PreProcessing\debayered", mExcludeList, ExcludeType.None);
+            DialogResult result = Files.DirectoryOperations.FindTargetFilesString(AppPaths.DebayeredDir, mExcludeList, ExcludeType.None);
 
             if ((result != DialogResult.OK) || (Files.DirectoryOperations.FileInfoList.Count == 0))
             {
@@ -125,7 +126,7 @@ namespace XisfFileManager
                     Keyword stars = xFile.GetKeyword("CSTARS");
                     Keyword filter = xFile.GetKeyword("FILTER");
 
-                    debayerDir = @"F:\PreProcessing\FluxDensity\";
+                    debayerDir = AppPaths.FluxDensityDir + @"\";
 
                     if (panel != null)
                         debayerDir += panel.Value + @"\";
@@ -187,15 +188,12 @@ namespace XisfFileManager
             ClearFilterFrameTypeGroup();
             await Task.Yield();
 
-            if (Directory.Exists(@"F:\PreProcessing\cosmetized"))
-                targetDir = @"F:\PreProcessing\cosmetized";
+            if (Directory.Exists(AppPaths.CosmetizedDir))
+                targetDir = AppPaths.CosmetizedDir;
             else
-                targetDir = @"F:\PreProcessing\calibrated";
+                targetDir = AppPaths.CalibratedDir;
 
-            mExcludeList = new List<string>()
-            {
-                "CFA"
-            };
+            mExcludeList = DirectoryFilters.FluxDensityCfaExcludes;
 
             // Find xisf files from the selected folder
             result = Files.DirectoryOperations.FindTargetFilesString(targetDir, mExcludeList, ExcludeType.Contains);
@@ -265,7 +263,7 @@ namespace XisfFileManager
                     Keyword stars = targetFile.GetKeyword("CSTARS");
                     Keyword filter = targetFile.GetKeyword("FILTER");
 
-                    targetDir = @"F:\PreProcessing\FluxDensity\";
+                    targetDir = AppPaths.FluxDensityDir + @"\";
 
                     if (panel != null)
                     {

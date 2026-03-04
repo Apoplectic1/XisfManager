@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using XisfFileManager.Configuration;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager
@@ -14,7 +15,7 @@ namespace XisfFileManager
             TextBox_CalibrationTab_Messgaes.Clear();
             mCalibration.Frame = eFrame.ALL;
 
-            calibrationFileMasterLibraryLocation = @"E:\Photography\Astro Photography\Calibration";
+            calibrationFileMasterLibraryLocation = AppPaths.CalibrationLibrary;
 
             if (!bMatchedAllFiles)
                 await mCalibration.ReadCalibrationFramesAsync(calibrationFileMasterLibraryLocation);
