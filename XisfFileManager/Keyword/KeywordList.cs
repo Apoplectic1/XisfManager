@@ -61,25 +61,28 @@ namespace XisfFileManager
         // ----------------------------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Normalizes exposure keyword by converting EXPTIME to EXPOSURE.
+        /// Normalizes exposure keyword by converting the legacy EXPOSURE to standard EXPTIME.
         /// Called during file update, not during property read.
         /// </summary>
         public void NormalizeExposure()
         {
-            // If EXPOSURE already exists, just remove EXPTIME if present
-            string exposureValue = GetKeywordValue("EXPOSURE");
-            if (exposureValue != string.Empty)
+            // If the standard EXPTIME already exists, just clean up the legacy EXPOSURE if present
+            string exptimeValue = GetKeywordValue("EXPTIME");
+            if (exptimeValue != string.Empty)
             {
-                RemoveKeyword("EXPTIME");
+                RemoveKeyword("EXPOSURE");
                 return;
             }
 
-            // Convert EXPTIME to EXPOSURE
-            string exptimeValue = GetKeywordValue("EXPTIME");
-            if (exptimeValue != string.Empty && double.TryParse(exptimeValue, out double exposure))
+            // Convert legacy EXPOSURE to standard EXPTIME
+            string exposureValue = GetKeywordValue("EXPOSURE");
+            if (exposureValue != string.Empty && double.TryParse(exposureValue, out double exposure))
             {
-                AddKeyword("EXPOSURE", exposure.ToString(), "[seconds] Imaging Camera Exposure Time");
-                RemoveKeyword("EXPTIME");
+                // Add the standard EXPTIME keyword
+                AddKeyword("EXPTIME", exposure.ToString(), "[s] Imaging Camera Exposure Time");
+
+                // Purge the non-standard keyword
+                RemoveKeyword("EXPOSURE");
             }
         }
 
