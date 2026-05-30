@@ -274,8 +274,8 @@ public partial class MainForm
             file.Binning = binning;
             // Update pixel size based on new binning
             var pixelSize = camera.GetPixelSizeForBinning(binning).ToString("F2");
-            file.AddKeyword("XPIXSZ", pixelSize, "Horizontal Pixel Size in Microns");
-            file.AddKeyword("YPIXSZ", pixelSize, "Vertical Pixel Size in Microns");
+            file.AddKeyword("XPIXSZ", pixelSize, "Sensor Horizontal Pixel Size in Microns");
+            file.AddKeyword("YPIXSZ", pixelSize, "Sensor Vertical Pixel Size in Microns");
         }
 
         // Temperature

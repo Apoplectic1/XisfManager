@@ -83,8 +83,8 @@ public abstract class CameraConfiguration
     public virtual void ApplyKeywords(XisfFile file)
     {
         file.AddKeyword("INSTRUME", Name, Description);
-        file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Horizontal Pixel Width");
-        file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Vertical Pixel Height");
+        file.AddKeyword("NAXIS1", file.TargetAttachmentWidth.ToString(), "Sensor Horizontal Pixel Width");
+        file.AddKeyword("NAXIS2", file.TargetAttachmentHeight.ToString(), "Sensor Vertical Pixel Height");
 
         if (IsColor)
         {
@@ -97,8 +97,8 @@ public abstract class CameraConfiguration
         }
 
         var pixelSize = GetPixelSizeForBinning(file.Binning).ToString("F2");
-        file.AddKeyword("XPIXSZ", pixelSize, "Horizontal Pixel Size in Microns");
-        file.AddKeyword("YPIXSZ", pixelSize, "Vertical Pixel Size in Microns");
+        file.AddKeyword("XPIXSZ", pixelSize, "Sensor Horizontal Pixel Size in Microns");
+        file.AddKeyword("YPIXSZ", pixelSize, "Sensor Vertical Pixel Size in Microns");
     }
 }
 
