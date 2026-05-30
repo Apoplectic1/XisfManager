@@ -23,6 +23,12 @@ dotnet build XisfFileManager.sln -c Release -r win-x64
 dotnet run --project XisfFileManager/XisfFileManager.csproj
 ```
 
+## Branches & Releases
+
+- **`dev`** — active development branch (default; new work lands here).
+- **`main`** — stable/release branch; merge `dev` into `main` when cutting a release.
+- Releases are tag-triggered: pushing an annotated `vX.Y.Z` tag runs `.github/workflows/release.yml`, which injects the tag into `AssemblyInformationalVersion` (shown in the window title). Latest released tag: `v1.3.1`.
+
 ## Project Architecture
 
 ### Technology Stack
