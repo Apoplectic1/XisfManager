@@ -57,6 +57,18 @@ public abstract class TelescopeConfiguration
         string reducerText = withReducer ? " with Riccardi 0.75 Reducer" : " without Reducer";
         file.AddKeyword("TELESCOP", GetTelescopeName(withReducer), $"{Description}{reducerText}");
         file.AddKeyword("FOCALLEN", GetFocalLength(withReducer).ToString(), $"{Description}{reducerText}");
+
+        if (ApertureDiameter is double diameter)
+        {
+            file.AddKeyword("APTDIA", diameter.ToString("F1"), "Aperture Diameter in mm");
+
+            if (ApertureArea is double area)
+                file.AddKeyword("APTAREA", area.ToString("F2"), "Aperture area in square mm (obstructions ignored)");
+
+            // FOCRATIO is derived inside the FocalRatio setter from the FOCALLEN and APTDIA
+            // keywords written above; the value assigned here is recomputed there.
+            file.FocalRatio = GetFocalLength(withReducer) / diameter;
+        }
     }
 }
 

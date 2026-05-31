@@ -143,6 +143,13 @@ namespace XisfFileManager.Files
             get => KeywordList.AmbientTemperature;
             set => KeywordList.AmbientTemperature = value;
         }
+
+        public double ApertureDiameter
+        {
+            get => KeywordList.ApertureDiameter;
+            set => KeywordList.ApertureDiameter = value;
+        }
+
         public int Binning
         {
             get => KeywordList.Binning;
@@ -241,6 +248,13 @@ namespace XisfFileManager.Files
             get => KeywordList.FocalLength;
             set => KeywordList.FocalLength = value;
         }
+
+        public double FocalRatio
+        {
+            get => KeywordList.FocalRatio;
+            set => KeywordList.FocalRatio = FocalLength / ApertureDiameter;
+        }
+
         public int FocuserPosition
         {
             get => KeywordList.FocuserPosition;

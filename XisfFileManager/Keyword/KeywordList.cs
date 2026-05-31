@@ -210,6 +210,22 @@ namespace XisfFileManager
 
         // *********************************************************************************************************
 
+        public double ApertureDiameter
+        {
+            get
+            {
+                string value = GetKeywordValue("APTDIA");
+                if (value == string.Empty)
+                    return -1.0;
+
+                double diameter = Convert.ToDouble(value);
+                return diameter;
+            }
+            set { AddKeyword("APTDIA", value.ToString("F1"), "[mm] OTA Aperture Diameter"); }
+        }
+        
+        // *********************************************************************************************************
+
         public int Binning
         {
             get
@@ -393,6 +409,21 @@ namespace XisfFileManager
                 return length;
             }
             set { AddKeyword("FOCALLEN", value.ToString("F1"), "[mm] OTA Focal length"); }
+        }
+
+        public double FocalRatio        
+        {
+            get
+            {
+                string value = GetKeywordValue("FOCRATIO");
+                if (value == string.Empty) 
+                    return -1.0;
+
+                double focalratio = Convert.ToDouble(value);
+                return focalratio;
+            }
+
+            set { AddKeyword("FOCRATIO", value.ToString("F3"), "[ratio] FocalRatio = FocalLength / ApertureDiameter"); }
         }
 
         // *********************************************************************************************************

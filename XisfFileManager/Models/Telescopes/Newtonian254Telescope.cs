@@ -12,6 +12,6 @@ public sealed class Newtonian254Telescope : TelescopeConfiguration
     public override string Description => "10 Inch Newtonian";
     public override int FocalLength => 1100;
     public override int ReducedFocalLength => 825;
-    public override double? ApertureDiameter => null;
-    public override double? ApertureArea => null;
+    public override double? ApertureDiameter => 254.0;
+    public override double? ApertureArea => 50670.75;
 }

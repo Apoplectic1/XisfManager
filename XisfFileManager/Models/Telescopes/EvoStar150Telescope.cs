@@ -12,6 +12,6 @@ public sealed class EvoStar150Telescope : TelescopeConfiguration
     public override string Description => "EvoStar 150";
     public override int FocalLength => 1000;
     public override int ReducedFocalLength => 750;
-    public override double? ApertureDiameter => null;
-    public override double? ApertureArea => null;
+    public override double? ApertureDiameter => 150.0;
+    public override double? ApertureArea => 17671.46;
 }

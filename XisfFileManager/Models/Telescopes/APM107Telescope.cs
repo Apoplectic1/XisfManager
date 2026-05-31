@@ -1,5 +1,3 @@
-using XisfFileManager.Files;
-
 namespace XisfFileManager.Models.Telescopes;
 
 /// <summary>
@@ -16,14 +14,4 @@ public sealed class APM107Telescope : TelescopeConfiguration
     public override int ReducedFocalLength => 531;
     public override double? ApertureDiameter => 107.0;
     public override double? ApertureArea => 8992.02;
-
-    /// <summary>
-    /// APM107 adds aperture diameter and area keywords
-    /// </summary>
-    public override void ApplyKeywords(XisfFile file, bool withReducer)
-    {
-        base.ApplyKeywords(file, withReducer);
-        file.AddKeyword("APTDIA", ApertureDiameter!.Value.ToString("F1"), "Aperture Diameter in mm");
-        file.AddKeyword("APTAREA", ApertureArea!.Value.ToString("F2"), "Aperture area in square mm minus obstructions");
-    }
 }
