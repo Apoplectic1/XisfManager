@@ -2,6 +2,8 @@
 
 A Windows Forms desktop application for managing XISF (Extensible Image Serialization Format) files used in astrophotography.
 
+Active priorities and recently-shipped work: see `ROADMAP.md`.
+
 ## Refactoring Status
 
 All planned refactoring phases complete (.NET 10 upgrade, camera/telescope/capture-software abstractions, async/await, nullable annotations, CA cleanup). Details preserved in git history.
@@ -110,7 +112,7 @@ XISF (Extensible Image Serialization Format) is an astronomy image format from P
 Keywords follow FITS conventions with Name/Value/Comment triplets:
 - `IMAGETYP`: Frame type (Light, Dark, Flat, Bias)
 - `FILTER`: Filter name (L, R, G, B, Ha, OIII, SII)
-- `EXPOSURE`: Exposure time in seconds
+- `EXPTIME`: Exposure time in seconds (standard; legacy `EXPOSURE` is normalized to this and purged)
 - `CCD-TEMP`: Sensor temperature
 - `OBJECT`: Target name
 - `SWCREATE`: Capture software (NINA, TSX, SGP, VOY, SCP)
