@@ -114,6 +114,16 @@ Keywords follow FITS conventions with Name/Value/Comment triplets:
 - `CCD-TEMP`: Sensor temperature
 - `OBJECT`: Target name
 - `SWCREATE`: Capture software (NINA, TSX, SGP, VOY, SCP)
+- `FOCALLEN`: Focal length in mm (reducer-aware; from the selected telescope)
+- `FOCRATIO`: Focal ratio, derived as FOCALLEN ÷ APTDIA (reducer-aware)
+- `APTDIA`: Aperture diameter in mm (hardcoded per telescope)
+- `APTAREA`: Aperture area in mm² (full circle π·r²; obstructions ignored — see note below)
+
+Telescope keywords (`TELESCOP`, `FOCALLEN`, `APTDIA`, `APTAREA`, `FOCRATIO`) are all
+written by `TelescopeConfiguration.ApplyKeywords`, invoked from the Telescope tab's
+Set All / Set By File buttons. `APTAREA` uses the full circular aperture area and
+deliberately ignores central/secondary-mirror obstructions, so the Newtonian's value
+is optimistic — revisit before trusting it for light-gathering/SNR math.
 
 ### Enums (Globals/Globals.cs)
 - `eFrame`: LIGHT, DARK, FLAT, BIAS, ALL, EMPTY
@@ -142,10 +152,10 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 
 ### Important Files
 - `XisfFile.cs`: Central model - all keyword access flows through here
-- `KeywordList.cs`: Typed property accessors for common FITS keywords
+- `KeywordList.cs`: Typed property accessors for common FITS keywords. Note: the `FocalRatio` setter self-derives FOCRATIO from the FOCALLEN/APTDIA keywords (ignoring its assigned value), so those must be written first.
 - `CameraConfiguration.cs`: Base class for camera configs with temperature handling
 - `CameraService.cs`: Camera detection, property analysis, and UI color helpers
-- `TelescopeConfiguration.cs`: Base class for telescope configs with reducer support
+- `TelescopeConfiguration.cs`: Base class for telescope configs with reducer support; `ApplyKeywords` emits TELESCOP/FOCALLEN/APTDIA/APTAREA and triggers FOCRATIO for all scopes
 - `TelescopeService.cs`: Telescope detection, analysis, and UI color helpers
 - `CaptureSoftwareConfiguration.cs`: Base class for capture software configs
 - `CaptureSoftwareService.cs`: Software detection and analysis
