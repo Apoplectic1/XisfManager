@@ -9,6 +9,7 @@ this file tracks what's next and what recently shipped. Keep entries short.
 2. **APTAREA obstruction accuracy** — `APTAREA` uses full circular area π·r² and ignores obstructions, so the Newtonian (NWT254) value is optimistic. Subtract the secondary-mirror obstruction before trusting it for light-gathering / SNR / throughput math.
 3. **Tidy redundant `using` directives** in `KeywordList.cs` (`System`, `System.Collections.Generic`, `System.Reflection.Metadata` — flagged CS8019/CS8933 against the project's global usings).
 4. **Focal-ratio consistency coloring** — if a FOCRATIO readout is added to the Telescope groupbox, mirror the focal-length consistency check in `TelescopeService`/`TelescopeAnalysis` (distinct-ratio detection + red/black label color).
+5. **Bump GitHub Actions versions** in `.github/workflows/release.yml` — `actions/checkout@v4` and `actions/setup-dotnet@v4` run on Node 20, which GitHub forces to Node 24 on 2026-06-16 (removed 2026-09-16). Bump to `@v5` to clear the deprecation; optionally pin the runner image now that `windows-latest` redirects to `windows-2025-vs2026`.
 
 ## Recently shipped
 
