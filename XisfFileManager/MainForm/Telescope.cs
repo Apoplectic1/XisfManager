@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using XisfFileManager.Files;
+using XisfFileManager.Helpers;
 using XisfFileManager.Models;
 using XisfFileManager.Models.Telescopes;
 using XisfFileManager.Services;
@@ -28,21 +29,15 @@ public partial class MainForm
             InitializeTelescopeMappings();
 
         // Reset radio buttons
-        foreach (var rb in _telescopeRadioButtons!.Values)
-        {
-            rb.Checked = false;
-            rb.ForeColor = Color.Black;
-        }
+        UIHelpers.ResetRadioButtons(_telescopeRadioButtons!.Values.ToArray());
 
         // Reset checkbox and text
-        CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
-        CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = Color.Black;
+        UIHelpers.ResetCheckBox(CheckBox_KeywordUpdateTab_Telescope_Riccardi);
         TextBox_KeywordUpdateTab_Telescope_FocalLength.Text = string.Empty;
-        Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = Color.Black;
-
-        // Reset buttons
-        Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = Color.Black;
-        Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = Color.Black;
+        UIHelpers.ResetControlColors(
+            Label_KeywordUpdateTab_Telescope_FocalLength,
+            Button_KeywordUpdateTab_Telescope_SetAll,
+            Button_KeywordUpdateTab_Telescope_SetByFile);
     }
 
     private void FindTelescope()
@@ -104,14 +99,13 @@ public partial class MainForm
 
     private void SetTelescopeControlsColor(Color color)
     {
-        foreach (var rb in _telescopeRadioButtons!.Values)
-            rb.ForeColor = color;
-
-        Label_KeywordUpdateTab_Telescope_FocalLength.ForeColor = color;
-        CheckBox_KeywordUpdateTab_Telescope_Riccardi.ForeColor = color;
+        UIHelpers.SetControlColors(color, _telescopeRadioButtons!.Values.ToArray());
+        UIHelpers.SetControlColors(color,
+            Label_KeywordUpdateTab_Telescope_FocalLength,
+            CheckBox_KeywordUpdateTab_Telescope_Riccardi,
+            Button_KeywordUpdateTab_Telescope_SetAll,
+            Button_KeywordUpdateTab_Telescope_SetByFile);
         CheckBox_KeywordUpdateTab_Telescope_Riccardi.Checked = false;
-        Button_KeywordUpdateTab_Telescope_SetAll.ForeColor = color;
-        Button_KeywordUpdateTab_Telescope_SetByFile.ForeColor = color;
     }
 
     private TelescopeConfiguration? GetSelectedTelescope() =>

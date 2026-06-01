@@ -2,6 +2,7 @@
 using System.Drawing;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
+using XisfFileManager.Helpers;
 using System.IO;
 
 namespace XisfFileManager
@@ -10,37 +11,26 @@ namespace XisfFileManager
     {
         public void ClearFilterFrameTypeGroup()
         {
-            RadioButton_KeywordsTab_ImageType_Filter_Luma.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_Red.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_Green.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_Blue.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_Ha.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_O3.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_S2.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Filter_Shutter.ForeColor = Color.Black;
+            UIHelpers.ResetRadioButtons(
+                RadioButton_KeywordsTab_ImageType_Filter_Luma,
+                RadioButton_KeywordsTab_ImageType_Filter_Red,
+                RadioButton_KeywordsTab_ImageType_Filter_Green,
+                RadioButton_KeywordsTab_ImageType_Filter_Blue,
+                RadioButton_KeywordsTab_ImageType_Filter_Ha,
+                RadioButton_KeywordsTab_ImageType_Filter_O3,
+                RadioButton_KeywordsTab_ImageType_Filter_S2,
+                RadioButton_KeywordsTab_ImageType_Filter_Shutter);
 
-            RadioButton_KeywordsTab_ImageType_Filter_Luma.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_Red.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_Green.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_Blue.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_Ha.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_O3.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_S2.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Filter_Shutter.Checked = false;
+            UIHelpers.ResetControlColors(
+                Button_KeywordsTab_ImageType_Frame_SetMaster,
+                Button_KeywordsTab_ImageType_SetAll,
+                Button_KeywordsTab_ImageType_SetByFile);
 
-            Button_KeywordsTab_ImageType_Frame_SetMaster.ForeColor = Color.Black;
-            Button_KeywordsTab_ImageType_SetAll.ForeColor = Color.Black;
-            Button_KeywordsTab_ImageType_SetByFile.ForeColor = Color.Black;
-
-            RadioButton_KeywordsTab_ImageType_Frame_Light.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Frame_Dark.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Frame_Flat.ForeColor = Color.Black;
-            RadioButton_KeywordsTab_ImageType_Frame_Bias.ForeColor = Color.Black;
-
-            RadioButton_KeywordsTab_ImageType_Frame_Light.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Frame_Dark.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Frame_Flat.Checked = false;
-            RadioButton_KeywordsTab_ImageType_Frame_Bias.Checked = false;
+            UIHelpers.ResetRadioButtons(
+                RadioButton_KeywordsTab_ImageType_Frame_Light,
+                RadioButton_KeywordsTab_ImageType_Frame_Dark,
+                RadioButton_KeywordsTab_ImageType_Frame_Flat,
+                RadioButton_KeywordsTab_ImageType_Frame_Bias);
         }
 
         public void FindFilterFrameType()

@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using XisfFileManager.Files;
+using XisfFileManager.Helpers;
 using XisfFileManager.Models;
 using XisfFileManager.Models.Cameras;
 using XisfFileManager.Services;
@@ -66,13 +67,6 @@ public partial class MainForm
         };
     }
 
-    private static void ClearComboBox(ComboBox cb)
-    {
-        cb.DataSource = null;
-        cb.Text = string.Empty;
-        cb.Items.Clear();
-    }
-
     private void ClearCameraGroup()
     {
         // Ensure mappings are initialized
@@ -95,11 +89,11 @@ public partial class MainForm
         }
 
         // Clear all comboboxes
-        foreach (var cb in _cameraSecondsComboBoxes!.Values) ClearComboBox(cb);
-        foreach (var cb in _cameraGainComboBoxes!.Values) ClearComboBox(cb);
-        foreach (var cb in _cameraOffsetComboBoxes!.Values) ClearComboBox(cb);
-        foreach (var cb in _cameraBinningComboBoxes!.Values) ClearComboBox(cb);
-        foreach (var cb in _cameraTempComboBoxes!.Values) ClearComboBox(cb);
+        foreach (var cb in _cameraSecondsComboBoxes!.Values) UIHelpers.ClearComboBox(cb);
+        foreach (var cb in _cameraGainComboBoxes!.Values) UIHelpers.ClearComboBox(cb);
+        foreach (var cb in _cameraOffsetComboBoxes!.Values) UIHelpers.ClearComboBox(cb);
+        foreach (var cb in _cameraBinningComboBoxes!.Values) UIHelpers.ClearComboBox(cb);
+        foreach (var cb in _cameraTempComboBoxes!.Values) UIHelpers.ClearComboBox(cb);
 
         Button_KeywordUpdateTab_Camera_SetAll.ForeColor = Color.Black;
         Button_KeywordUpdateTab_Camera_SetByFile.ForeColor = Color.Black;
