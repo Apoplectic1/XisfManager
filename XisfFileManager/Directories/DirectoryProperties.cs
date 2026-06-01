@@ -3,7 +3,7 @@ using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
 {
-    sealed class DirectoryProperties
+    public sealed class DirectoryProperties
     {
         public Dictionary<string, string> DirectoryStatistics { get; } = new();
 

@@ -14,8 +14,7 @@ namespace XisfFileManager
         private async Task ResetFluxDensityState()
         {
             mBCancel = false;
-            mFileList.Clear();
-            ImageParameterLists.Clear();
+            mWorkspace.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Keyword";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();

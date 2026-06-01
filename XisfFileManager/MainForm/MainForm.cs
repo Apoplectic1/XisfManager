@@ -13,6 +13,7 @@ using XisfFileManager.Calculations;
 using XisfFileManager.Configuration;
 using XisfFileManager.Globals;
 using XisfFileManager.Files;
+using XisfFileManager.Models;
 
 namespace XisfFileManager
 {
@@ -25,10 +26,17 @@ namespace XisfFileManager
     //[DesignerCategory("Form")]
     public partial class MainForm : Form
     {
-        private readonly List<XisfFile> mFileList;
-        private XisfFile mFile = null!;
+        private readonly Workspace mWorkspace = new();
+
+        // The four members below are the session's shared mutable data. They live on
+        // mWorkspace and are exposed here as shim properties so existing call sites
+        // (mFileList, mFile, ImageParameterLists, mDirectoryProperties) keep working.
+        private List<XisfFile> mFileList => mWorkspace.Files;
+        private XisfFile mFile { get => mWorkspace.CurrentFile!; set => mWorkspace.CurrentFile = value; }
+        private ImageCalculations ImageParameterLists => mWorkspace.ImageParameters;
+        private DirectoryProperties mDirectoryProperties => mWorkspace.DirectoryProperties;
+
         private readonly Calibration mCalibration;
-        private readonly ImageCalculations ImageParameterLists;
         private readonly XisfXmlReader mXmlReader;
         private readonly XisfFileRename mRenameFile;
         private string mFolderBrowseState = string.Empty;
@@ -37,7 +45,6 @@ namespace XisfFileManager
         private readonly XisfFileUpdate mXisfFileUpdate;
         private eKeywordUpdateMode mKeywordUpdateProtection;
         private eUiState mUiState;
-        private readonly DirectoryProperties mDirectoryProperties;
         private readonly CustomTreeView mExposureTreeView = new();
 
         // ##########################################################################################################################
@@ -64,21 +71,16 @@ namespace XisfFileManager
 
 
 
-            mDirectoryProperties = new DirectoryProperties();
             mCalibration = new Calibration();
             mXmlReader = new XisfXmlReader();
             mSchedulerDB = new XisfFileManager.TargetScheduler.SqlLiteManager();
             mXisfFileUpdate = new XisfFileUpdate();
             mKeywordUpdateProtection = eKeywordUpdateMode.UPDATE_NEW;
             Label_FileSelection_Statistics_OperationStatus.Text = "";
-            mFileList = new List<XisfFile>();
             mRenameFile = new XisfFileRename
             {
                 RenameOrder = eOrder.INDEX
             };
-
-            // This set of a much smaller number of numeric lists contains per image data used for Focuser Temperature compensation coefficient calculation and SSWEIGHTs
-            ImageParameterLists = new ImageCalculations();
 
             Label_FileSelection_Statistics_OperationStatus.Text = "No Images Selected";
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
@@ -198,8 +200,7 @@ namespace XisfFileManager
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
             // 
             mBCancel = false;
-            mFileList.Clear();
-            ImageParameterLists.Clear();
+            mWorkspace.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Items.Clear();
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordName.Text = "Keyword";
             ComboBox_KeywordUpdateTab_SubFrameKeywords_KeywordValue.Items.Clear();
