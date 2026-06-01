@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using XisfFileManager.Globals;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace XisfFileManager
 {
     public partial class MainForm
     {
         // **********************************************************************************************************************************
-        // **********************************************************************************************************************************
-        // Target Scheduler Methods
-        // **********************************************************************************************************************************
+        // Target Scheduler - database load, tree population and refinement
         // **********************************************************************************************************************************
 
         /// <summary>
-        /// Handles the click event for the button that opens the Scheduler database, populates the profile, project, and target trees, 
+        /// Handles the click event for the button that opens the Scheduler database, populates the profile, project, and target trees,
         /// and refines the exposure plans.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -234,198 +226,6 @@ namespace XisfFileManager
                         .ToList();
 
                     mExposureTreeView.Nodes.AddRange(exposurePlanNodes.ToArray());
-                }
-            }
-        }
-
-
-
-        // **********************************************************************************************************************************
-        // Event Handlers
-        // **********************************************************************************************************************************
-
-        /// <summary>
-        /// Handles the NodeMouseClick event for the ProfileTree in the Scheduler tab.
-        /// Displays a message box with the text of the clicked node.
-        /// </summary>
-        private void TreeView_SchedulerTab_ProfileTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode? clickedNode = e.Node;
-            if (clickedNode == null) return;
-            string clickedItem = clickedNode.Text;
-            MessageBox.Show($"You clicked on: {clickedItem}");
-        }
-
-        /// <summary>
-        /// Handles the NodeMouseClick event for the ProjectTree in the Scheduler tab.
-        /// Depending on the node clicked (Profile or Project), it refines the project tree, sets project active status, priority, and refines the target tree and exposure plans.
-        /// </summary>
-        private void TreeView_SchedulerTab_ProjectTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode? clickedNode = e.Node;
-            if (clickedNode == null) return;
-
-            if (clickedNode.Parent == null)
-            {
-                // We clicked on a Profile
-                RefineSelectedProjectTreeView(clickedNode);
-            }
-            else
-            {
-                // We clicked on a Project
-                SetProjectActiveCheckBox(clickedNode);
-                SetProjectPriorityRadioButtons(clickedNode);
-                RefineSelectedTargetTreeView(clickedNode);
-            }
-
-            RefineExposurePlans();
-        }
-
-        /// <summary>
-        /// Handles the NodeMouseClick event for the PlanTree in the Scheduler tab.
-        /// Displays a message box with the text of the clicked node.
-        /// </summary>
-        private void TreeView_SchedulerTab_PlanTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode? clickedNode = e.Node;
-            if (clickedNode == null)
-                return;
-
-            string clickedItem = clickedNode.Text;
-            MessageBox.Show($"You clicked on: {clickedItem}");
-        }
-
-        /// <summary>
-        /// Handles the NodeMouseClick event for the TargetTree in the Scheduler tab.
-        /// Refines the exposure plans based on the clicked node.
-        /// </summary>
-        private void TreeView_SchedulerTab_TargetTree_NodeMouseClick(object? sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode? clickedNode = e.Node;
-            if (clickedNode == null)
-                return;
-
-            RefineExposurePlans();
-        }
-
-        /// <summary>
-        /// Placeholder for handling click events on the ProjectTree in the Scheduler tab.
-        /// Currently does nothing.
-        /// </summary>
-        private void TreeView_SchedulerTab_ProjectTree_Click(object sender, EventArgs e)
-        {
-            return;
-        }
-
-        /// <summary>
-        /// Custom draw logic for nodes in the ProjectTree in the Scheduler tab.
-        /// Draws nodes with different colors based on project priority (LOW, NORMAL, HIGH).
-        /// </summary>
-        private void TreeView_SchedulerTab_ProjectTree_DrawNode(object? sender, DrawTreeNodeEventArgs e)
-        {
-            if (e == null)
-                return;
-
-            if (e.Node?.Parent == null)
-            {
-                e.DrawDefault = true;
-                return;
-            }
-
-            string profilePreference = ProfilePreference(e.Node);
-            int priority = ProjectPriority(e.Node, profilePreference);
-
-            switch (priority)
-            {
-                case (int)eProjectPriority.LOW:
-                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, new SolidBrush(Color.SandyBrown), new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
-                    break;
-                case (int)eProjectPriority.NORMAL:
-                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, Brushes.Black, e.Bounds);
-                    break;
-                case (int)eProjectPriority.HIGH:
-                    e.Graphics?.DrawString(e.Node.Text, DefaultFont, Brushes.DarkMagenta, e.Bounds);
-                    break;
-            }
-        }
-
-
-        // ######################################################################################################################################
-        // ######################################################################################################################################
-
-        public class CustomTreeView : System.Windows.Forms.TreeView
-        {
-            public CustomTreeView()
-            {
-                this.DrawMode = TreeViewDrawMode.OwnerDrawText;
-                this.DrawNode += CustomTreeView_DrawNode;
-            }
-
-            /// <summary>
-            /// Custom draw logic for nodes in the TreeView.
-            /// Draws node text and numeric up/down representations.
-            /// </summary>
-            private void CustomTreeView_DrawNode(object? sender, DrawTreeNodeEventArgs e)
-            {
-                // Prevent default drawing
-                e.DrawDefault = false;
-
-                // Draw the node text
-                e.Graphics?.DrawString(e.Node?.Text, this.Font, Brushes.Black, e.Bounds.Left, e.Bounds.Top);
-
-                // Calculate positions for numeric up/down representations
-                int spacing = 5; // Spacing between text and numeric controls
-                Size textSize = TextRenderer.MeasureText(e.Node?.Text, this.Font);
-                Point numericControlStartPoint = new Point(e.Bounds.Left + textSize.Width + spacing, e.Bounds.Top);
-                Size numericControlSize = new Size(20, e.Bounds.Height);
-
-                Rectangle numericUpRect = new Rectangle(numericControlStartPoint, numericControlSize);
-                Rectangle numericDownRect = new Rectangle(new Point(numericUpRect.Right + spacing, e.Bounds.Top), numericControlSize);
-
-                // Draw numeric up/down representations
-                using (Pen controlPen = new Pen(Color.Black, 1))
-                using (Brush controlBrush = new SolidBrush(Color.Black))
-                {
-                    // Numeric Up Control
-                    e.Graphics?.DrawRectangle(controlPen, numericUpRect);
-                    e.Graphics?.DrawString("+", this.Font, controlBrush, numericUpRect.X + 5, numericUpRect.Y + 2);
-
-                    // Numeric Down Control
-                    e.Graphics?.DrawRectangle(controlPen, numericDownRect);
-                    e.Graphics?.DrawString("-", this.Font, controlBrush, numericDownRect.X + 5, numericDownRect.Y + 2);
-                }
-            }
-
-
-            /// <summary>
-            /// Handles the MouseDown event for the TreeView, providing custom click logic for numeric up/down controls.
-            /// </summary>
-            /// <param name="e">Mouse event arguments</param>
-            protected override void OnMouseDown(MouseEventArgs e)
-            {
-                base.OnMouseDown(e);
-
-                // Get the node at the mouse click location
-                TreeNode? nodeAtClick = this.GetNodeAt(e.X, e.Y);
-                if (nodeAtClick != null)
-                {
-                    // Calculate the text size and bounds for the numeric up/down controls
-                    Size textSize = TextRenderer.MeasureText(nodeAtClick.Text, this.Font);
-                    int spacing = 5;
-                    Rectangle nodeBounds = nodeAtClick.Bounds;
-                    Rectangle numericUpRect = new Rectangle(nodeBounds.Left + textSize.Width + spacing, nodeBounds.Top, 20, nodeBounds.Height);
-                    Rectangle numericDownRect = new Rectangle(numericUpRect.Right + spacing, nodeBounds.Top, 20, nodeBounds.Height);
-
-                    // Check if the click was within the numeric up control bounds
-                    if (numericUpRect.Contains(e.Location))
-                    {
-                        MessageBox.Show("Increment value for " + nodeAtClick.Text);
-                    }
-                    // Check if the click was within the numeric down control bounds
-                    else if (numericDownRect.Contains(e.Location))
-                    {
-                        MessageBox.Show("Decrement value for " + nodeAtClick.Text);
-                    }
                 }
             }
         }
