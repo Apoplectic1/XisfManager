@@ -197,6 +197,27 @@ namespace XisfFileManager
 
         private async void Button_Browse_Click(object sender, EventArgs e)
         {
+            ResetSession();
+
+            if (!TrySelectSourceFolder())
+                return;
+
+            await ReadHeadersAsync();
+
+            PopulateUiFromFiles();
+
+            RefreshFeatureDetection();
+
+            BuildTargetFileTree();
+
+            // UI Updates
+            UpdateUI(eUiState.ENABLED);
+        }
+
+        // Browse pipeline stages, executed in order by Button_Browse_Click above.
+
+        private void ResetSession()
+        {
             // Clear all lists - we are reading or re-reading what will become a new xisf file data set that will invalidate any existing data.
             // 
             mBCancel = false;
@@ -219,7 +240,10 @@ namespace XisfFileManager
 
             ProgressBar_FileSelection_ReadProgress.Value = 0;
             ProgressBar_KeywordUpdateTab_WriteProgress.Value = 0;
+        }
 
+        private bool TrySelectSourceFolder()
+        {
             // Exclude List
             // This list can contain any number of strings that will be used to exclude any full path (including a specified file name)
             // that contains the string below the selected folder.
@@ -242,11 +266,15 @@ namespace XisfFileManager
             {
                 UpdateUI(eUiState.DISABLED);
                 MessageBox.Show("No Xisf Files Found", "Select a different folder");
-                return;
+                return false;
             }
 
             mFolderBrowseState = Files.DirectoryOperations.SelectedFolder;
+            return true;
+        }
 
+        private async Task ReadHeadersAsync()
+        {
             Label_FileSelection_Statistics_OperationStatus.Text = "Reading " + Files.DirectoryOperations.FileInfoList.Count.ToString() + " Image Files";
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: Not Computed";
             Label_FileSelection_Statistics_SubFrameOverhead.Text = "SubFrame Overhead: Not Computed";
@@ -272,7 +300,10 @@ namespace XisfFileManager
             }
 
             mFileList.Sort((a, b) => a.CaptureTime.CompareTo(b.CaptureTime)); // oldest is first
+        }
 
+        private void PopulateUiFromFiles()
+        {
             if (CheckBox_FileSelection_DirectorySelection_Masters_Enable.Checked)
             {
                 TextBox_FileSelection_DirectorySelection_Masters_Frames.Text = mFileList[0].MSTRFRMS.ToString();
@@ -431,6 +462,10 @@ namespace XisfFileManager
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageCalculations.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageCalculations.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
             Label_FileSelection_Statistics_TempratureCoefficient.Text = "Temperature Coefficient: " + stepsPerDegree;
+        }
+
+        private void RefreshFeatureDetection()
+        {
 
             // **********************************************************************
 
@@ -438,6 +473,10 @@ namespace XisfFileManager
             FindFilterFrameType();
             FindTelescope();
             FindCamera();
+        }
+
+        private void BuildTargetFileTree()
+        {
 
             // **********************************************************************
 
@@ -484,10 +523,6 @@ namespace XisfFileManager
             }
 
             ExpandAllNodes(TreeView_CalibrationTab_TargetFileTree.Nodes);
-
-            // UI Updates
-            UpdateUI(eUiState.ENABLED);
-
         }
 
         private async void Button_KeywordUpdateTab_SubFrameKeywords_UpdateKeywords_Click(object sender, EventArgs e)
