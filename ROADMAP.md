@@ -13,6 +13,7 @@ this file tracks what's next and what recently shipped. Keep entries short.
 
 ## Recently shipped
 
+- **MainForm maintainability refactor** — extracted shared session state into `Models/Workspace.cs` (`mWorkspace`, behind shim properties so call sites were unchanged); surfaced `Button_Browse_Click` as a named-stage pipeline (`ResetSession → TrySelectSourceFolder → ReadHeadersAsync → PopulateUiFromFiles → RefreshFeatureDetection → BuildTargetFileTree`); split the two oversized partials (`TargetScheduler` → Tree/Events + top-level `CustomTreeView`; `ImageType` → Detection/SetActions/Masters); standardized control resets on `UIHelpers`; documented the "Adding a New Feature Area" convention in `CLAUDE.md`. MVP/presenters were evaluated and rejected (testability isn't the driver; the `Services`/`Models` layer is already the clean separation).
 - **Released `v1.4.0`** — merged `dev` → `main` and tagged (`d8d862e`); tag-triggered `release.yml` build.
 - **FOCRATIO + aperture keywords for all telescopes** (`6ff0f60`, `f65e770`) — `ApplyKeywords` now emits `APTDIA`/`APTAREA` and derives reducer-aware `FOCRATIO` for APM107, EvoStar150, Newtonian254; aperture diameter/area hardcoded for all three.
 - **Branch/release model documented** (`31e96c6`) — dev/main flow and tag-triggered releases in `CLAUDE.md`.

@@ -43,15 +43,14 @@ dotnet run --project XisfFileManager/XisfFileManager.csproj
 ### Directory Structure
 ```
 XisfFileManager/
-├── MainForm/           # UI controllers (partial classes of MainForm)
-│   ├── MainForm.cs     # Main form initialization and core logic
-│   ├── Camera.cs       # Camera settings and configuration (refactored)
-│   ├── Calibration.cs  # Calibration frame UI handling
-│   ├── FileSelection.cs # File browser and selection
-│   ├── Telescope.cs    # Telescope configuration
-│   ├── CaptureSoftware.cs # N.I.N.A., TSX, SGP detection
-│   └── TargetScheduler.cs # Target Scheduler tab logic
-├── Models/             # Domain models
+├── MainForm/           # UI view layer: thin partial classes of MainForm + composition root
+│   ├── MainForm.cs     # Constructor (composition root) + Browse load pipeline + UI state
+│   ├── Camera.cs / Telescope.cs / CaptureSoftware.cs # Per-feature tab binding
+│   ├── ImageType.Detection.cs / .SetActions.cs / .Masters.cs # Filter & frame-type tab
+│   ├── TargetScheduler.Tree.cs / .Events.cs + CustomTreeView.cs # Scheduler tab
+│   └── Calibration.cs / FileSelection.cs / SubFrameKeywords.cs / FluxDensity.cs
+├── Models/             # Domain models + shared session state
+│   ├── Workspace.cs    # Shared session state (loaded files, image lists, directory stats)
 │   ├── CameraConfiguration.cs # Base camera config + PropertyAnalysis<T>
 │   ├── TelescopeConfiguration.cs # Base telescope config + TelescopeAnalysis
 │   ├── CaptureSoftwareConfiguration.cs # Base capture software config
@@ -148,11 +147,14 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - Enums: `e` prefix (e.g., `eFrame`, `eFilter`)
 
 ### Patterns
-- MainForm uses partial classes split across feature files
+- MainForm uses partial classes split across feature files (thin UI binding; logic lives in `Services/`)
+- Shared session state lives on `Models/Workspace.cs` (`mWorkspace`), not bare MainForm fields
+- The Browse handler is a named-stage pipeline: `ResetSession → TrySelectSourceFolder → ReadHeadersAsync → PopulateUiFromFiles → RefreshFeatureDetection → BuildTargetFileTree`
 - Event-driven UI updates via delegates (e.g., `CalibrationTabPageEvent`)
 - Keyword properties on XisfFile delegate to KeywordList
 
 ### Important Files
+- `Workspace.cs`: Shared session state (loaded files, image lists, directory stats); exposed on MainForm as `mWorkspace` and read by every feature partial
 - `XisfFile.cs`: Central model - all keyword access flows through here
 - `KeywordList.cs`: Typed property accessors for common FITS keywords. Note: the `FocalRatio` setter self-derives FOCRATIO from the FOCALLEN/APTDIA keywords (ignoring its assigned value), so those must be written first.
 - `CameraConfiguration.cs`: Base class for camera configs with temperature handling
@@ -178,6 +180,13 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 1. Add controls in Visual Studio Designer (updates MainForm.Designer.cs)
 2. Create new partial class file in MainForm/ for logic
 3. Wire up events in MainForm.cs constructor
+
+### Adding a New Feature Area
+Follow the **Telescope** feature as the template (`Services/TelescopeService.cs` + `Models/TelescopeConfiguration.cs` + `MainForm/Telescope.cs`). Four parts, four places:
+1. **Logic** → `Services/<Feature>Service.cs`: pure and UI-free; takes domain data (e.g. `IEnumerable<XisfFile>`) and returns a `<Feature>Analysis` result type defined in `Models/`.
+2. **UI binding** → a thin `MainForm/<Feature>.cs` partial: control↔model mappings, `Find<Feature>()` / `Clear<Feature>Group()`, and the button handlers. Call the service for every decision; use `Helpers/UIHelpers.cs` for control resets.
+3. **Shared state** → read from `mWorkspace` (`Models/Workspace.cs`), never new MainForm fields. If the feature needs new session data, add a member to `Workspace`.
+4. **Construction & wiring** → the `MainForm` constructor only (the composition root). If the feature reacts to a file load, add `Clear<Feature>Group()` to `ResetSession()` and `Find<Feature>()` to `RefreshFeatureDetection()` (both in `MainForm.cs`).
 
 ### Database Schema Changes
 Table models are in `TargetScheduler/Tables/` - each maps to N.I.N.A. Target Scheduler tables.
