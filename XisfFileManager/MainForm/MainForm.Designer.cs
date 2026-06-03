@@ -207,6 +207,7 @@
             RadioButton_KeywordsTab_ImageType_Filter_Green = new RadioButton();
             RadioButton_KeywordsTab_ImageType_Filter_O3 = new RadioButton();
             TabControl = new TabControl();
+            checkBox1 = new CheckBox();
             GroupBox_FileSelection_SequenceNumbering.SuspendLayout();
             GroupBox_FileSelection_Count.SuspendLayout();
             GroupBox_FileSelection_DirectorySelection.SuspendLayout();
@@ -348,6 +349,7 @@
             // 
             // GroupBox_FileSelection_DirectorySelection
             // 
+            GroupBox_FileSelection_DirectorySelection.Controls.Add(checkBox1);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(CheckBox_FileSelection_DirectorySelection_CalibrationIds);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(GroupBox_FileSelection_DirectorySelection_FluxDensity);
             GroupBox_FileSelection_DirectorySelection.Controls.Add(GroupBox_FileSelection_DirectorySelection_Masters);
@@ -490,7 +492,7 @@
             CheckBox_FileSelection_DirectorySelection_Recurse.AutoSize = true;
             CheckBox_FileSelection_DirectorySelection_Recurse.Checked = true;
             CheckBox_FileSelection_DirectorySelection_Recurse.CheckState = CheckState.Checked;
-            CheckBox_FileSelection_DirectorySelection_Recurse.Location = new Point(129, 34);
+            CheckBox_FileSelection_DirectorySelection_Recurse.Location = new Point(129, 24);
             CheckBox_FileSelection_DirectorySelection_Recurse.Margin = new Padding(4, 3, 4, 3);
             CheckBox_FileSelection_DirectorySelection_Recurse.Name = "CheckBox_FileSelection_DirectorySelection_Recurse";
             CheckBox_FileSelection_DirectorySelection_Recurse.Size = new Size(126, 19);
@@ -2270,6 +2272,16 @@
             TabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
             TabControl.Selecting += TabControl_Selecting;
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(129, 46);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(82, 19);
+            checkBox1.TabIndex = 25;
+            checkBox1.Text = "checkBox1";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -2512,5 +2524,6 @@
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection_Masters;
         private System.Windows.Forms.GroupBox GroupBox_FileSelection_DirectorySelection_FluxDensity;
         private CheckBox CheckBox_FileSelection_DirectorySelection_CalibrationIds;
+        private CheckBox checkBox1;
     }
 }
