@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using XisfFileManager.Files.Compression;
 using XisfFileManager.Globals;
 
 namespace XisfFileManager.Files
@@ -32,6 +33,9 @@ namespace XisfFileManager.Files
             TargetAttachmentHeight = 0;
             TargetAttachmentWidth = 0;
             TargetAttachmentPadding = 0;
+            SampleFormat = string.Empty;
+            ItemSize = 1;
+            Compression = BlockCompressionInfo.None;
             ThumbnailAttachmentLength = 0;
             ThumbnailAttachmentStart = 0;
             ThumbnailAttachmentPadding = 0;
@@ -303,6 +307,13 @@ namespace XisfFileManager.Files
         public int TargetAttachmentWidth { get; set; }
         public int TargetAttachmentHeight { get; set; }
         public int TargetAttachmentPadding { get; set; }
+
+        // Image-block sample format and compression state, read from the main <Image> header.
+        public string SampleFormat { get; set; } = string.Empty;
+        public int ItemSize { get; set; } = 1;                                       // bytes per sample for byte-shuffle
+        public BlockCompressionInfo Compression { get; set; } = BlockCompressionInfo.None;
+        public bool IsImageCompressed => Compression.IsCompressed;
+
         public int FileNameNumberIndex { get; set; }
         public int Offset
         {

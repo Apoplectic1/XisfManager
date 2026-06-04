@@ -94,6 +94,10 @@ namespace XisfFileManager.Files
                     (xFile.TargetAttachmentStart, xFile.TargetAttachmentLength, xFile.TargetAttachmentWidth, xFile.TargetAttachmentHeight)
                         = Xml.GetImageExtents(xmlString, "integration");
 
+                    // Sample format + existing compression state (drives the save-if-needed gate and shuffle item size)
+                    (xFile.SampleFormat, xFile.ItemSize, xFile.Compression)
+                        = Xml.GetImageBlockInfo(xmlString, "integration");
+
                     mXmlXisfBlockMatch = Xml.XisfFile_XisfBlockRx.Match(xmlString);
                     mXmlMetadataBlockMatch = Xml.XisfFile_MetadataBlockRx.Match(xmlString);
 

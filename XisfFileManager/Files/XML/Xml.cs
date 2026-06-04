@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using XisfFileManager.Files.Compression;
 
 namespace XisfFileManager.Files.XML
 {
@@ -422,6 +424,114 @@ namespace XisfFileManager.Files.XML
             }
 
             return (start, length, width, height);
+        }
+
+        // ***********************************************************************************
+        // ***********************************************************************************
+
+        /// <summary>
+        /// Reads the main <Image> element's sample format and existing compression/checksum, and derives the
+        /// byte-shuffle item size (bytes-per-sample). Used to decide whether a block is already compressed and,
+        /// when it is not, how to shuffle it before zlib compression.
+        /// </summary>
+        /// <param name="xmlString">Full XML header text.</param>
+        /// <param name="imageId">The Image/@id to prefer (e.g. "integration"); falls back to the first Image.</param>
+        /// <returns>
+        /// SampleFormat (e.g. "UInt16"; "" if absent), ItemSize (bytes per sample for shuffling; ≥ 1),
+        /// and the parsed existing compression/checksum (Codec == None when the block is uncompressed).
+        /// </returns>
+        public static (string SampleFormat, int ItemSize, BlockCompressionInfo Compression)
+        GetImageBlockInfo(string xmlString, string imageId)
+        {
+            var doc = XDocument.Parse(xmlString);
+
+            var img = doc
+                .Descendants()
+                .FirstOrDefault(e =>
+                    e.Name.LocalName == "Image" &&
+                    (string?)e.Attribute("id") == imageId)
+                ?? doc
+                    .Descendants()
+                    .FirstOrDefault(e => e.Name.LocalName == "Image");
+
+            string sampleFormat = img?.Attribute("sampleFormat")?.Value ?? string.Empty;
+            BlockCompressionInfo compression = BlockCompressionInfo.Parse(
+                img?.Attribute("compression")?.Value,
+                img?.Attribute("checksum")?.Value);
+
+            int itemSize;
+            if (compression.IsCompressed)
+            {
+                // Already compressed: the shuffle item size is recorded in the compression attribute.
+                itemSize = compression.ItemSize;
+            }
+            else
+            {
+                // Uncompressed: prefer the canonical sampleFormat, else derive bytes/sample from geometry
+                // and the (uncompressed) block length. Shuffle round-trips for any recorded itemSize, so a
+                // wrong value would only cost ratio, never correctness.
+                itemSize = BytesPerSample(sampleFormat);
+                if (itemSize <= 0)
+                    itemSize = DeriveItemSizeFromGeometry(img);
+                if (itemSize <= 0)
+                    itemSize = 1;
+            }
+
+            return (sampleFormat, itemSize, compression);
+        }
+
+        /// <summary>Bytes per sample for an XISF sampleFormat token, or 0 if unknown.</summary>
+        private static int BytesPerSample(string sampleFormat) => sampleFormat switch
+        {
+            "UInt8" => 1,
+            "UInt16" => 2,
+            "UInt32" => 4,
+            "UInt64" => 8,
+            "Float32" => 4,
+            "Float64" => 8,
+            "Complex32" => 8,
+            "Complex64" => 16,
+            _ => 0
+        };
+
+        /// <summary>
+        /// Derive bytes-per-sample for an uncompressed image as blockLength / (width × height × channels),
+        /// where channels is the third geometry component (default 1). Returns 0 when it cannot be derived.
+        /// </summary>
+        private static int DeriveItemSizeFromGeometry(XElement? img)
+        {
+            if (img == null)
+                return 0;
+
+            var geom = img.Attribute("geometry")?.Value;
+            var loc = img.Attribute("location")?.Value;
+            if (string.IsNullOrEmpty(geom) || string.IsNullOrEmpty(loc))
+                return 0;
+
+            string[] g = geom.Split(':');
+            if (g.Length < 2)
+                return 0;
+
+            string[] l = loc.Split(':');
+            if (l.Length < 3)
+                return 0;
+
+            if (!long.TryParse(g[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long width) ||
+                !long.TryParse(g[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out long height) ||
+                !long.TryParse(l[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out long length))
+                return 0;
+
+            long channels = 1;
+            if (g.Length >= 3)
+                long.TryParse(g[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out channels);
+            if (channels < 1)
+                channels = 1;
+
+            long denom = width * height * channels;
+            if (denom <= 0 || length <= 0 || length % denom != 0)
+                return 0;
+
+            return (int)(length / denom);
         }
 
         // ***********************************************************************************

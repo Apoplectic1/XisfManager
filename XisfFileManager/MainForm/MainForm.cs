@@ -454,10 +454,14 @@ namespace XisfFileManager
                 ImageParameterLists.BuildImageParameterValueLists(xFile);
             }
 
-            if (Files.DirectoryOperations.FileInfoList.Count == mFileList.Count)
-                Label_FileSelection_Statistics_OperationStatus.Text = "Read all " + mFileList.Count.ToString() + " Image Files";
-            else
-                Label_FileSelection_Statistics_OperationStatus.Text = "Read " + mFileList.Count.ToString() + " out of " + Files.DirectoryOperations.FileInfoList.Count + " Image Files";
+            string readSummary = Files.DirectoryOperations.FileInfoList.Count == mFileList.Count
+                ? "Read all " + mFileList.Count.ToString() + " Image Files"
+                : "Read " + mFileList.Count.ToString() + " out of " + Files.DirectoryOperations.FileInfoList.Count + " Image Files";
+
+            int compressedCount = mFileList.Count(file => file.IsImageCompressed);
+            int uncompressedCount = mFileList.Count - compressedCount;
+            Label_FileSelection_Statistics_OperationStatus.Text =
+                readSummary + "\n" + compressedCount + " Compressed " + uncompressedCount + " Uncompressed";
 
             Label_FileSelection_Statistics_SubFrameOverhead.Text = ImageCalculations.CalculateOverhead(mFileList);
             string stepsPerDegree = ImageCalculations.CalculateFocuserTemperatureCompensationCoefficient(mFileList);
@@ -553,6 +557,9 @@ namespace XisfFileManager
 
 
             int count = 0;
+            int compressedCount = 0;
+            int verbatimCount = 0;
+            int unchangedCount = 0;
             foreach (XisfFile xFile in mFileList)
             {
                 xFile.KeywordUpdateMode = mKeywordUpdateProtection;
@@ -571,8 +578,9 @@ namespace XisfFileManager
 
                 ProgressBar_KeywordUpdateTab_WriteProgress.Value += 1;
 
-                bStatus = await mXisfFileUpdate.UpdateFileAsync(xFile, xFile.FilePath);
-                Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(xFile.FilePath) + "\n" + Path.GetFileName(xFile.FilePath);
+                // The label is updated from inside UpdateFileAsync (via ShowFileBeingWritten) only when a write
+                // actually happens, so it reflects the file being written — not files skipped by the save gate.
+                bStatus = await mXisfFileUpdate.UpdateFileAsync(xFile, xFile.FilePath, ShowFileBeingWritten);
 
                 if (bStatus == false)
                 {
@@ -606,9 +614,19 @@ namespace XisfFileManager
                 }
 
                 count++;
+
+                switch (mXisfFileUpdate.LastUpdateOutcome)
+                {
+                    case eUpdateOutcome.Compressed: compressedCount++; break;
+                    case eUpdateOutcome.AlreadyCompressed: verbatimCount++; break;
+                    case eUpdateOutcome.Skipped: unchangedCount++; break;
+                }
             }
 
-            Label_FileSelection_Statistics_OperationStatus.Text = count.ToString() + " Images Updated";
+            int writtenCount = compressedCount + verbatimCount;
+            Label_FileSelection_Statistics_OperationStatus.Text =
+                $"{writtenCount} Images Updated · {compressedCount} compressed · {verbatimCount} already-compressed" +
+                (unchangedCount > 0 ? $" · {unchangedCount} unchanged" : string.Empty);
             GroupBox_FileSelection.Enabled = true;
             GroupBox_KeywordUpdateTab_SubFrameKeywords.Enabled = true;
             GroupBox_KeywordUpdateTab_CaptureSoftware.Enabled = true;
@@ -618,6 +636,15 @@ namespace XisfFileManager
 
 
             FindFilterFrameType(); // Update UI - NOT SURE WHY I NEED THIS HERE
+        }
+
+        // Shows the file currently being written (keyword update and/or compression). Forces an immediate
+        // repaint because the compress step runs synchronously on the UI thread, which would otherwise defer
+        // the label paint until after the write completes.
+        private void ShowFileBeingWritten(string path)
+        {
+            Label_KeywordUpdateTab_FileName.Text = Path.GetDirectoryName(path) + "\n" + Path.GetFileName(path);
+            Label_KeywordUpdateTab_FileName.Update();
         }
 
 

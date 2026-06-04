@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using XisfFileManager.Configuration;
+using XisfFileManager.Files.Compression;
 using XisfFileManager.Files.XML;
 using XisfFileManager.Globals;
 using XisfFileManager.Helpers;
@@ -19,6 +20,9 @@ namespace XisfFileManager.Files
     {
         private Buffer mBuffer = new();
         private List<Buffer> mBufferList = new();
+
+        /// <summary>Outcome of the most recent <see cref="UpdateFileAsync"/> call, for status reporting.</summary>
+        public eUpdateOutcome LastUpdateOutcome { get; private set; }
 
 
         /// <summary>
@@ -80,7 +84,7 @@ namespace XisfFileManager.Files
         /// <param name="xFile">The XISF file to update.</param>
         /// <param name="destinationPath">The destination path to write the updated file.</param>
         /// <returns>True if the file is updated successfully; otherwise, false.</returns>
-        public async Task<bool> UpdateFileAsync(XisfFile xFile, string destinationPath)
+        public async Task<bool> UpdateFileAsync(XisfFile xFile, string destinationPath, Action<string>? onWriting = null)
         {
             int delay = 0;
             while (FileHelpers.IsFileLocked(xFile.FilePath) && delay < 100)
@@ -92,18 +96,25 @@ namespace XisfFileManager.Files
             if (delay == 100)
             {
                 MessageBox.Show("File is locked", xFile.FilePath, MessageBoxButtons.OK);
+                LastUpdateOutcome = eUpdateOutcome.Failed;
                 return false;
             }
 
             // Normalize keywords before writing (converts CREATOR->SWCREATE, DATE-OBS->DATE-LOC, EXPTIME->EXPOSURE)
             xFile.NormalizeKeywords();
 
-            // Return if KeywordList and the original XML are identical
-            //if (xFile.KeywordUpdateMode == eKeywordUpdateMode.PROTECT)
-            //    return false;
-
-            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW && KeywordsMatchXml(xFile))
+            // "Save if needed": skip only when nothing would change. In UPDATE_NEW mode that means the keywords
+            // already match the on-disk XML AND the image block is already compressed. A keyword change OR an
+            // uncompressed block (compression needed) both require a rewrite. FORCE always writes.
+            if (xFile.KeywordUpdateMode == eKeywordUpdateMode.UPDATE_NEW && KeywordsMatchXml(xFile) && xFile.IsImageCompressed)
+            {
+                LastUpdateOutcome = eUpdateOutcome.Skipped;
                 return true;
+            }
+
+            // Committed to writing this file (keyword change and/or compression). Report it now — before the
+            // potentially slow compress + write — so the UI shows the file that is actually being written.
+            onWriting?.Invoke(destinationPath);
 
             int xisfStart;
             int xisfEnd;
@@ -189,6 +200,24 @@ namespace XisfFileManager.Files
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
 
+                    // Compress the image data block (zlib+sh + SHA-1) unless it is already compressed.
+                    // Already-compressed blocks (any codec) are copied verbatim with their existing attributes.
+                    bool compressNow = !xFile.IsImageCompressed;
+                    BlockCompressionResult compressionResult = default;
+                    if (compressNow)
+                    {
+                        byte[] rawImageBlock = new byte[xFile.TargetAttachmentLength];
+                        Array.Copy(binaryFileData, xFile.TargetAttachmentStart, rawImageBlock, 0, xFile.TargetAttachmentLength);
+
+                        compressionResult = XisfBlockCompression.Compress(rawImageBlock, xFile.ItemSize);
+
+                        // Add compression/checksum to the <Image> before location/padding converge against the final header.
+                        ApplyCompressionAttributes(xmlDoc, compressionResult.Info);
+                    }
+
+                    // *******************************************************************************************************************************
+                    // *******************************************************************************************************************************
+
                     // We need to set the start address and length of the image attachement due to any changes in the <xisf> to </xisf> length
 
                     if (xFile.BlockAlignmentSize != -1)
@@ -200,7 +229,9 @@ namespace XisfFileManager.Files
                                 MessageBox.Show(Path.GetFileName(xFile.FilePath), "Image Attachment Start Location was not Block Aligned. Continuing...");
                         }
                     }
-                    xFile.TargetAttachmentPadding = SetImageAttachmentLocation(xmlDoc, xFile);
+                    // When compressing, the stored block size becomes the compressed size; otherwise leave it unchanged.
+                    xFile.TargetAttachmentPadding = SetImageAttachmentLocation(xmlDoc, xFile,
+                        compressNow ? compressionResult.CompressedBytes.Length : (int?)null);
 
                     // *******************************************************************************************************************************
                     // *******************************************************************************************************************************
@@ -253,27 +284,30 @@ namespace XisfFileManager.Files
                     };
                     mBufferList.Add(mBuffer);
 
-                    // Main Image
-                    // In INPUT file, Add the binary image data from rawFileData after padding
-                    int offset = 0; // 128 * 2; // This was to fix an error I indroduced due to improper padding/Image Attachment Start Location
-                    mBuffer = new Buffer
-                    {
-                        Type = eBufferData.BINARY,
-                        BinaryDataStart = xFile.TargetAttachmentStart + offset,
-                        BinaryByteLength = xFile.TargetAttachmentLength - offset,
-                        BinaryData = binaryFileData
-                    };
-                    mBufferList.Add(mBuffer);
-
-                    if (offset > 0)
+                    // Main Image data, written after the padding:
+                    //  - compressed now  -> the freshly compressed (zlib+sh) bytes
+                    //  - already compressed -> a verbatim copy of the source block from binaryFileData
+                    if (compressNow)
                     {
                         mBuffer = new Buffer
                         {
-                            Type = eBufferData.ZEROS,
-                            BinaryByteLength = offset
+                            Type = eBufferData.BINARY,
+                            BinaryDataStart = 0,
+                            BinaryByteLength = compressionResult.CompressedBytes.Length,
+                            BinaryData = compressionResult.CompressedBytes
                         };
-                        mBufferList.Add(mBuffer);
                     }
+                    else
+                    {
+                        mBuffer = new Buffer
+                        {
+                            Type = eBufferData.BINARY,
+                            BinaryDataStart = xFile.TargetAttachmentStart,
+                            BinaryByteLength = xFile.TargetAttachmentLength,
+                            BinaryData = binaryFileData
+                        };
+                    }
+                    mBufferList.Add(mBuffer);
 
                     // Ignore any other attachments (e.g. Thumbnail, High Rejection, Low Rejection, etc,) in the input file
 
@@ -283,17 +317,24 @@ namespace XisfFileManager.Files
                     // Now that the mBuffer List is done, use it to write a new/updated XISF File
                     bool bStatus = await WriteBinaryFileAsync(destinationPath);
                     if (bStatus == false)
+                    {
+                        LastUpdateOutcome = eUpdateOutcome.Failed;
                         return false;
+                    }
+
+                    LastUpdateOutcome = compressNow ? eUpdateOutcome.Compressed : eUpdateOutcome.AlreadyCompressed;
                 }
             }
             catch (IOException ex)
             {
                 MessageBox.Show($"Update Write File Failed: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                LastUpdateOutcome = eUpdateOutcome.Failed;
                 return false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Unexpected error updating file: {ex.Message}", xFile.FilePath, MessageBoxButtons.OK);
+                LastUpdateOutcome = eUpdateOutcome.Failed;
                 return false;
             }
 
@@ -395,8 +436,10 @@ namespace XisfFileManager.Files
         /// </summary>
         /// <param name="document">The XML document to modify.</param>
         /// <param name="xFile">The XISF file containing block alignment size.</param>
+        /// <param name="newImageSize">When set, also update the location size field (used after compression
+        /// changes the stored block size); when null the existing size is preserved.</param>
         /// <returns>The calculated padding required for the new starting address.</returns>
-        private static int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile)
+        private static int SetImageAttachmentLocation(XmlDocument document, XisfFile xFile, int? newImageSize = null)
         {
             int documentLengthBeforeNewStartingAddress;
             int documentLengthAfterNewStartingAddress;
@@ -433,6 +476,8 @@ namespace XisfFileManager.Files
                 {
                     string[] locationParts = locationAttribute.Value.Split(':');
                     locationParts[1] = newStartingAddress.ToString();
+                    if (newImageSize.HasValue && locationParts.Length >= 3)
+                        locationParts[2] = newImageSize.Value.ToString();
                     locationAttribute.Value = string.Join(":", locationParts);
                 }
 
@@ -441,6 +486,45 @@ namespace XisfFileManager.Files
             while (documentLengthAfterNewStartingAddress != documentLengthBeforeNewStartingAddress);
 
             return newPadding;
+        }
+
+
+        // ****************************************************************************************************
+        // ****************************************************************************************************
+
+        /// <summary>
+        /// Sets the <c>compression</c> and <c>checksum</c> attributes on the main <Image> element so the written
+        /// header describes the compressed block. Called before <see cref="SetImageAttachmentLocation"/> so the
+        /// location size and padding converge against the final header length.
+        /// </summary>
+        private static void ApplyCompressionAttributes(XmlDocument document, BlockCompressionInfo info)
+        {
+            XmlNamespaceManager nsManager = new XmlNamespaceManager(document.NameTable);
+            string namespaceUri = document.DocumentElement?.NamespaceURI ?? string.Empty;
+            nsManager.AddNamespace("ns", namespaceUri);
+
+            XmlNode? imageNode = document.SelectSingleNode("//ns:Image", nsManager);
+            if (imageNode?.Attributes == null)
+                return;
+
+            SetOrRemoveAttribute(document, imageNode, "compression", info.ToCompressionAttribute());
+            SetOrRemoveAttribute(document, imageNode, "checksum", info.ToChecksumAttribute());
+        }
+
+        /// <summary>Sets a node attribute to the given value, or removes it when the value is null.</summary>
+        private static void SetOrRemoveAttribute(XmlDocument document, XmlNode node, string name, string? value)
+        {
+            if (node.Attributes == null)
+                return;
+
+            if (value == null)
+            {
+                node.Attributes.RemoveNamedItem(name);
+                return;
+            }
+
+            XmlAttribute attribute = node.Attributes[name] ?? node.Attributes.Append(document.CreateAttribute(name));
+            attribute.Value = value;
         }
 
 
@@ -569,6 +653,7 @@ namespace XisfFileManager.Files
         private async Task<bool> WriteBinaryFileAsync(string fileName)
         {
             byte[] zero = { 0x00 };
+            string tempFile = fileName + ".xfmtmp";
 
             try
             {
@@ -617,18 +702,24 @@ namespace XisfFileManager.Files
                         }
                     }
 
-                    // Write the memory stream to the file asynchronously
+                    // Write to a temp file first, then atomically move it into place. The image data is now
+                    // transformed (compressed) rather than copied verbatim, so a mid-write failure must not
+                    // corrupt the destination (which is the source file itself for in-place keyword updates).
                     byte[] binaryData = rawStream.ToArray();
-                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                    using (FileStream fileStream = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                     {
                         await fileStream.WriteAsync(binaryData.AsMemory());
                         await fileStream.FlushAsync();
                     }
+
+                    File.Move(tempFile, fileName, overwrite: true);
                 }
                 return true;
             }
             catch (Exception ex)
             {
+                try { if (File.Exists(tempFile)) File.Delete(tempFile); } catch { /* best-effort cleanup */ }
+
                 string title = "WriteBinaryFile() XisfFileUpdate.cs Failed";
                 string message = "\n\n" + fileName + "\n\n" + ex.Message;
                 MessageBox.Show(message, title, MessageBoxButtons.OK);
