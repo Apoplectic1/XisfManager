@@ -81,6 +81,9 @@ XisfFileManager/
 │   ├── XisfFileRename.cs # File renaming logic
 │   ├── XisfFileUpdate.cs # File modification/writing
 │   ├── Buffer.cs       # Binary buffer operations
+│   ├── Compression/    # Image-block codec (zlib+sh + SHA-1)
+│   │   ├── XisfBlockCompression.cs # Shuffle/zlib/SHA-1 compress+decompress
+│   │   └── BlockCompressionInfo.cs # compression/checksum attribute parse+format
 │   └── XML/            # XML processing
 │       └── Xml.cs      # XML metadata utilities
 ├── Keyword/            # FITS/XISF keyword handling
@@ -106,6 +109,24 @@ XISF (Extensible Image Serialization Format) is an astronomy image format from P
 - XML metadata header with FITS-compatible keywords
 - Binary image data (attachments)
 - Optional thumbnail attachments
+
+XFM treats the image data block as an **opaque byte array** — nothing in the app decodes pixels
+(statistics/calculations all come from FITS keywords). On save it compresses an uncompressed block
+to `zlib+sh` with a SHA-1 checksum (see Compression below); an already-compressed block (any codec)
+is copied verbatim.
+
+### Compression (`Files/Compression/`)
+- `XisfBlockCompression` — pure, UI-free codec: byte-shuffle → `System.IO.Compression.ZLibStream`
+  (`SmallestSize` ≈ zlib level 9 ≈ PixInsight "level 100") → SHA-1 over the compressed bytes.
+  `Compress`/`Decompress` are symmetric; `Decompress` is present for tests and future pixel I/O but
+  is not yet wired into any runtime path (XFM blocks are opaque).
+- `BlockCompressionInfo` — parses/formats the `compression="zlib+sh:size:itemSize"` and
+  `checksum="sha-1:hex"` attributes; read at load time into `XisfFile.Compression` / `IsImageCompressed`.
+- Item size (bytes/sample for the shuffle) comes from the `sampleFormat` attribute, falling back to
+  `blockLength / (W×H×channels)` from `geometry`. Shuffle is always written (`zlib+sh`); a wrong item
+  size only costs ratio, never correctness, since it is recorded in the attribute and used on read.
+- Always stores the compressed result (even if not smaller) so a block marks itself done and isn't
+  re-attempted on every save.
 
 ### Keywords
 Keywords follow FITS conventions with Name/Value/Comment triplets:
@@ -152,6 +173,7 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - The Browse handler is a named-stage pipeline: `ResetSession → TrySelectSourceFolder → ReadHeadersAsync → PopulateUiFromFiles → RefreshFeatureDetection → BuildTargetFileTree`
 - Event-driven UI updates via delegates (e.g., `CalibrationTabPageEvent`)
 - Keyword properties on XisfFile delegate to KeywordList
+- `XisfFileUpdate.UpdateFileAsync` is **save-if-needed**: `PROTECT` never writes; `UPDATE_NEW` writes when keywords changed **or** the block is uncompressed; `FORCE` always writes. It always re-serializes the XML header and either compresses an uncompressed block or copies an already-compressed one verbatim. `LastUpdateOutcome` reports the result for status counts.
 
 ### Important Files
 - `Workspace.cs`: Shared session state (loaded files, image lists, directory stats); exposed on MainForm as `mWorkspace` and read by every feature partial
@@ -163,11 +185,12 @@ Reads/writes N.I.N.A. Target Scheduler SQLite database:
 - `TelescopeService.cs`: Telescope detection, analysis, and UI color helpers
 - `CaptureSoftwareConfiguration.cs`: Base class for capture software configs
 - `CaptureSoftwareService.cs`: Software detection and analysis
+- `Files/Compression/XisfBlockCompression.cs` + `BlockCompressionInfo.cs`: pure, UI-free `zlib+sh` + SHA-1 image-block codec and its attribute parser/formatter (see Compression above)
 - `UIHelpers.cs`: Common UI control manipulation (ClearComboBox, ResetRadioButton, etc.)
 - `MainForm.Designer.cs`: Auto-generated UI - TabIndex values manually fixed for proper navigation
 - `Globals.cs`: All enums and constants
 - `Configuration/AppPaths.cs`: Machine-specific paths (E:\, F:\ drives)
-- `Configuration/XisfConstants.cs`: XISF signature size and max buffer size
+- `Configuration/XisfConstants.cs`: XISF signature size, max buffer size, and compression/checksum codec names (`zlib+sh`, `sha-1`)
 - `Configuration/DirectoryFilters.cs`: Exclude lists for directory filtering
 
 ## Common Tasks
