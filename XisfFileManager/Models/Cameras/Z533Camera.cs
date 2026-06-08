@@ -9,7 +9,7 @@ public sealed class Z533Camera : CameraConfiguration
 
     public override string Identifier => "533";
     public override string Name => "Z533";
-    public override string Description => "ZWO ASI533MC Pro Camera (2021)";
+    public override string Description => "ZWO ASI533MC Pro (2021) QE:91%";
     public override double PixelSize => 3.76;
     public override double PixelSizeBinned => 7.52;
     public override bool IsColor => true;

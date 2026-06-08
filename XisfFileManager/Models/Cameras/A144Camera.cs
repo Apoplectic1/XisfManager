@@ -12,7 +12,7 @@ public sealed class A144Camera : CameraConfiguration
 
     public override string Identifier => "144";
     public override string Name => "A144";
-    public override string Description => "Atik Infinity Camera (2018)";
+    public override string Description => "Atik Infinity (2018) QE:70%";
     public override double PixelSize => 6.45;
     public override double PixelSizeBinned => 12.9;
     public override bool IsColor => true;

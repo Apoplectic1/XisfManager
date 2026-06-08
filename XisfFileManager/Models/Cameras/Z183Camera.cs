@@ -9,7 +9,7 @@ public sealed class Z183Camera : CameraConfiguration
 
     public override string Identifier => "183";
     public override string Name => "Z183";
-    public override string Description => "ZWO ASI183MM Pro Camera (2019)";
+    public override string Description => "ZWO ASI183MM Pro (2019) QE:84%";
     public override double PixelSize => 2.4;
     public override double PixelSizeBinned => 4.8;
     public override bool IsColor => false;

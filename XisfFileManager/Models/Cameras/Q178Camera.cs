@@ -9,7 +9,7 @@ public sealed class Q178Camera : CameraConfiguration
 
     public override string Identifier => "178";
     public override string Name => "Q178";
-    public override string Description => "QHYCCD QHY5III178M Camera (2018)";
+    public override string Description => "QHYCCD QHY5III178M (2018) QE:81%";
     public override double PixelSize => 2.4;
     public override double PixelSizeBinned => 4.8;
     public override bool IsColor => false;
