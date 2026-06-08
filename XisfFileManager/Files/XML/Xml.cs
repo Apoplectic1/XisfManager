@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using Astronomy.XISF.Compression;
+using XisfFileManager.Files.Compression;
 
 namespace XisfFileManager.Files.XML
 {

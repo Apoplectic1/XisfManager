@@ -71,11 +71,6 @@
     <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Shared XISF format library (header read + zlib+sh/SHA-1 block codec). Pure-managed, so XFM still
-         builds with `dotnet build`. -->
-    <ProjectReference Include="..\..\Library\Astronomy.XISF\Astronomy.XISF.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="XisfFileManager.ico" />
   </ItemGroup>
   <ItemGroup>
