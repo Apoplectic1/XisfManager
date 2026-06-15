@@ -1,5 +1,3 @@
-using System.Drawing;
-using System.Windows.Forms;
 using XisfFileManager.Files;
 using XisfFileManager.Helpers;
 using XisfFileManager.Models;
@@ -211,14 +209,26 @@ public partial class MainForm
 
     private void Button_KeywordCamera_SetAll_Click(object sender, EventArgs e)
     {
-        if (mFileList.Count == 0 || GetCheckedCameraCount() != 1)
+        int checkedCount = GetCheckedCameraCount();
+        if (mFileList.Count == 0 || checkedCount == 0)
             return;
 
-        var selectedCamera = GetSelectedCamera();
-        if (selectedCamera == null) return;
+        var checkedCameras = _cameraCheckboxes!
+            .Where(kv => kv.Value.Checked).Select(kv => kv.Key).ToList();
 
         foreach (XisfFile file in mFileList)
         {
+            // One camera checked: force identity onto every file (assert "all are this camera").
+            // Two or more checked: route each file to the checked camera its INSTRUME matches.
+            CameraConfiguration? fileCamera = checkedCount == 1
+                ? checkedCameras[0]
+                : checkedCameras.FirstOrDefault(c => c.MatchesCamera(file.Camera));
+
+            // Multi-camera load: file matches no checked camera by keyword -> left untouched.
+            // Surfacing a skipped count is a ROADMAP follow-up.
+            if (fileCamera == null)
+                continue;
+
             // Common keywords
             file.RemoveKeyword("NAXIS3");
             file.AddKeyword("BITPIX", "16", "Bits Per Pixel");
@@ -226,11 +236,9 @@ public partial class MainForm
             file.AddKeyword("BZERO", "32768", "Add value to scale to 65536 (16 bit) values");
             file.AddKeyword("NAXIS", "2", "XISF File Manager");
 
-            // Apply camera-specific keywords
-            selectedCamera.ApplyKeywords(file);
-
-            // Apply values from UI
-            ApplyCameraValuesFromUI(file, selectedCamera);
+            // Apply camera-specific keywords + UI values for that camera's row
+            fileCamera.ApplyKeywords(file);
+            ApplyCameraValuesFromUI(file, fileCamera);
         }
 
         FindCamera();
